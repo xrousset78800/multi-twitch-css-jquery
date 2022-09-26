@@ -53,8 +53,12 @@ function loadScam() {
 }
 
 function StartThisShit(scamers, showChat) {
-	jQuery("body").addClass("viewer"+scamers.length+"video");
+	jQuery("body").addClass("viewer"+scamers.length+"video", );
 	var layout="video";
+	if(scamers.length == 1) {
+		jQuery("body").addClass(scamers[0]);
+	}
+	
 	if(showChat == "true") {
 		layout="video-with-chat";
 	}
