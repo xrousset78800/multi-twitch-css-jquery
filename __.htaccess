@@ -1,0 +1,6 @@
+SetEnv PHP_VER 5_3
+SetEnv REGISTER_GLOBALS 0
+AuthName "Page d'administration protégée"
+AuthType Basic
+AuthUserFile "/home/xouindap/www/.htpasswd"
+Require valid-user
