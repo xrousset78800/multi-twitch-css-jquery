@@ -1,5 +1,7 @@
 let authToken = "ebio7i23n0oa5qfwfrteza6xfj90w9";
 let clientID = "vn9avm6d14fgwfyq0hc655klhwdcv8";
+let authToken = "";
+let clientID = "";
     	
 var scamersTotalList = ['Xou____', 'Zed_B', 'Emizdar', 'patayencroute', 'amouranth', 'mistermv', 'zgolene', 'slackos_tv', 'wasprick'];
 
