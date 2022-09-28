@@ -24,6 +24,10 @@
 	  	<div class="status-text">
 			<form action="" method="GET" class="channel-form">
 				<!--input type="text" name="scamer" placeholder="or another scamer" value=""-->
+				<div class="online-stream">
+				</div>
+				<div class="offline-stream">
+				</div>
 				<div class="chat">
 					<input type="radio" name="active_chat" value="true"/><label for="active_chat">Show chat</label>
 					<br />

@@ -1,7 +1,7 @@
 let authToken = "ebio7i23n0oa5qfwfrteza6xfj90w9";
 let clientID = "vn9avm6d14fgwfyq0hc655klhwdcv8";
     	
-var scamersTotalList = ['Xou____', 'Zed_B', 'Emizdar', 'patayencroute', 'amouranth', 'mistermv', 'zgolene', 'slackos_tv'];
+var scamersTotalList = ['Xou____', 'Zed_B', 'Emizdar', 'patayencroute', 'amouranth', 'mistermv', 'zgolene', 'slackos_tv', 'wasprick'];
 
 $(function(){
 /*
@@ -140,9 +140,9 @@ function updateScammerStatus(online, scamer) {
 		var duration = timeDiffCalc(new Date(scamer.started_at), new Date());
 		var thumbnail_resized = scamer.thumbnail_url.replace(/{width}|{height}/gi, 60);
 		var game = scamer.game_name;		
-		jQuery(".channel-form").prepend("<div class='channels'><input type='checkbox' id='"+scamer.user_name+"' name='scamer' value='"+scamer.user_name+"'/><div class='title'><img src='"+ thumbnail_resized+"'/>"+ scamer.title +"<div class='infos'>"+scamer.viewer_count+" Victimes</div><div class='date'>"+duration+"</div></div><i class='online-icon'></i><label for='"+scamer.user_name+"' >" + scamer.user_name + "</label><small class='game'><i>"+game+"</i></small></div>");
+		jQuery(".channel-form .online-stream").append("<div class='channels'><input type='checkbox' id='"+scamer.user_name+"' name='scamer' value='"+scamer.user_name+"'/><div class='title'><img src='"+ thumbnail_resized+"'/>"+ scamer.title +"<div class='infos'>"+scamer.viewer_count+" Victimes</div><div class='date'>"+duration+"</div></div><i class='online-icon'></i><label for='"+scamer.user_name+"' >" + scamer.user_name + "</label><small class='game'><i>"+game+"</i></small></div>");
 	}else{
-		jQuery(".channel-form").prepend("<div class='channels'><input type='checkbox' id='"+scamer+"' name='scamer' value='"+scamer+"'/><i class='offline-icon'></i><label for='"+scamer+"'>" + scamer + "</label></div>");
+		jQuery(".channel-form .offline-stream").append("<div class='channels'><input type='checkbox' id='"+scamer+"' name='scamer' value='"+scamer+"'/><i class='offline-icon'></i><label for='"+scamer+"'>" + scamer + "</label></div>");
 	}
 }
 

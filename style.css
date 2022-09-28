@@ -221,7 +221,7 @@ body {
     border-radius: 5px;
     right: 197px;
     top: 0;
-    width: 200px;
+    width: 400px;
     background: #000000ee;
     color: white;
     padding: 20px;
@@ -344,7 +344,7 @@ height: 50%;
 	width: 100%;
 }
 .viewer6video .viewer, .viewer5video .viewer{
-	width: 33%;
+	width: 33.3333333%;
 height: 50%;
 }
 
