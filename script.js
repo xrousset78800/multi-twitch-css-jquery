@@ -1,5 +1,3 @@
-let authToken = "ebio7i23n0oa5qfwfrteza6xfj90w9";
-let clientID = "vn9avm6d14fgwfyq0hc655klhwdcv8";
 let authToken = "";
 let clientID = "";
     	
@@ -86,32 +84,33 @@ function StartThisShit(scamers, showChat) {
 	} 
 	if(scamers.length == 1) {
 		jQuery(".page-title").append(scamers[0] + " scam");
+		jQuery(document).prop('title', scamers[0] + " scam");
 	} else {
 		jQuery(".page-title").append("Multi scam");
+		jQuery(document).prop('title', "Multi scam ("+ scamers.join(', ')+")");
 	}
 
 	jQuery("body").addClass("viewer"+scamers.length+"video", );
 	jQuery("input[name=active_chat][value='"+showChat+"']").prop("checked",true);
 
-	var layout="video";
 	if(scamers.length == 1) {
 		jQuery("body").addClass(scamers[0]);
 	}
 	
-	if(showChat == "true") {
-		layout="video-with-chat";
-	}
-	getBroadcast("141981764");
+	//getBroadcast("141981764");
 	for(var i=0; i<scamers.length; i++){
-		jQuery(".twitch-video").append("<div class='viewer'><div class='twitch-description' id='twitch-description"+(i+1)+"'></div><div class='twitch-embed'  id='twitch-embed"+(i+1)+"'></div></div>");
+		jQuery(".twitch-video").append("<div class='viewer "+scamers[i]+"'><div class='twitch-description' id='twitch-description"+(i+1)+"'></div><div class='twitch-embed'  id='twitch-embed"+(i+1)+"'></div></div>");
 		updateScammerOnlineBullshit(scamers[i], i+1);
 
 		  new Twitch.Embed("twitch-embed"+(i+1), {
 			width: "100%",
 			height: "100%",
-			layout: layout,
+			layout: "video",
 			channel: scamers[i]
-		  });	
+		  });
+		  if(showChat == "true") {
+		  	jQuery(".viewer."+scamers[i]).append("<iframe class='twitch-chat-embed' id='twitch-chat-embed"+(i+1)+"' src='https://www.twitch.tv/embed/"+scamers[i]+"/chat?darkpopout&parent=xouindaplace.fr'></iframe>");
+		  }
 	}
 
 	return true;

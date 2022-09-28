@@ -415,3 +415,11 @@ height: 50%;
   50% { transform: scale(0.75); }
   100% { transform: scale(1); }
 }
+
+.twitch-chat-embed {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 40%;
+    height: 100%;
+}

@@ -4,3 +4,8 @@ AuthName "Page d'administration protégée"
 AuthType Basic
 AuthUserFile "/home/xouindap/www/.htpasswd"
 Require valid-user
+
+
+<IfModule mod_headers.c>
+	Header set X-Frame-Options "SAMEORIGIN"
+</IfModule>

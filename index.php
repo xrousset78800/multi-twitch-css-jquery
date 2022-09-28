@@ -59,10 +59,14 @@
 	<script async src="https://www.googletagmanager.com/gtag/js?id=G-9FP44RMCTK"></script>
 	<script>
 		  window.dataLayer = window.dataLayer || [];
-		  function gtag(){dataLayer.push(arguments);}
+		  function gtag(){window.dataLayer.push(arguments);}
 		  gtag('js', new Date());
+		setTimeout(function(){
+		 gtag('config', 'G-9FP44RMCTK', {
+  			'page_title' : $(document).attr('title')
+		 });
+}, 5000);
 
-		  gtag('config', 'G-9FP44RMCTK');
 		</script>
   </body>
 </html>
