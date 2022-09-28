@@ -112,8 +112,6 @@ function StartThisShit(scamers, showChat) {
 		  	jQuery(".viewer."+scamers[i]).append("<iframe class='twitch-chat-embed' id='twitch-chat-embed"+(i+1)+"' src='https://www.twitch.tv/embed/"+scamers[i]+"/chat?darkpopout&parent=xouindaplace.fr'></iframe>");
 		  }
 	}
-
-	return true;
 }
 
 function updateStatuses(response, scamersList) {
