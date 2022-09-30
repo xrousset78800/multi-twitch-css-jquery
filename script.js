@@ -1,14 +1,15 @@
-let authToken = "";
-let clientID = "";
+let authToken = "ebio7i23n0oa5qfwfrteza6xfj90w9";
+let clientID = "vn9avm6d14fgwfyq0hc655klhwdcv8";
 
 var scamersTotalList = [
 	'xou____', 
-	'Zed_B', 
-	'Emizdar', 
+	'zed_B', 
+	'emizdar', 
 	'patayencroute', 
 	'amouranth', 
 	'mistermv', 
 	'zgolene', 
+	'tonton', 
 	'slackos_tv'
 	];
 
@@ -18,12 +19,11 @@ var urlParams = new URLSearchParams(window.location.search);
 var scamGet = urlParams.getAll('scamer');
 var showChat = urlParams.get('active_chat');
 
-
 var result = {
 	'showChat': showChat,
 	'scamers': scamGet 
 }
- console.log("bId erreur");
+
   return result;
 }
 
@@ -51,7 +51,7 @@ function StartThisShit(scamers, showChat) {
 		}
 
 		for(var i=0; i<scamers.length; i++){
-		jQuery(".twitch-video").append("<div class='viewer'><div class='twitch-description' id='"+scamers[i].toLowerCase()+"'></div><div class='twitch-embed'  id='twitch-embed"+(i+1)+"'></div></div>");
+		jQuery(".twitch-video").append("<div class='viewer'><div class='twitch-description' id='"+scamers[i].toLowerCase()+"'><div></div></div><div class='twitch-embed'  id='twitch-embed"+(i+1)+"'></div></div>");
 
 		  new Twitch.Embed("twitch-embed"+(i+1), {
 			width: "100%",
@@ -102,33 +102,20 @@ function updateScammerStatus(online, scamer) {
 
 function timeDiffCalc(dateFuture, dateNow) {
     let diffInMilliSeconds = Math.abs(dateFuture - dateNow) / 1000;
-
-    // calculate days
     const days = Math.floor(diffInMilliSeconds / 86400);
     diffInMilliSeconds -= days * 86400;
-
-    // calculate hours
     const hours = Math.floor(diffInMilliSeconds / 3600) % 24;
     diffInMilliSeconds -= hours * 3600;
-
-    // calculate minutes
     const minutes = Math.floor(diffInMilliSeconds / 60) % 60;
     diffInMilliSeconds -= minutes * 60;
-
     let difference = '';
     if (days > 0) {
       difference += (days === 1) ? `${days}j` : `${days}j`;
     }
-
     difference += (hours === 0 || hours === 1) ? `${hours}h` : `${hours}h`;
-
     difference += (minutes === 0 || hours === 1) ? `${minutes}m` : `${minutes}m`; 
-
     return difference;
-  }
-
-
-
+}
 
 function getBroadcast(scamerId) {
 
@@ -294,26 +281,24 @@ jQuery(document).ready(function(){
 
 		}
 	});
-	
-	const client = new tmi.Client({
-		channels: scamConf['scamers']
-	});
+	if(scamConf['showChat'] == 'embed') {
+		const client = new tmi.Client({
+			channels: scamConf['scamers']
+		});
 
-	client.connect();
-	client.on('message', (channel, tags, message, self) => {
-		console.log(tags);
-	  jQuery('.twitch-description'+channel)
-		.append("<div class='embed-message'>")
-			.append("<span class='time'>"+tags["display-name"]+tags["first-msg"]+tags["flags"]+tags["subscriber"]+tags["turbo"]+"</span>")
-			.append("<span style='color:"+tags["color"]+"' class='scamer'>"+tags["display-name"]+":</span>")
-			.append("<span class='message'>"+message+"</span>")
-		.append("</div>");
-		
-		if(tags["badges"] !== null) {
-			jQuery('.twitch-description'+channel+' .embed-message .time').append("<span class='premium'>"+(tags["badges"]["premium"])+"</span>");
-			jQuery('.twitch-description'+channel+' .embed-message .time').append("<span class='subscriber'>"+(tags["badges"]["subscriber"])+"</span>");		
-		}
-	});
+		client.connect();
+		client.on('message', (channel, tags, message, self) => {			
+			
+		  jQuery('.twitch-description'+channel+' > div')
+			  .append("<div class='embed-message "+tags["id"]+"'><span class='time'>"+tags["display-name"]+tags["first-msg"]+tags["flags"]+tags["subscriber"]+tags["turbo"]+"</span><span style='color:"+tags["color"]+"' class='scamer'>"+tags["display-name"]+"</span><span class='message'>"+message+"</span></div>");
+			
+				if(tags["badges"] !== null) {
+					jQuery('.twitch-description'+tags["id"]+' > .embed-message > .time').append("<span class='premium'>"+(tags["badges"]["premium"])+"</span>");
+					jQuery('.twitch-description'+tags["id"]+' > .embed-message > .time').append("<span class='subscriber'>"+(tags["badges"]["subscriber"])+"</span>");		
+				}
+				jQuery('.twitch-description'+channel+' > div').offset().top += 20;
+		});
+	}
 	
 });
 

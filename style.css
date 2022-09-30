@@ -1,19 +1,4 @@
-body,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p,
-blockquote,
-pre,
-hr,
-dl,
-dd,
-ol,
-ul,
-figure {
+body,h1,h2,h3,h4,h5,h6,p,blockquote,pre,hr,dl,dd,ol,ul,figure {
     margin: 0;
     padding: 0
 }
@@ -23,7 +8,7 @@ figure {
 }
 
 body {
-    font: 400 18px/1.6 "Merriweather", Georgia, serif;
+    font: 400 18px/1.6 "Quicksand", Georgia, serif;
     color: #454545;
     background-color: #fcfcfc;
     -webkit-text-size-adjust: 100%;
@@ -34,19 +19,7 @@ body {
     font-kerning: normal
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p,
-blockquote,
-pre,
-ul,
-ol,
-dl,
-figure {
+h1,h2,h3,h4,h5,h6,p,blockquote,pre,ul,ol,dl,figure {
     margin-bottom: 30px
 }
 
@@ -70,32 +43,20 @@ ol {
     margin-left: 30px
 }
 
-li ul,
-li ol {
+li ul,li ol {
     margin-bottom: 0
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    font-family: "Raleway", Arial, sans-serif;
+h1,h2,h3,h4,h5,h6 {
+    font-family: "Quicksand", Arial, sans-serif;
     font-weight: 900
 }
 
-h2,
-h3,
-h4,
-h5,
-h6 {
+h2,h3,h4,h5,h6 {
     margin-bottom: 0
 }
 
-h1,
-h2,
-h3 {
+h1,h2,h3 {
     text-transform: uppercase
 }
 
@@ -283,7 +244,7 @@ animation: 60s ease-in 1s infinite both running slidein;
 .home-header h1,
 .home-header p {
     text-align: center;
-    font-family: "Raleway", Arial, sans-serif;
+    font-family: "Quicksand", Arial, sans-serif;
     font-weight: 900;
     letter-spacing: -2px;
     text-transform: uppercase;
@@ -320,7 +281,7 @@ animation: 60s ease-in 1s infinite both running slidein;
 }
 
 .blog-header a.title {
-    font-family: "Raleway", Arial, sans-serif;
+    font-family: "Quicksand", Arial, sans-serif;
     font-weight: 900;
     letter-spacing: -2px;
     text-transform: uppercase;
@@ -346,7 +307,7 @@ animation: 60s ease-in 1s infinite both running slidein;
 }
 
 .header nav a {
-    font-family: "Raleway", Arial, sans-serif;
+    font-family: "Quicksand", Arial, sans-serif;
     font-weight: 900;
     text-transform: uppercase;
     line-height: 24px;
@@ -397,7 +358,7 @@ animation: 60s ease-in 1s infinite both running slidein;
 .post-meta {
     font-style: italic;
     font-size: 15.75px;
-    font-family: "Merriweather", Georgia, serif;
+    font-family: "Quicksand", Georgia, serif;
     font-weight: 400;
     text-transform: none
 }
@@ -437,13 +398,6 @@ animation: 60s ease-in 1s infinite both running slidein;
 background: green;
 }*/
 
-.status {
-    position: absolute;
-    top: 60px;
-    right: 10px;
-    text-align: center;
-    display: none;
-}
 .title {
     opacity: 0;
     transition: opacity 0.8s;
@@ -469,6 +423,11 @@ background: green;
   background: #ffffffcc;
   z-index: 1;
   width: 200px;
+    position: absolute;
+    top: 75px;
+    right: 10px;
+    text-align: center;
+    display: none;
 }
 
 .infos, .date {
@@ -508,24 +467,25 @@ small.game {
 .toggleShit {
     position: absolute;
     right: 10px;
-    top: 20px;
     z-index: 1;
     color: white;
     font-size: 25px;
-    line-height: 50px;
+    line-height: 80px;
     cursor: pointer;
+    margin: 0;
+	height: 50px;
+    margin-top: 10px;
 }
 .toggleShit:before {    
-content: 'x';
-    font-size: 0.6rem;
+	content: 'x';
+    font-size: 0.8rem;
     line-height: 20px;
-    position: absolute;
-    left: -15px;
-    top: 16px;
+    position: relative;
+    left: -7px;
+    top: -4px;
 }
 .toggleShit.hide:before {
    content:'<<';
-    left: -20px;
 }
 .chat {
     line-height: 15px;
@@ -577,41 +537,79 @@ height: 50%;
 	left: 30px;
     top: 40px;
     width: 25%;
-    height: 400px;
-    background-color: #00000088;
+    height: 50%;
+    
 	border-radius: 8px;
     color: #f1f1f1;
     padding: 5px;
     font-size: 0.8rem;
+}
+.twitch-description > div{
 	overflow-y: auto;
+    height: 100%;
+    overflow-x: hidden;
 }
+
 .twitch-description .embed-message{
+	background-color: #00000088;	
 	line-height: 1rem;
-	margin: 2px 0;
 	cursor: pointer;
+	padding: 3px;
 }
+
+
 .twitch-description .time{
-	opacity: 1;
-	transition: color opacity 0.4s;
-    position: absolute;
+	opacity: 0;
+	transition: background color opacity 0.4s;
+    position: fixed;
 	color: transparent;
+    background: transparent;
+	padding: 10px;
+	border-radius: 7px;
+	left: 480px;
+}
+.twitch-description .time span{
+	display: block;
+	height: 17px;
+	line-height: 17px;
 }
 .twitch-description .embed-message:hover .time{
-	opacity: 0;
+	opacity: 1;
 	color: white;
-    background: red;
+    background: #000000bb;
+}
+.twitch-description .embed-message:hover{
+    background: #ffffffcc;
+	color: #111111;
 }
 
 .twitch-description .message{
-
+	
 }
 .twitch-description .scamer{
-	
+	font-weight: bold;
+	margin-right: 10px;
 }
 
 .viewer4video .viewer{
 	width: 50%;
 height: 50%;
+}
+
+.viewer6video .twitch-description .time,
+.viewer5video .twitch-description .time,
+.viewer4video .twitch-description .time,
+.viewer3video .twitch-description .time{
+	left: 15%;
+}
+
+
+.viewer6video .twitch-description, 
+.viewer5video .twitch-description, 
+.viewer4video .twitch-description, 
+.viewer3video .twitch-description
+{
+	height: 71%;
 }
 
 .viewer5video .viewer:nth-of-type(4), .viewer5video .viewer:nth-of-type(5){
@@ -695,7 +693,7 @@ height: 50%;
 #go-button {
 	color:white;
     position: absolute;
-    bottom: 15px;
+    top: 10px;
     right: 15px;
     z-index: 1;
     font-size: 14px;

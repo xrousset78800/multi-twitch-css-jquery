@@ -19,7 +19,8 @@
   
   <link rel="icon" type="image/png" href="/scam-is-real/favicon.png">
   <link href="/scam-is-real/style.css" rel="stylesheet">
-  
+  <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Quicksand">
 </head>
   <body class="vsc-initialized">
   	<div class="status">
@@ -31,12 +32,16 @@
 				<div class="offline-stream">
 				</div>
 				<div class="chat">
-					<input type="radio" name="active_chat" value="true"/><label for="active_chat">Show chat</label>
+					<input type="radio" name="active_chat" value="true"/><label for="active_chat">Show Twitch chat</label>
 					<br />
 					<input type="radio" name="active_chat" value="false"/><label for="active_chat">Hide chat</label>
 					<br />
 					<input type="radio" name="active_chat" value="embed"/><label for="active_chat">Embed chat</label>					
 				</div>
+				
+				<input type="checkbox" name="full_scam_on_load" disabled="disabled" value=""/><label for="full_scam_on_load">full_scam_on_load</label>
+				<input type="checkbox" name="move_chat" disabled="disabled" value=""/><label for="move_chat">move_chat</label>
+				
 				<input type="submit" value="Load this shit" />
 			</form>
 	    </div>
