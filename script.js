@@ -2,14 +2,13 @@ let authToken = "";
 let clientID = "";
 
 var scamersTotalList = [
-	'xou____', 
-	'zed_B', 
+	'Xou____', 
+	'Zed_B', 
 	'emizdar', 
 	'patayencroute', 
 	'amouranth', 
 	'mistermv', 
 	'zgolene', 
-	'tonton', 
 	'slackos_tv'
 	];
 
@@ -18,12 +17,13 @@ function loadScam() {
 var urlParams = new URLSearchParams(window.location.search);
 var scamGet = urlParams.getAll('scamer');
 var showChat = urlParams.get('active_chat');
+var chat_position = urlParams.get('embed_chat_position');
 
 var result = {
-	'showChat': showChat,
-	'scamers': scamGet 
+	'showChat': {'status': showChat, 'position': chat_position},
+	'scamers': scamGet
 }
-
+   console.log(result);
   return result;
 }
 
@@ -37,14 +37,16 @@ function StartThisShit(scamers, showChat) {
 	}
 
 	jQuery("body").addClass("viewer"+scamers.length+"video", );
+	
 	jQuery("input[name=active_chat][value='"+showChat+"']").prop("checked",true);
 
 	if(scamers.length == 1) {
 		jQuery("body").addClass(scamers[0]);
 	}	
-	jQuery("input[name=active_chat][value='"+showChat+"']").prop("checked",true);
+	jQuery("input[name=active_chat][value='"+showChat['status']+"']").prop("checked",true);
 	
 	jQuery("body").addClass("viewer"+scamers.length+"video");
+	
 		var layout="video-with-chat";
 		if(showChat !== "true") {
 			layout="video";
@@ -52,7 +54,7 @@ function StartThisShit(scamers, showChat) {
 
 		for(var i=0; i<scamers.length; i++){
 		jQuery(".twitch-video").append("<div class='viewer'><div class='twitch-description' id='"+scamers[i].toLowerCase()+"'><div></div></div><div class='twitch-embed'  id='twitch-embed"+(i+1)+"'></div></div>");
-
+		
 		  new Twitch.Embed("twitch-embed"+(i+1), {
 			width: "100%",
 			height: "100%",
@@ -60,6 +62,10 @@ function StartThisShit(scamers, showChat) {
 			channel: scamers[i]
 		  });	 
 		}
+		
+		jQuery(".viewer > div").each(function(viewer){
+			jQuery(viewer).addClass(viewer);
+		});
 
 		return true;
 }
@@ -69,8 +75,17 @@ function updateStatuses(response, scamersToShowList) {
             var scamer = value;
 		let flag = false;
 		
-		jQuery(response).each(function(value, user){
-		      if(user.user_login == scamer || user.user_name == scamer){
+		jQuery(response).each(function(val, user){
+			//console.log(scamer);
+			//console.log(user.user_login);
+			//console.log(user.user_name);
+			
+			
+			//console.log(user.user_login);
+			//console.log(user.user_login);
+			
+			
+		      if(user.user_login == scamer || user.user_name == scamer || user.user_name.toLowerCase() == scamer || user.user_login.toLowerCase() == scamer){
 				getBroadcast(user.user_id);
                         updateScammerStatus(true, user); 
 			      flag = true;
@@ -81,10 +96,8 @@ function updateStatuses(response, scamersToShowList) {
 		}
 		
 		jQuery(scamersToShowList).each(function(){
-			console.log('.channel-form '+this);
-			jQuery('.channel-form '+this).attr("checked", "checked");
-		});	
-		
+			jQuery('.channel-form '+this.toLowerCase()).attr("checked", "checked");
+		});			
 	});
 }
 
@@ -93,10 +106,10 @@ function updateScammerStatus(online, scamer) {
 		var duration = timeDiffCalc(new Date(scamer.started_at), new Date());
 		var thumbnail_resized = scamer.thumbnail_url.replace(/{width}|{height}/gi, 60);
 		var game = scamer.game_name;
-		console.log(scamer);
-		jQuery(".channel-form").prepend("<div class='channels'><input type='checkbox' id='"+scamer.user_name+"' name='scamer' value='"+scamer.user_name+"'/><div class='title'><img src='"+ thumbnail_resized+"'/>"+ scamer.title +"<div class='infos'>"+scamer.viewer_count+" Victimes</div><div class='date'>"+duration+"</div></div><i class='online-icon'></i><label for='"+scamer.user_name+"' >" + scamer.user_name + "</label><small class='game'><i>"+game+"</i></small></div>");
+
+		jQuery(".channel-form .online-stream").prepend("<div class='channels'><input type='checkbox' id='"+scamer.user_login+"' name='scamer' value='"+scamer.user_login+"'/><div class='title'><img src='"+ thumbnail_resized+"'/>"+ scamer.title +"<div class='infos'>"+scamer.viewer_count+" Victimes</div><div class='date'>"+duration+"</div></div><i class='online-icon'></i><label for='"+scamer.user_login+"' >" + scamer.user_name + "</label><small class='game'><i>"+game+"</i></small></div>");
 	}else{
-		jQuery(".channel-form").prepend("<div class='channels'><input type='checkbox' id='"+scamer+"' name='scamer' value='"+scamer+"'/><i class='offline-icon'></i><label for='"+scamer+"'>" + scamer + "</label></div>");
+		jQuery(".channel-form .offline-stream").prepend("<div class='channels'><input type='checkbox' id='"+scamer.toLowerCase()+"' name='scamer' value='"+scamer.toLowerCase()+"'/><i class='offline-icon'></i><label for='"+scamer.toLowerCase()+"'>" + scamer + "</label></div>");
 	}
 }
 
@@ -256,10 +269,34 @@ jQuery(document).ready(function(){
 	});
 	
 	if(scamConf['scamers'].length == 0) {
-		scamConf['scamers'][0] = "Zed_B";
-	} 
-
+		//No get
+		scamConf['scamers'][0] = "Zed_B";		
+	}
+	
+	if((scamConf['showChat']['status'] === 'embed') || (scamConf['showChat']['status'] === null)){
+		//Embed or not get (default embed)
+		jQuery('.channel-form [value=embed]').prop('selected', true);
+		jQuery('.channel-form select#embed_chat_position').removeAttr('disabled');
+	} else {
+		//Not Embed and not get (default embed)
+		jQuery('.channel-form select#embed_chat_position').prop('disabled', 'disabled');
+		//jQuery('.channel-form [value='+scamConf['showChat']['status']+']').prop('selected', true);
+	}
+	
 	StartThisShit(scamConf['scamers'], scamConf['showChat']);
+	
+	jQuery("#embed_chat_position").on('select', function(){
+		if(jQuery(this).value == "embed") {
+			console.log();
+			console.log();
+			jQuery('.channel-form select#embed_chat_position').prop('disabled', false);
+		} else {
+			console.log();
+			console.log();
+			
+		}
+	});		
+	
 	
 	jQuery("h1.toggleShit").click(function(){
 		jQuery(this).toggleClass("hide");
@@ -281,7 +318,7 @@ jQuery(document).ready(function(){
 
 		}
 	});
-	if(scamConf['showChat'] == 'embed') {
+	if(scamConf['showChat']['status'] == 'embed') {		
 		const client = new tmi.Client({
 			channels: scamConf['scamers']
 		});
@@ -296,7 +333,13 @@ jQuery(document).ready(function(){
 					jQuery('.twitch-description'+tags["id"]+' > .embed-message > .time').append("<span class='premium'>"+(tags["badges"]["premium"])+"</span>");
 					jQuery('.twitch-description'+tags["id"]+' > .embed-message > .time').append("<span class='subscriber'>"+(tags["badges"]["subscriber"])+"</span>");		
 				}
-				jQuery('.twitch-description'+channel+' > div').position().top += 20;
+				//jQuery('.twitch-description'+channel+' > div').position().top += 20;
+		});
+		
+		client.on("connected", function (address, port) {
+			jQuery(scamConf['scamers']).each(function(i, scamerViewer){
+				jQuery('.twitch-description'+scamerViewer).addClass(scamConf['showChat']['position']);
+			});
 		});
 	}
 	
@@ -304,7 +347,23 @@ jQuery(document).ready(function(){
 
 
 
+/*
 
+Todo : 
+
+fix default with no get
+
+
+
+
+
+
+
+
+
+
+
+*/
 
 
 

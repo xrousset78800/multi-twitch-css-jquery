@@ -502,6 +502,7 @@ small.game {
     width: 100%;
     padding: 10px;
     float:left;
+	overflow: hidden;
     //transition: width height 1s linear;
 }
 /*
@@ -538,16 +539,31 @@ height: 50%;
 
 .twitch-description{
     position: absolute;
-	left: 30px;
-    top: 40px;
     width: 25%;
     height: 50%;
-    
 	border-radius: 8px;
     color: #f1f1f1;
     padding: 5px;
     font-size: 0.8rem;
 }
+
+.twitch-description.top_left {
+	left: 30px;
+    top: 40px;
+}
+.twitch-description.top_right {
+	right: 30px;
+    top: 40px;
+}
+.twitch-description.bottom_left {
+	left: 30px;
+    bottom: 10px;
+}
+.twitch-description.bottom_right {
+	right: -22px;
+    bottom: 10px;
+}
+
 .twitch-description > div{
 	overflow-y: auto;
     height: 100%;
@@ -559,6 +575,7 @@ height: 50%;
 	line-height: 1rem;
 	cursor: pointer;
 	padding: 3px;
+	word-break: break-word;
 }
 
 
@@ -571,6 +588,7 @@ height: 50%;
 	padding: 10px;
 	border-radius: 7px;
 	left: 100%;
+	width: 200px;
 }
 
 .twitch-description .time span{
@@ -616,8 +634,8 @@ height: 50%;
 	width: 100%;
 }
 .viewer6video .viewer, .viewer5video .viewer{
-	width: 33%;
-height: 50%;
+	width: 33.3333333%;
+	height: 50%;
 }
 
 

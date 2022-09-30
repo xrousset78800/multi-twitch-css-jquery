@@ -43,12 +43,23 @@
 							<br />
 							<input type="radio" name="active_chat" value="false"/><label for="active_chat">Hide chat</label>
 							<br />
-							<input type="radio" name="active_chat" value="embed"/><label for="active_chat">Embed chat</label>					
-						</div>
-						
-						<input type="checkbox" name="full_scam_on_load" disabled="disabled" value=""/><label for="full_scam_on_load">full_scam_on_load</label>
-						<input type="checkbox" name="move_chat" disabled="disabled" value=""/><label for="move_chat">move_chat</label>
-						
+							
+							<input checked="checked" type="radio" name="active_chat" value="embed"/><label for="active_chat">Embed chat</label>
+							<!-- The second value will be selected initially -->
+							<select id="embed_chat_position" name="embed_chat_position">
+							  <option selected value="top_right" >Haut droite</option>
+							  <option value="top_left">Haut gauche</option>
+							  <option value="bottom_left">Bas gauche</option>
+							  <option value="bottom_right">Bas droite</option>
+							</select>							
+							<br />
+							<br />
+							<br />
+							<br />
+							<input type="checkbox" disabled="disabled" name="full_scam_after_reload" value="false"/><label for="full_scam_after_reload">full scam after reload</label>
+							<input disabled="disabled" type="number" name="embed_chat_width" placeholder="embed_chat_width" /> 
+							<input disabled="disabled" type="number" name="embed_chat_height" placeholder="embed_chat_height" /> 
+						</div>						
 						<input type="submit" value="Load this shit" />
 					</form>
 				</div>
