@@ -290,13 +290,13 @@ jQuery(document).ready(function(){
 		client.on('message', (channel, tags, message, self) => {			
 			
 		  jQuery('.twitch-description'+channel+' > div')
-			  .append("<div class='embed-message "+tags["id"]+"'><span class='time'>"+tags["display-name"]+tags["first-msg"]+tags["flags"]+tags["subscriber"]+tags["turbo"]+"</span><span style='color:"+tags["color"]+"' class='scamer'>"+tags["display-name"]+"</span><span class='message'>"+message+"</span></div>");
+			  .append("<div class='embed-message "+tags["id"]+"'><span class='time'>"+tags["display-name"]+"<br>"+tags["first-msg"]+"<br>"+tags["flags"]+"<br>"+tags["subscriber"]+"<br>"+tags["turbo"]+"</span><span style='color:"+tags["color"]+"' class='scamer'>"+tags["display-name"]+"</span><span class='message'>"+message+"</span></div>");
 			
 				if(tags["badges"] !== null) {
 					jQuery('.twitch-description'+tags["id"]+' > .embed-message > .time').append("<span class='premium'>"+(tags["badges"]["premium"])+"</span>");
 					jQuery('.twitch-description'+tags["id"]+' > .embed-message > .time').append("<span class='subscriber'>"+(tags["badges"]["subscriber"])+"</span>");		
 				}
-				jQuery('.twitch-description'+channel+' > div').offset().top += 20;
+				jQuery('.twitch-description'+channel+' > div').position().top += 20;
 		});
 	}
 	

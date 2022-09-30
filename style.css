@@ -551,7 +551,7 @@ height: 50%;
 .twitch-description > div{
 	overflow-y: auto;
     height: 100%;
-    overflow-x: hidden;
+    overflow-x: visible;
 }
 
 .twitch-description .embed-message{
@@ -565,13 +565,14 @@ height: 50%;
 .twitch-description .time{
 	opacity: 0;
 	transition: background color opacity 0.4s;
-    position: fixed;
+    position: absolute;
 	color: transparent;
     background: transparent;
 	padding: 10px;
 	border-radius: 7px;
-	left: 480px;
+	left: 100%;
 }
+
 .twitch-description .time span{
 	display: block;
 	height: 17px;
@@ -597,16 +598,8 @@ height: 50%;
 
 .viewer4video .viewer{
 	width: 50%;
-height: 50%;
+	height: 50%;
 }
-
-.viewer6video .twitch-description .time,
-.viewer5video .twitch-description .time,
-.viewer4video .twitch-description .time,
-.viewer3video .twitch-description .time{
-	left: 15%;
-}
-
 
 .viewer6video .twitch-description, 
 .viewer5video .twitch-description, 

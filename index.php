@@ -23,29 +23,6 @@
           href="https://fonts.googleapis.com/css?family=Quicksand">
 </head>
   <body class="vsc-initialized">
-  	<div class="status">
-	  	<div class="status-text">
-			<form action="" method="GET" class="channel-form">
-				<!--input type="text" name="scamer" placeholder="or another scamer" value=""-->
-				<div class="online-stream">
-				</div>
-				<div class="offline-stream">
-				</div>
-				<div class="chat">
-					<input type="radio" name="active_chat" value="true"/><label for="active_chat">Show Twitch chat</label>
-					<br />
-					<input type="radio" name="active_chat" value="false"/><label for="active_chat">Hide chat</label>
-					<br />
-					<input type="radio" name="active_chat" value="embed"/><label for="active_chat">Embed chat</label>					
-				</div>
-				
-				<input type="checkbox" name="full_scam_on_load" disabled="disabled" value=""/><label for="full_scam_on_load">full_scam_on_load</label>
-				<input type="checkbox" name="move_chat" disabled="disabled" value=""/><label for="move_chat">move_chat</label>
-				
-				<input type="submit" value="Load this shit" />
-			</form>
-	    </div>
-	</div>
     <div class="page wrapper">
 		<header class="blog-header home row">
 			<div class="cell cell-12">
@@ -53,6 +30,29 @@
 			</div>
 		</header>
         <main id="myScamPlayer" class="page-content">
+			<div class="status">
+				<div class="status-text">
+					<form action="" method="GET" class="channel-form">
+						<!--input type="text" name="scamer" placeholder="or another scamer" value=""-->
+						<div class="online-stream">
+						</div>
+						<div class="offline-stream">
+						</div>
+						<div class="chat">
+							<input type="radio" name="active_chat" value="true"/><label for="active_chat">Show Twitch chat</label>
+							<br />
+							<input type="radio" name="active_chat" value="false"/><label for="active_chat">Hide chat</label>
+							<br />
+							<input type="radio" name="active_chat" value="embed"/><label for="active_chat">Embed chat</label>					
+						</div>
+						
+						<input type="checkbox" name="full_scam_on_load" disabled="disabled" value=""/><label for="full_scam_on_load">full_scam_on_load</label>
+						<input type="checkbox" name="move_chat" disabled="disabled" value=""/><label for="move_chat">move_chat</label>
+						
+						<input type="submit" value="Load this shit" />
+					</form>
+				</div>
+			</div>
 			<h1 class="toggleShit hide" name="toggle">Menu</h1>
 			<div class="twitch-video">
 				<!-- Load the Twitch embed JavaScript file -->
