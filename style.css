@@ -60,6 +60,10 @@ h1,h2,h3 {
     text-transform: uppercase
 }
 
+h1:hover{
+   color: #dfdfdf;
+}
+
 h2 {
     font-size: 2em;
     line-height: 1;
@@ -473,8 +477,8 @@ small.game {
     line-height: 80px;
     cursor: pointer;
     margin: 0;
-	height: 50px;
-    margin-top: 10px;
+    height: 30px;
+    top: 10px;
 }
 .toggleShit:before {    
 	content: 'x';
