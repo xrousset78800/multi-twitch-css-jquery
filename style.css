@@ -1,4 +1,19 @@
-body,h1,h2,h3,h4,h5,h6,p,blockquote,pre,hr,dl,dd,ol,ul,figure {
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+hr,
+dl,
+dd,
+ol,
+ul,
+figure {
     margin: 0;
     padding: 0
 }
@@ -17,6 +32,22 @@ body {
     -o-font-feature-settings: 'kern' 1;
     font-feature-settings: 'kern' 1;
     font-kerning: normal
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+ul,
+ol,
+dl,
+figure {
+    margin-bottom: 30px
 }
 
 img {
@@ -44,21 +75,33 @@ li ol {
     margin-bottom: 0
 }
 
-h1,h2,h3,h4,h5,h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     font-family: "Raleway", Arial, sans-serif;
     font-weight: 900
 }
 
-h2,h3,h4,h5,h6 {
+h2,
+h3,
+h4,
+h5,
+h6 {
     margin-bottom: 0
 }
 
-h1,h2,h3 {
+h1,
+h2,
+h3 {
     text-transform: uppercase
 }
 
 h2 {
     font-size: 2em;
+    line-height: 1;
     padding-top: 0.5em;
     padding-bottom: 0.5em
 }
@@ -79,11 +122,48 @@ a {
     text-decoration: none
 }
 
+
+blockquote {
+    color: #828282;
+    border-left: 4px solid #e8e8e8;
+    padding-left: 30px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    font-size: 24px;
+    letter-spacing: -1px;
+    font-style: italic
+}
+
+blockquote>:last-child {
+    margin-bottom: 0
+}
+
+blockquote em {
+    font-style: normal
+}
+
 pre,
 code {
     font-size: 18px
 }
 
+code {
+    padding: 1px 5px;
+    background: #ddd;
+    border-radius: 3px
+}
+
+pre {
+    padding: 8px 12px;
+    overflow-x: auto
+}
+
+pre>code {
+    border: 0;
+    padding-right: 0;
+    padding-left: 0;
+    background: transparent
+}
 
 .row:after {
     content: '';
@@ -114,7 +194,7 @@ body {
     border-bottom: 5px solid #ea0011;
     padding: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);
     background: url(sheep.jpg);
-	animation: 60s ease-in 1s infinite both running slidein;
+animation: 60s ease-in 1s infinite both running slidein;
 }
 
 @keyframes slidein {
@@ -183,9 +263,103 @@ body {
     display: block
 }
 
+
+
+
+
+.home-header {
+    margin-bottom: 30px
+}
+
+.home-header img {
+    margin: 0 auto 15px;
+    clear: both;
+    padding: 0;
+    display: block;
+    width: 70px;
+    height: 70px
+}
+
+.home-header h1,
+.home-header p {
+    text-align: center;
+    font-family: "Raleway", Arial, sans-serif;
+    font-weight: 900;
+    letter-spacing: -2px;
+    text-transform: uppercase;
+    line-height: 1;
+    color: #454545
+}
+
+.home-header h1 {
+    font-size: 48px
+}
+
+.home-header p {
+    font-size: 24px;
+    margin-bottom: 60px
+}
+
+.blog-header,
+.home-nav {
+    padding-top: 15px;
+    padding-bottom: 15px;
+    position: absolute;
+}
+
+.home-nav {
+    max-width: 930px;
+    width: 100%;
+    margin: 0 auto 60px;
+    overflow: hidden
+}
+
+.home-nav nav {
+    flex-grow: 1;
+    text-align: left
+}
+
+.blog-header a.title {
+    font-family: "Raleway", Arial, sans-serif;
+    font-weight: 900;
+    letter-spacing: -2px;
+    text-transform: uppercase;
+    line-height: 1;
+    color: #454545;
+    font-size: 24px;
+    flex-grow: 1
+}
+
+.blog-header a.title:hover {
+    text-decoration: none;
+    box-shadow: none;
+    border: none
+}
+
 .header>div {
     display: flex;
     flex-direction: column
+}
+
+.header nav {
+    display: flex
+}
+
+.header nav a {
+    font-family: "Raleway", Arial, sans-serif;
+    font-weight: 900;
+    text-transform: uppercase;
+    line-height: 24px;
+    margin-left: 15px;
+    display: inline-block
+}
+
+.header nav a:hover {
+    border: none
+}
+
+.header nav a:first-child {
+    margin-left: 0
 }
 
 
@@ -200,19 +374,75 @@ body {
     overflow: hidden
 }
 
+
+
+
 .post-title,
 .page-title {
     text-align: center;
     font-size: 36px;
+    line-height: 1;
     color: #ffffff;
     padding-left: 10px;
 }
+
+.post-header-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin-top: -30px;
+    margin-bottom: 30px
+}
+
+.post-meta {
+    font-style: italic;
+    font-size: 15.75px;
+    font-family: "Merriweather", Georgia, serif;
+    font-weight: 400;
+    text-transform: none
+}
+
+.post-image {
+    display: block;
+    text-align: center
+}
+
+.post-image img {
+    max-width: 100%;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto
+}
+
+.post-image-outside {
+    margin-left: 0;
+    margin-right: 0
+}
+/*
+.offline-icon {
+    width: 12px;
+    height: 12px;
+    border-radius: 6px;
+    display: inline-block;
+    background: red;
+    margin-right: 5px;
+}
+
+.online-icon {
+    width: 12px;
+    height: 12px;
+    border-radius: 6px;
+    display: inline-block;
+    margin-right: 5px;
+background: green;
+}*/
 
 .status {
     position: absolute;
     top: 60px;
     right: 10px;
     text-align: center;
+    display: none;
 }
 .title {
     opacity: 0;
@@ -221,7 +451,7 @@ body {
     border-radius: 5px;
     right: 197px;
     top: 0;
-    width: 400px;
+    width: 200px;
     background: #000000ee;
     color: white;
     padding: 20px;
@@ -239,7 +469,6 @@ body {
   background: #ffffffcc;
   z-index: 1;
   width: 200px;
-display: none;
 }
 
 .infos, .date {
@@ -252,6 +481,14 @@ font-style: italic;
 .channels {
  padding: 0 10px;
  text-align: left;
+line-height: 25px;
+}
+.channels:hover {
+	cursor: pointer;
+}
+.channels:hover label {
+	color: black;
+	cursor: pointer;
 }
 .channels:hover .title {
 opacity: 1;
@@ -278,8 +515,22 @@ small.game {
     line-height: 50px;
     cursor: pointer;
 }
+.toggleShit:before {    
+content: 'x';
+    font-size: 0.6rem;
+    line-height: 20px;
+    position: absolute;
+    left: -15px;
+    top: 16px;
+}
+.toggleShit.hide:before {
+   content:'<<';
+    left: -20px;
+}
 .chat {
-
+    line-height: 15px;
+    text-align: left;
+    margin: 10px;
 }
 .viewer {
     position: relative;
@@ -323,14 +574,39 @@ height: 50%;
 
 .twitch-description{
     position: absolute;
-    left: 30px;
+	left: 30px;
+    top: 40px;
+    width: 25%;
+    height: 400px;
+    background-color: #00000088;
+	border-radius: 8px;
+    color: #f1f1f1;
+    padding: 5px;
+    font-size: 0.8rem;
+	overflow-y: auto;
 }
-.twitch-description a{
+.twitch-description .embed-message{
+	line-height: 1rem;
+	margin: 2px 0;
+	cursor: pointer;
+}
+.twitch-description .time{
+	opacity: 1;
+	transition: color opacity 0.4s;
+    position: absolute;
 	color: transparent;
-	transition: color: 0.7s;
 }
-.twitch-description a:hover{
-	color: #ffffff;
+.twitch-description .embed-message:hover .time{
+	opacity: 0;
+	color: white;
+    background: red;
+}
+
+.twitch-description .message{
+
+}
+.twitch-description .scamer{
+	
 }
 
 .viewer4video .viewer{
@@ -345,7 +621,7 @@ height: 50%;
 	width: 100%;
 }
 .viewer6video .viewer, .viewer5video .viewer{
-	width: 33.3333333%;
+	width: 33%;
 height: 50%;
 }
 
@@ -358,7 +634,8 @@ height: 50%;
 
 
   display: inline-block;
-  margin: 4px;
+  margin: 0 4px;
+  
   width: 18px;
   height: 18px;
   border-radius: 9px;
@@ -369,6 +646,7 @@ height: 50%;
   border-color: green;
   border-width: 2px;
     top: 7px;
+    vertical-align: top;
 }
 .online-icon:before {
   content: '';
@@ -382,9 +660,13 @@ height: 50%;
   background: green;
   border-radius: 5px;
 }
+
+.channels input {
+    vertical-align: middle;
+}
 .offline-icon {
   display: inline-block;
-  margin: 4px;
+  margin: 0 4px;
   width: 18px;
   height: 18px;
   border-radius: 9px;
@@ -395,6 +677,7 @@ height: 50%;
   border-color: #eb0400;
   border-width: 2px;
     top: 7px;
+    vertical-align: top;
 }
 
 .offline-icon:before {
@@ -409,18 +692,19 @@ height: 50%;
   background: #eb0400;
   border-radius: 5px;
 }
-
+#go-button {
+	color:white;
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    z-index: 1;
+    font-size: 14px;
+    cursor: pointer;
+    margin: 0;
+}
 
 @keyframes grow {
   0% { transform: scale(1); }
   50% { transform: scale(0.75); }
   100% { transform: scale(1); }
-}
-
-.twitch-chat-embed {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 40%;
-    height: 100%;
 }

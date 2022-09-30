@@ -1,87 +1,33 @@
 let authToken = "";
 let clientID = "";
-    	
-var scamersTotalList = ['Xou____', 'Zed_B', 'Emizdar', 'patayencroute', 'amouranth', 'mistermv', 'zgolene', 'slackos_tv', 'wasprick'];
 
-$(function(){
-/*
-    $.get( "scam.txt", function( data ) {
-        var resourceContent = data;
-		console.log(resourceContent);
-		var data = resourceContent+'\n25000';
-
-		$.ajax({
-        		type: 'POST',
-       		url: "write.php",
-        		data: {scam_price: data},
-			success: function(result) {
-                		console.log('the data was successfully sent to the server');
-            	}
-        	});
-    });
-*/
-    	jQuery("h1.toggleShit").click(function(){
-	    	jQuery(".status").toggle(300,"linear");
-    	});
-});
-
-
-
-
-function refresh() {
-     jQuery(".channels").remove();
-	var urlParams = new URLSearchParams(window.location.search);
-	var scamGet = urlParams.getAll('scamer');
-
-	if(scamGet.length == 0) {
-		scamGet[0] = "Zed_B";
-	} 
-
-	var urlscammers = "";
-
-	scamersTotalList.forEach(function(scam) {
-	   urlscammers = urlscammers + "user_login=" + scam + "&";
-	});
-
-	jQuery.ajax(
-	{
-	   type: 'GET',
-	   url: 'https://api.twitch.tv/helix/streams?' + urlscammers,
-	   headers: {
-		 'Client-ID': clientID,
-		 'Authorization': 'Bearer ' + authToken, 
-	   },
-	   success: function(c){
-		  //data array is empty when queried channel is offline
-		if (c.data.length > 0) {
-			console.log(c.data);
-		  }
-		updateStatuses(c.data, scamGet);
-	   }
-	});
-	setTimeout(refresh, 60000);
-}
+var scamersTotalList = [
+	'xou____', 
+	'Zed_B', 
+	'Emizdar', 
+	'patayencroute', 
+	'amouranth', 
+	'mistermv', 
+	'zgolene', 
+	'slackos_tv'
+	];
 
 
 function loadScam() {
-	refresh();	
+var urlParams = new URLSearchParams(window.location.search);
+var scamGet = urlParams.getAll('scamer');
+var showChat = urlParams.get('active_chat');
 
-	var urlParams = new URLSearchParams(window.location.search);
-	var scamGet = urlParams.getAll('scamer');
-	var showChat = urlParams.get('active_chat');
 
-	if(!showChat) {
-		showChat = "true";
-	} 
-
-	StartThisShit(scamGet, showChat);
+var result = {
+	'showChat': showChat,
+	'scamers': scamGet 
+}
+ console.log("bId erreur");
+  return result;
 }
 
 function StartThisShit(scamers, showChat) {
-
-	if(scamers.length == 0) {
-		scamers[0] = "Zed_B";
-	} 
 	if(scamers.length == 1) {
 		jQuery(".page-title").append(scamers[0] + " scam");
 		jQuery(document).prop('title', scamers[0] + " scam");
@@ -95,42 +41,50 @@ function StartThisShit(scamers, showChat) {
 
 	if(scamers.length == 1) {
 		jQuery("body").addClass(scamers[0]);
-	}
+	}	
+	jQuery("input[name=active_chat][value='"+showChat+"']").prop("checked",true);
 	
-	//getBroadcast("141981764");
-	for(var i=0; i<scamers.length; i++){
-		jQuery(".twitch-video").append("<div class='viewer "+scamers[i]+"'><div class='twitch-description' id='twitch-description"+(i+1)+"'></div><div class='twitch-embed'  id='twitch-embed"+(i+1)+"'></div></div>");
-		updateScammerOnlineBullshit(scamers[i], i+1);
+	jQuery("body").addClass("viewer"+scamers.length+"video");
+		var layout="video-with-chat";
+		if(showChat !== "true") {
+			layout="video";
+		}
+
+		for(var i=0; i<scamers.length; i++){
+		jQuery(".twitch-video").append("<div class='viewer'><div class='twitch-description' id='"+scamers[i].toLowerCase()+"'></div><div class='twitch-embed'  id='twitch-embed"+(i+1)+"'></div></div>");
 
 		  new Twitch.Embed("twitch-embed"+(i+1), {
 			width: "100%",
 			height: "100%",
-			layout: "video",
+			layout: layout,
 			channel: scamers[i]
-		  });
-		  if(showChat == "true") {
-		  	jQuery(".viewer."+scamers[i]).append("<iframe class='twitch-chat-embed' id='twitch-chat-embed"+(i+1)+"' src='https://www.twitch.tv/embed/"+scamers[i]+"/chat?darkpopout&parent=xouindaplace.fr'></iframe>");
-		  }
-	}
+		  });	 
+		}
+
+		return true;
 }
 
-function updateStatuses(response, scamersList) {
+function updateStatuses(response, scamersToShowList) {	
 	jQuery(scamersTotalList).each(function(scam, value){
-        var scamer = value;
+            var scamer = value;
 		let flag = false;
 		
 		jQuery(response).each(function(value, user){
-		    if(user.user_login == scamer || user.user_name == scamer){
-                		updateScammerStatus(true, user); 
-			    flag = true;
+		      if(user.user_login == scamer || user.user_name == scamer){
+				getBroadcast(user.user_id);
+                        updateScammerStatus(true, user); 
+			      flag = true;
 			}	
 		});
 		if(flag == false) {
 			updateScammerStatus(false, scamer);
 		}
-		jQuery(scamersList).each(function(){
-			jQuery('.channel-form [value='+this+']').attr("checked", "checked");
+		
+		jQuery(scamersToShowList).each(function(){
+			console.log('.channel-form '+this);
+			jQuery('.channel-form '+this).attr("checked", "checked");
 		});	
+		
 	});
 }
 
@@ -138,32 +92,36 @@ function updateScammerStatus(online, scamer) {
 	if(online === true){
 		var duration = timeDiffCalc(new Date(scamer.started_at), new Date());
 		var thumbnail_resized = scamer.thumbnail_url.replace(/{width}|{height}/gi, 60);
-		var game = scamer.game_name;		
-		jQuery(".channel-form .online-stream").append("<div class='channels'><input type='checkbox' id='"+scamer.user_name+"' name='scamer' value='"+scamer.user_name+"'/><div class='title'><img src='"+ thumbnail_resized+"'/>"+ scamer.title +"<div class='infos'>"+scamer.viewer_count+" Victimes</div><div class='date'>"+duration+"</div></div><i class='online-icon'></i><label for='"+scamer.user_name+"' >" + scamer.user_name + "</label><small class='game'><i>"+game+"</i></small></div>");
+		var game = scamer.game_name;
+		console.log(scamer);
+		jQuery(".channel-form").prepend("<div class='channels'><input type='checkbox' id='"+scamer.user_name+"' name='scamer' value='"+scamer.user_name+"'/><div class='title'><img src='"+ thumbnail_resized+"'/>"+ scamer.title +"<div class='infos'>"+scamer.viewer_count+" Victimes</div><div class='date'>"+duration+"</div></div><i class='online-icon'></i><label for='"+scamer.user_name+"' >" + scamer.user_name + "</label><small class='game'><i>"+game+"</i></small></div>");
 	}else{
-		jQuery(".channel-form .offline-stream").append("<div class='channels'><input type='checkbox' id='"+scamer+"' name='scamer' value='"+scamer+"'/><i class='offline-icon'></i><label for='"+scamer+"'>" + scamer + "</label></div>");
+		jQuery(".channel-form").prepend("<div class='channels'><input type='checkbox' id='"+scamer+"' name='scamer' value='"+scamer+"'/><i class='offline-icon'></i><label for='"+scamer+"'>" + scamer + "</label></div>");
 	}
-}
-
-function updateScammerOnlineBullshit(scamer,index) {
-	jQuery("#twitch-description"+index).append('<a target="_blank" href="https://twitch.tv/'+scamer+'">'+scamer+'</a>');
 }
 
 function timeDiffCalc(dateFuture, dateNow) {
     let diffInMilliSeconds = Math.abs(dateFuture - dateNow) / 1000;
+
+    // calculate days
     const days = Math.floor(diffInMilliSeconds / 86400);
     diffInMilliSeconds -= days * 86400;
+
+    // calculate hours
     const hours = Math.floor(diffInMilliSeconds / 3600) % 24;
     diffInMilliSeconds -= hours * 3600;
+
+    // calculate minutes
     const minutes = Math.floor(diffInMilliSeconds / 60) % 60;
     diffInMilliSeconds -= minutes * 60;
+
     let difference = '';
-	
     if (days > 0) {
       difference += (days === 1) ? `${days}j` : `${days}j`;
     }
-	
+
     difference += (hours === 0 || hours === 1) ? `${hours}h` : `${hours}h`;
+
     difference += (minutes === 0 || hours === 1) ? `${minutes}m` : `${minutes}m`; 
 
     return difference;
@@ -184,16 +142,45 @@ jQuery.ajax(
    },
    success: function(c){
       if (c.data.length > 0) {
-		getBroadcasterRewards(c.data[0]);
+		//getBroadcasterRewards(c.data[0]);
+		//getBroadcasterCheermotes(c.data[0]);
       } else {
 		console.log("bId erreur");
       }
    }
+
 });
+
 }
 
+
+function getBroadcasterCheermotes(scamerBroadcast) {
+jQuery.ajax(
+{
+   type: 'GET',
+   url: 'https://api.twitch.tv/helix/bits/cheermotes?broadcaster_id=' + scamerBroadcast["id"],
+   headers: {
+     'Client-ID': clientID,
+     'Authorization': 'Bearer ' + authToken
+   },
+   success: function(c){
+      if (c.data.length > 0) {
+		console.log(c.data);
+      } else {
+
+      }
+   },
+   error: function(c){
+
+   }
+
+});
+
+}
+
+
+
 function getBroadcasterRewards(scamerBroadcast) {
-console.log(scamerBroadcast);
 jQuery.ajax(
 {
    type: 'GET',
@@ -215,5 +202,127 @@ jQuery.ajax(
         console.log("rewards NOK (rights)");
         console.log(c.responseJSON.message);
    }
+
 });
+
 }
+
+
+/* Get into full screen */
+function GoInFullscreen(element) {
+	if(element.requestFullscreen)
+		element.requestFullscreen();
+	else if(element.mozRequestFullScreen)
+		element.mozRequestFullScreen();
+	else if(element.webkitRequestFullscreen)
+		element.webkitRequestFullscreen();
+	else if(element.msRequestFullscreen)
+		element.msRequestFullscreen();
+}
+/* Get out of full screen */
+function GoOutFullscreen() {
+	if(document.exitFullscreen)
+		document.exitFullscreen();
+	else if(document.mozCancelFullScreen)
+		document.mozCancelFullScreen();
+	else if(document.webkitExitFullscreen)
+		document.webkitExitFullscreen();
+	else if(document.msExitFullscreen)
+		document.msExitFullscreen();
+}
+
+/* Is currently in full screen or not */
+function IsFullScreenCurrently() {
+	var full_screen_element = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement || null;
+	// If no element is in full-screen
+	if(full_screen_element === null)
+		return false;
+	else
+		return true;
+}
+
+jQuery(document).ready(function(){
+	var scamConf = loadScam();
+
+	var urlscammers = "";
+
+	scamersTotalList.forEach(function(scam) {
+	   urlscammers = urlscammers + "user_login=" + scam + "&";
+	});	
+	
+	jQuery.ajax(
+	{
+	   type: 'GET',
+	   url: 'https://api.twitch.tv/helix/streams?' + urlscammers,
+	   headers: {
+		 'Client-ID': clientID,
+		 'Authorization': 'Bearer ' + authToken, 
+	   },
+	   success: function(c){
+		  //data array is empty when queried channel is offline
+		if (c.data.length > 0) {
+			console.log(c.data);
+		  }
+		  console.log(scamConf);
+		  updateStatuses(c.data, scamConf['scamers']);
+	   }
+	});
+	
+	if(scamConf['scamers'].length == 0) {
+		scamConf['scamers'][0] = "Zed_B";
+	} 
+
+	StartThisShit(scamConf['scamers'], scamConf['showChat']);
+	
+	jQuery("h1.toggleShit").click(function(){
+		jQuery(this).toggleClass("hide");
+		jQuery(".status").toggle(300, "linear");
+	});	
+	
+	jQuery("#go-button").on('click', function() {
+		if(IsFullScreenCurrently())
+			GoOutFullscreen();
+		else
+			GoInFullscreen(jQuery("#myScamPlayer").get(0));
+	});
+
+	jQuery(document).on('fullscreenchange webkitfullscreenchange mozfullscreenchange MSFullscreenChange', function() {
+		if(IsFullScreenCurrently()) {
+
+		}
+		else {
+
+		}
+	});
+	
+	const client = new tmi.Client({
+		channels: scamConf['scamers']
+	});
+
+	client.connect();
+	client.on('message', (channel, tags, message, self) => {
+		console.log(tags);
+	  jQuery('.twitch-description'+channel)
+		.append("<div class='embed-message'>")
+			.append("<span class='time'>"+tags["display-name"]+tags["first-msg"]+tags["flags"]+tags["subscriber"]+tags["turbo"]+"</span>")
+			.append("<span style='color:"+tags["color"]+"' class='scamer'>"+tags["display-name"]+":</span>")
+			.append("<span class='message'>"+message+"</span>")
+		.append("</div>");
+		
+		if(tags["badges"] !== null) {
+			jQuery('.twitch-description'+channel+' .embed-message .time').append("<span class='premium'>"+(tags["badges"]["premium"])+"</span>");
+			jQuery('.twitch-description'+channel+' .embed-message .time').append("<span class='subscriber'>"+(tags["badges"]["subscriber"])+"</span>");		
+		}
+	});
+	
+});
+
+
+
+
+
+
+
+
+
+
