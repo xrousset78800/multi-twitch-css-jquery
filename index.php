@@ -39,18 +39,18 @@
 						<div class="offline-stream">
 						</div>
 						<div class="chat">
-							<input type="radio" name="active_chat" value="true"/><label for="active_chat">Show Twitch chat</label>
+							<input type="radio" name="active_chat" value="playertwitch"/><label for="active_chat">Show Twitch chat</label>
 							<br />
-							<input type="radio" name="active_chat" value="false"/><label for="active_chat">Hide chat</label>
+							<input type="radio" name="active_chat" value="video"/><label for="active_chat">Hide chat</label>
 							<br />
 							
 							<input checked="checked" type="radio" name="active_chat" value="embed"/><label for="active_chat">Embed chat</label>
 							<!-- The second value will be selected initially -->
 							<select id="embed_chat_position" name="embed_chat_position">
-							  <option selected value="top_right" >Haut droite</option>
-							  <option value="top_left">Haut gauche</option>
-							  <option value="bottom_left">Bas gauche</option>
-							  <option value="bottom_right">Bas droite</option>
+							  <option selected value="top-right" >Haut droite</option>
+							  <option value="top-left">Haut gauche</option>
+							  <option value="bottom-left">Bas gauche</option>
+							  <option value="bottom-right">Bas droite</option>
 							</select>							
 							<br />
 							<br />

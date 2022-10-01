@@ -547,21 +547,22 @@ height: 50%;
     font-size: 0.8rem;
 }
 
-.twitch-description.top_left {
+.twitch-description.top-left {
 	left: 30px;
     top: 40px;
 }
-.twitch-description.top_right {
+.twitch-description.top-right {
 	right: 30px;
     top: 40px;
 }
-.twitch-description.bottom_left {
+.twitch-description.bottom-left {
 	left: 30px;
-    bottom: 10px;
+    bottom: 7%;
+
 }
-.twitch-description.bottom_right {
+.twitch-description.bottom-right {
 	right: -22px;
-    bottom: 10px;
+    bottom: 7%;
 }
 
 .twitch-description > div{
@@ -590,7 +591,17 @@ height: 50%;
 	left: 100%;
 	width: 200px;
 }
-
+.twitch-description .time p{
+   margin-bottom: 10px;
+}
+.twitch-description.top-right .time {
+	left: initial;
+	right: 100%;
+}
+.twitch-description.bottom-right .time {
+	left: initial;
+	right: 100%;
+}
 .twitch-description .time span{
 	display: block;
 	height: 17px;
