@@ -10,7 +10,8 @@ var scamersTotalList = [
 	'mistermv', 
 	'aminematue', 
 	'etoiles', 
-	'mlle_sunny'
+	'mlle_sunny', 
+	'jeanmassiet'
 	];
 
 
@@ -20,12 +21,18 @@ var urlParams = new URLSearchParams(window.location.search);
 var scamGet = urlParams.getAll('scamer');
 var showChat = urlParams.get('active_chat');
 var chat_position = urlParams.get('embed_chat_position');
+/*
+var full_scam_now = urlParams.get('full_scam_after_reload');
 
+	Pas possible de full screen sans action utilisateur
+
+	*/
 if(scamGet.length == 0) {
 	scamGet[0] = "zed_b";
 } else {
 	jQuery(scamGet).each(function(i, val){
 		scamGet[i] = val
+		scamersTotalList.indexOf(scamGet[i]) === -1 ? scamersTotalList.push(scamGet[i]) : console.log("0");
 	});
 }
 
@@ -43,7 +50,8 @@ if(!chat_position && showChat == "embed") {
 
 var result = {
 	'showChat': {'player': player, 'position': chat_position},
-	'scamers': scamGet
+	'scamers': scamGet,
+	'full_scam': false
 }
 
   return result;
@@ -67,7 +75,7 @@ function StartThisShit(config) {
 		}
 
 		for(var i=0; i< config.scamers.length; i++){
-		jQuery(".twitch-video").append("<div class='viewer'><div class='twitch-description' id='"+config.scamers[i]+"'><div></div></div><div class='twitch-embed'  id='twitch-embed"+(i+1)+"'></div></div>");
+		jQuery(".twitch-video").append("<div class='viewer'><div class='twitch-description' id='"+config.scamers[i]+"'><nav class='scroll'><div></div></nav></div><div class='twitch-embed'  id='twitch-embed"+(i+1)+"'></div></div>");
 		
 		  new Twitch.Embed("twitch-embed"+(i+1), {
 			width: "100%",
@@ -80,7 +88,7 @@ function StartThisShit(config) {
 		jQuery(".viewer > div").each(function(viewer){
 			jQuery(viewer).addClass(viewer);
 		});
-	
+		
 	return true;
 }
 
@@ -128,7 +136,7 @@ function updateScammerStatus(online, scamer) {
 				"<div class='infos'>"+scamer.viewer_count+" Victimes</div>"+
 				"<div class='date'>"+duration+"</div>"+
 			"</div>"+
-			"<i class='online-icon'></i><label for='" + scamer.user_name + "' >" + scamer.user_name + "</label>"+
+			"<i class='online-icon'></i><label for='" + scamer.user_login + "' >" + scamer.user_name + "</label>"+
 			"<small class='game'><i>"+game+"</i></small>"+
 		"</div>"
 		);
@@ -246,7 +254,7 @@ jQuery(document).ready(function(){
 	});
 	
 	StartThisShit(scamConf);
-		
+	
 	jQuery("#embed_chat_position").on('selected', function(){
 		console.log(this.value);
 		if(jQuery(this).value == "embed") {
@@ -268,6 +276,18 @@ jQuery(document).ready(function(){
 			GoInFullscreen(jQuery("#myScamPlayer").get(0));
 	});
 
+
+/*
+	Pas possible de full screen sans action utilisateur
+	if(scamConf.full_scam) {
+		if(IsFullScreenCurrently())
+			GoOutFullscreen();
+		else
+			GoInFullscreen(jQuery("#myScamPlayer").get(0));
+	}
+	*/
+	
+	
 	jQuery(document).on('fullscreenchange webkitfullscreenchange mozfullscreenchange MSFullscreenChange', function() {
 		if(IsFullScreenCurrently()) {
 
@@ -281,17 +301,10 @@ jQuery(document).ready(function(){
 			channels: scamConf['scamers']
 		});
 
-
-
-
-
-
-
 		client.connect();
 		client.on('message', (channel, tags, message, self) => {						
 			
-			console.log(tags);
-		  jQuery('.twitch-description'+channel.toLowerCase()+' > div')
+		  jQuery('.twitch-description'+channel.toLowerCase()+' > .scroll > div')
 			  .append(""+
 				  "<div class='embed-message "+tags.id+"'>" +
 						"<div class='time'>"+
@@ -315,6 +328,15 @@ jQuery(document).ready(function(){
 						"<span class='subscriber'>"+(tags.badges.subscriber)+"</span>"
 					);		
 				}
+				
+				jQuery(channel.toLowerCase()+' > nav.scroll').scrollTop(jQuery(channel.toLowerCase()+' > nav.scroll > div').height());
+				
+			/*	
+				jQuery(channel.toLowerCase()).animate( {
+					scrollTop: jQuery(channel.toLowerCase()+' div').height()
+				}, 
+				300
+			);*/
 		});
 		
 		client.on("connected", function (address, port) {
@@ -326,14 +348,26 @@ jQuery(document).ready(function(){
 	
 });
 
-
-
 /*
 
-Todo : 
-get chater info 
-autoscroll chat
+stabiliser "chat_position" input
+Fixer chat à gauche
+
+
+envoyer message dans l'embed chat
+modifier qualité pour tous (formulaire)
+choisir ses chats embed
+
+
+get chater info ++
+smooth autoscroll 
+resize chat
+
+togglechat embed
 remove chat period
+
+Scammer list en SESSION
+check pour baisser les perf selon le nombre de viewer
 
 
 */

@@ -103,32 +103,6 @@ blockquote>:last-child {
     margin-bottom: 0
 }
 
-blockquote em {
-    font-style: normal
-}
-
-pre,
-code {
-    font-size: 18px
-}
-
-code {
-    padding: 1px 5px;
-    background: #ddd;
-    border-radius: 3px
-}
-
-pre {
-    padding: 8px 12px;
-    overflow-x: auto
-}
-
-pre>code {
-    border: 0;
-    padding-right: 0;
-    padding-left: 0;
-    background: transparent
-}
 
 .row:after {
     content: '';
@@ -339,17 +313,22 @@ animation: 60s ease-in 1s infinite both running slidein;
     overflow: hidden
 }
 
-
-
-
-.post-title,
 .page-title {
-    text-align: center;
+    text-align: left;
     font-size: 36px;
-    line-height: 1;
     color: #ffffff;
     padding-left: 10px;
+	display: inline-block;
 }
+
+.omg {
+    font-size: 18px;
+	text-align: left;
+    color: #ffffff;
+    padding-left: 10px;
+	display: inline-block;
+}
+
 
 .post-header-image {
     display: block;
@@ -383,24 +362,6 @@ animation: 60s ease-in 1s infinite both running slidein;
     margin-left: 0;
     margin-right: 0
 }
-/*
-.offline-icon {
-    width: 12px;
-    height: 12px;
-    border-radius: 6px;
-    display: inline-block;
-    background: red;
-    margin-right: 5px;
-}
-
-.online-icon {
-    width: 12px;
-    height: 12px;
-    border-radius: 6px;
-    display: inline-block;
-    margin-right: 5px;
-background: green;
-}*/
 
 .title {
     opacity: 0;
@@ -505,13 +466,6 @@ small.game {
 	overflow: hidden;
     //transition: width height 1s linear;
 }
-/*
-.vsc-initialized .viewer:hover{
-  position:absolute;
-  width: 100%;
-  height: 100%;
-}
-*/
 
 .viewer2video .viewer{
 	width: 50%;
@@ -545,6 +499,8 @@ height: 50%;
     color: #f1f1f1;
     padding: 5px;
     font-size: 0.8rem;
+	overflow: hidden;
+    overflow-y: auto;
 }
 
 .twitch-description.top-left {
@@ -555,20 +511,22 @@ height: 50%;
 	right: 30px;
     top: 40px;
 }
+
+/* RIP ? */
 .twitch-description.bottom-left {
 	left: 30px;
     bottom: 7%;
 
 }
 .twitch-description.bottom-right {
-	right: -22px;
+	right: 30px;
     bottom: 7%;
 }
 
-.twitch-description > div{
-	overflow-y: auto;
+.twitch-description > nav > div{
+ /*   width: 100%;
     height: 100%;
-    overflow-x: visible;
+    display: block;*/
 }
 
 .twitch-description .embed-message{
@@ -649,6 +607,18 @@ height: 50%;
 	height: 50%;
 }
 
+.viewer9video .viewer, .viewer8video .viewer, .viewer7video .viewer{
+	height: 33.3333333%;
+}
+.viewer9video .viewer, .viewer8video .viewer, .viewer7video .viewer{
+	width: 33.3333333%;
+}
+.viewer8video .viewer:nth-of-type(7), .viewer8video .viewer:nth-of-type(8){
+	width: 50%;
+}
+.viewer7video .viewer:nth-of-type(4), .viewer7video .viewer:nth-of-type(5), .viewer7video .viewer:nth-of-type(6), .viewer7video .viewer:nth-of-type(7){
+	width: 50%;
+}
 
 .online-icon {
   animation-duration: 1s;
@@ -731,4 +701,33 @@ height: 50%;
   0% { transform: scale(1); }
   50% { transform: scale(0.75); }
   100% { transform: scale(1); }
+}
+
+/* Scroll bar OP */
+.scroll {
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+  display: inline-block;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.scroll::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+.scroll::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background: #eee;
+  box-shadow: 0 0 1px 1px #bbb, inset 0 0 7px rgba(0, 0, 0, 0.3);
+}
+.scroll::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background: linear-gradient(left, #96A6BF, #63738C);
+  box-shadow: inset 0 0 1px 1px #5C6670;
+}
+.scroll::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(left, #8391A6, #536175);
 }

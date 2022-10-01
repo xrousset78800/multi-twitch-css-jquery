@@ -27,6 +27,7 @@
 		<header class="blog-header home row">
 			<div class="cell cell-12">
 				<h1 class="page-title"></h1>
+				<p class="omg">Gère jusqu'a 9 players (rip la mémoire par contre)</p>
 			</div>
 		</header>
         <main id="myScamPlayer" class="page-content">
@@ -51,14 +52,8 @@
 							  <option value="top-left">Haut gauche</option>
 							  <option value="bottom-left">Bas gauche</option>
 							  <option value="bottom-right">Bas droite</option>
-							</select>							
-							<br />
-							<br />
-							<br />
-							<br />
-							<input type="checkbox" disabled="disabled" name="full_scam_after_reload" value="false"/><label for="full_scam_after_reload">full scam after reload</label>
-							<input disabled="disabled" type="number" name="embed_chat_width" placeholder="embed_chat_width" /> 
-							<input disabled="disabled" type="number" name="embed_chat_height" placeholder="embed_chat_height" /> 
+							</select>			
+							<!--input type="checkbox" name="full_scam_after_reload" value="true"/><label for="full_scam_after_reload">full scam on load</label-->							
 						</div>						
 						<input type="submit" value="Load this shit" />
 					</form>
@@ -82,8 +77,7 @@
 		 gtag('config', 'G-9FP44RMCTK', {
   			'page_title' : $(document).attr('title')
 		 });
-}, 5000);
-
+}, 5000);	
 		</script>
   </body>
 </html>
