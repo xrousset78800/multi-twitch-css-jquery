@@ -28,13 +28,19 @@
 			<div class="cell cell-12">
 				<h1 class="page-title"></h1>
 				<p class="omg">Gère jusqu'a 9 players (rip la mémoire par contre)</p>
+				<div class="postmessage">
+					<select id="channel-to-feed" name="channel-to-feed">
+					
+					</select>
+					<input type="text" name="message" value="" placeholder="Envoyer un message"/>
+				</div>
 			</div>
 		</header>
         <main id="myScamPlayer" class="page-content">
 			<div class="status">
 				<div class="status-text">
 					<form action="" method="GET" class="channel-form">
-						<!--input type="text" name="scamer" placeholder="or another scamer" value=""-->
+						<input type="text" name="scamer" placeholder="or another scamer" value="">
 						<div class="online-stream">
 						</div>
 						<div class="offline-stream">
@@ -44,11 +50,24 @@
 							<br />
 							<input type="radio" name="active_chat" value="video"/><label for="active_chat">Hide chat</label>
 							<br />
-							
 							<input checked="checked" type="radio" name="active_chat" value="embed"/><label for="active_chat">Embed chat</label>
-							<!-- The second value will be selected initially -->
+							<!--div class="position">
+								<label class="top-left" for="top-left">
+							    </label>
+								<input type="radio" name="embed_chat_position" value="top-left">
+								<label class="top-right" for="top-right">
+								</label>
+								<input type="radio" name="embed_chat_position" value="top-right">
+									<br>
+								<label class="bottom-left" for="bottom-left">
+								</label>
+								<input type="radio" name="embed_chat_position" value="bottom-left">
+								<label class="bottom-right" for="bottom-right">
+								</label>
+								<input type="radio" name="embed_chat_position" value="bottom-right">
+							</div-->
 							<select id="embed_chat_position" name="embed_chat_position">
-							  <option selected value="top-right" >Haut droite</option>
+							  <option value="top-right" >Haut droite</option>
 							  <option value="top-left">Haut gauche</option>
 							  <option value="bottom-left">Bas gauche</option>
 							  <option value="bottom-right">Bas droite</option>

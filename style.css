@@ -504,31 +504,35 @@ height: 50%;
 }
 
 .twitch-description.top-left {
-	left: 30px;
+	left: 50px;
     top: 40px;
 }
+
 .twitch-description.top-right {
 	right: 30px;
     top: 40px;
 }
 
-/* RIP ? */
 .twitch-description.bottom-left {
-	left: 30px;
-    bottom: 7%;
+    left: 50px;
+    bottom: 30px;
 
 }
 .twitch-description.bottom-right {
 	right: 30px;
-    bottom: 7%;
+    bottom: 30px;
 }
 
-.twitch-description > nav > div{
- /*   width: 100%;
-    height: 100%;
-    display: block;*/
+.twitch-description:hover  > nav > div > div {
+	/*float: left;*/
 }
 
+.postmessage {
+	display: inline-block;
+}
+#embed_chat_position{
+	margin: 5px 0;
+}
 .twitch-description .embed-message{
 	background-color: #00000088;	
 	line-height: 1rem;
@@ -541,25 +545,34 @@ height: 50%;
 .twitch-description .time{
 	opacity: 0;
 	transition: background color opacity 0.4s;
-    position: absolute;
+    position: fixed;
 	color: transparent;
     background: transparent;
 	padding: 10px;
 	border-radius: 7px;
-	left: 100%;
 	width: 200px;
 }
 .twitch-description .time p{
    margin-bottom: 10px;
 }
-.twitch-description.top-right .time {
-	left: initial;
-	right: 100%;
+
+.twitch-description.top-left .time {
+	left: 29%;
+	top: 12%;
+}
+.twitch-description.bottom-left .time {
+	left: 29%;
+	bottom: 30%;
 }
 .twitch-description.bottom-right .time {
-	left: initial;
-	right: 100%;
+	right: 29%;
+	bottom: 30%;
 }
+.twitch-description.top-right .time {
+	right: 29%;
+	top: 12%;
+}
+
 .twitch-description .time span{
 	display: block;
 	height: 17px;
@@ -730,4 +743,170 @@ height: 50%;
 }
 .scroll::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(left, #8391A6, #536175);
+}
+
+
+/* Arrows */
+ .bottom-left {
+ box-sizing: border-box;
+ position: relative;
+ display: inline-block;
+ transform: scale(var(--ggs,1));
+ width: 16px;
+ height: 16px;
+ box-shadow: -6px 6px 0 -4px
+}
+
+.bottom-left::before {
+ content: "";
+ display: block;
+ box-sizing: border-box;
+ position: absolute;
+ width: 8px;
+ height: 8px;
+ border: 2px solid;
+ border-radius: 1px;
+ right: 0
+}
+
+.bottom-left::after {
+ content: "";
+ display: block;
+ box-sizing: border-box;
+ position: absolute;
+ background: currentColor;
+ width: 2px;
+ height: 10px;
+ transform: rotate(45deg);
+ top: 8px;
+ left: 2px;
+ border-radius: 4px
+} 
+ .bottom-right {
+ box-sizing: border-box;
+ position: relative;
+ display: inline-block;
+ transform: scale(var(--ggs,1));
+ width: 16px;
+ height: 16px;
+ box-shadow: 6px 6px 0 -4px
+}
+
+.bottom-right::before {
+ content: "";
+ display: block;
+ box-sizing: border-box;
+ position: absolute;
+ width: 8px;
+ height: 8px;
+ border: 2px solid;
+ border-radius: 1px;
+ left: 0
+}
+
+.bottom-right::after {
+ content: "";
+ display: block;
+ box-sizing: border-box;
+ position: absolute;
+ background: currentColor;
+ width: 2px;
+ height: 10px;
+ transform: rotate(-45deg);
+ top: 8px;
+ right: 2px;
+ border-radius: 4px
+} 
+
+ .top-left {
+ box-sizing: border-box;
+ position: relative;
+ display: inline-block;
+ transform: scale(var(--ggs,1));
+ width: 16px;
+ height: 16px;
+ box-shadow: -6px -6px 0 -4px
+}
+
+.top-left::before {
+ content: "";
+ display: block;
+ box-sizing: border-box;
+ position: absolute;
+ width: 8px;
+ height: 8px;
+ border: 2px solid;
+ border-radius: 1px;
+ right: 0;
+ bottom: 0
+}
+
+.top-left::after {
+ content: "";
+ display: block;
+ box-sizing: border-box;
+ position: absolute;
+ background: currentColor;
+ width: 2px;
+ height: 10px;
+ transform: rotate(-45deg);
+ bottom: 8px;
+ left: 2px;
+ border-radius: 4px
+} 
+
+ .top-right {
+ box-sizing: border-box;
+ position: relative;
+ display: inline-block;
+ transform: scale(var(--ggs,1));
+ width: 16px;
+ height: 16px;
+ box-shadow: 6px -6px 0 -4px
+}
+
+.top-right::before {
+ content: "";
+ display: block;
+ box-sizing: border-box;
+ position: absolute;
+ width: 8px;
+ height: 8px;
+ border: 2px solid;
+ border-radius: 1px;
+ left: 0;
+ bottom: 0
+}
+
+.top-right::after {
+ content: "";
+ display: block;
+ box-sizing: border-box;
+ position: absolute;
+ background: currentColor;
+ width: 2px;
+ height: 10px;
+ transform: rotate(45deg);
+ bottom: 8px;
+ right: 2px;
+ border-radius: 4px
+} 
+
+.chat .position input {
+	margin: 0;
+}
+.chat .position input:checked + label {
+	color: red;
+}
+.chat .position label{
+    margin: 10px;
+    cursor: pointer;
+}
+.chat .position label:hover{
+    color: red;
+}
+
+.chat .position {
+	    text-align: center;
+    margin: 20px 0;
 }

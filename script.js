@@ -27,13 +27,21 @@ var full_scam_now = urlParams.get('full_scam_after_reload');
 	Pas possible de full screen sans action utilisateur
 
 	*/
+	
+var checker = [];
+	
 if(scamGet.length == 0) {
 	scamGet[0] = "zed_b";
 } else {
 	jQuery(scamGet).each(function(i, val){
-		scamGet[i] = val
-		scamersTotalList.indexOf(scamGet[i]) === -1 ? scamersTotalList.push(scamGet[i]) : console.log("0");
+		if(val.length !== 0){
+			scamersTotalList.indexOf(scamGet[i]) === -1 ? scamersTotalList.push(scamGet[i]) : console.log("scamer exist") ;
+			checker.push(val);
+		}
 	});
+}
+for(var i=0; i<checker.length; i++) {
+	jQuery("#channel-to-feed").append("<option value='"+checker[i]+"'>"+checker[i]+"</option>");
 }
 
 if(!showChat) {
@@ -48,9 +56,13 @@ if(!chat_position && showChat == "embed") {
 	chat_position = "top-right";
 }
 
+console.log(chat_position);
+jQuery("#embed_chat_position").prop("selected", false);
+jQuery("#embed_chat_position [value='"+chat_position+"']").prop("selected", true);
+
 var result = {
 	'showChat': {'player': player, 'position': chat_position},
-	'scamers': scamGet,
+	'scamers': checker,
 	'full_scam': false
 }
 
@@ -75,7 +87,7 @@ function StartThisShit(config) {
 		}
 
 		for(var i=0; i< config.scamers.length; i++){
-		jQuery(".twitch-video").append("<div class='viewer'><div class='twitch-description' id='"+config.scamers[i]+"'><nav class='scroll'><div></div></nav></div><div class='twitch-embed'  id='twitch-embed"+(i+1)+"'></div></div>");
+		jQuery(".twitch-video").append("<div class='viewer'><div class='twitch-description' id='"+config.scamers[i]+"'><nav class='scroll'><div class='chatscroll'></div></nav></div><div class='twitch-embed'  id='twitch-embed"+(i+1)+"'></div></div>");
 		
 		  new Twitch.Embed("twitch-embed"+(i+1), {
 			width: "100%",
@@ -255,15 +267,6 @@ jQuery(document).ready(function(){
 	
 	StartThisShit(scamConf);
 	
-	jQuery("#embed_chat_position").on('selected', function(){
-		console.log(this.value);
-		if(jQuery(this).value == "embed") {
-			jQuery('.channel-form select#embed_chat_position').removeAttr('disabled');
-		} else {
-			jQuery('.channel-form select#embed_chat_position').prop('disabled', 'disabled');
-		}
-	});		
-	
 	jQuery("h1.toggleShit").click(function(){
 		jQuery(this).toggleClass("hide");
 		jQuery(".status").toggle(300, "linear");
@@ -328,9 +331,12 @@ jQuery(document).ready(function(){
 						"<span class='subscriber'>"+(tags.badges.subscriber)+"</span>"
 					);		
 				}
+
+				jQuery(channel.toLowerCase()+' > nav.scroll').scrollTop(jQuery(channel.toLowerCase()+' > nav.scroll > div.chatscroll').height());
 				
-				jQuery(channel.toLowerCase()+' > nav.scroll').scrollTop(jQuery(channel.toLowerCase()+' > nav.scroll > div').height());
-				
+				if(jQuery(channel.toLowerCase()+' > nav.scroll > .chatscroll > div').length == 150) {
+					jQuery(channel.toLowerCase()+' > nav.scroll > .chatscroll > div').eq(0).remove();
+				}
 			/*	
 				jQuery(channel.toLowerCase()).animate( {
 					scrollTop: jQuery(channel.toLowerCase()+' div').height()
@@ -350,25 +356,17 @@ jQuery(document).ready(function(){
 
 /*
 
-stabiliser "chat_position" input
-Fixer chat à gauche
+-------envoyer message dans l'embed chat-----
 
+(modifier qualité pour tous (formulaire))
 
-envoyer message dans l'embed chat
-modifier qualité pour tous (formulaire)
 choisir ses chats embed
 
+redo scrollToBottom chat 
 
-get chater info ++
-smooth autoscroll 
-resize chat
-
-togglechat embed
-remove chat period
+finir position du player
 
 Scammer list en SESSION
-check pour baisser les perf selon le nombre de viewer
-
 
 */
 
