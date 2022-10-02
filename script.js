@@ -56,7 +56,6 @@ if(!chat_position && showChat == "embed") {
 	chat_position = "top-right";
 }
 
-console.log(chat_position);
 jQuery("#embed_chat_position").prop("selected", false);
 jQuery("#embed_chat_position [value='"+chat_position+"']").prop("selected", true);
 
@@ -237,10 +236,37 @@ function IsFullScreenCurrently() {
 	else
 		return true;
 }
+function setCookie(name, value, options = {}) {
+
+  options = {
+    path: '/',
+  };
+
+  if (options.expires instanceof Date) {
+    options.expires = options.expires.toUTCString();
+  }
+
+  let updatedCookie = encodeURIComponent(name) + "=" + encodeURIComponent(value);
+
+  for (let optionKey in options) {
+    updatedCookie += "; " + optionKey;
+    let optionValue = options[optionKey];
+    if (optionValue !== true) {
+      updatedCookie += "=" + optionValue;
+    }
+  }
+
+  document.cookie = updatedCookie;
+}
+function deleteCookie(name) {
+  setCookie(name, "", {
+    'max-age': -1
+  })
+}
 
 jQuery(document).ready(function(){
 	var scamConf = loadScam();
-
+setCookie('user', 'John', {secure: true, 'max-age': 3600});
 	var urlscammers = "";
 
 	scamersTotalList.forEach(function(scam) {
@@ -279,7 +305,7 @@ jQuery(document).ready(function(){
 			GoInFullscreen(jQuery("#myScamPlayer").get(0));
 	});
 
-
+	//setCookie('Scamers', scamConf["scamers"], {secure: true, 'max-age': 2147483647});
 /*
 	Pas possible de full screen sans action utilisateur
 	if(scamConf.full_scam) {
@@ -367,6 +393,8 @@ redo scrollToBottom chat
 finir position du player
 
 Scammer list en SESSION
+
+css 7viewer + description + position
 
 */
 

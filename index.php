@@ -51,21 +51,21 @@
 							<input type="radio" name="active_chat" value="video"/><label for="active_chat">Hide chat</label>
 							<br />
 							<input checked="checked" type="radio" name="active_chat" value="embed"/><label for="active_chat">Embed chat</label>
-							<!--div class="position">
-								<label class="top-left" for="top-left">
+							<div class="position">
+								<label class="top-left-icon" for="top-left">
 							    </label>
 								<input type="radio" name="embed_chat_position" value="top-left">
-								<label class="top-right" for="top-right">
+								<label class="top-right-icon" for="top-right">
 								</label>
 								<input type="radio" name="embed_chat_position" value="top-right">
 									<br>
-								<label class="bottom-left" for="bottom-left">
+								<label class="bottom-left-icon" for="bottom-left">
 								</label>
 								<input type="radio" name="embed_chat_position" value="bottom-left">
-								<label class="bottom-right" for="bottom-right">
+								<label class="bottom-right-icon" for="bottom-right">
 								</label>
 								<input type="radio" name="embed_chat_position" value="bottom-right">
-							</div-->
+							</div>
 							<select id="embed_chat_position" name="embed_chat_position">
 							  <option value="top-right" >Haut droite</option>
 							  <option value="top-left">Haut gauche</option>
