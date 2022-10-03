@@ -542,48 +542,6 @@ height: 50%;
 	word-break: break-word;
 }
 
-
-.twitch-description .time{
-	opacity: 0;
-	transition: background color opacity 0.4s;
-    position: fixed;
-	color: transparent;
-    background: transparent;
-	padding: 10px;
-	border-radius: 7px;
-	width: 200px;
-}
-.twitch-description .time p{
-   margin-bottom: 10px;
-}
-
-.twitch-description.top-left .time {
-	left: 29%;
-	top: 12%;
-}
-.twitch-description.bottom-left .time {
-	left: 29%;
-	bottom: 30%;
-}
-.twitch-description.bottom-right .time {
-	right: 29%;
-	bottom: 30%;
-}
-.twitch-description.top-right .time {
-	right: 29%;
-	top: 12%;
-}
-
-.twitch-description .time span{
-	display: block;
-	height: 17px;
-	line-height: 17px;
-}
-.twitch-description .embed-message:hover .time{
-	opacity: 1;
-	color: white;
-    background: #000000bb;
-}
 .twitch-description .embed-message:hover{
     background: #ffffffcc;
 	color: #111111;
@@ -963,4 +921,17 @@ height: 50%;
 
 .online-stream.highlight:before , .offline-stream.highlight:before  {
 
+}
+
+[data-first-message=false], [data-flags=null] , [data-modo=false] , [data-turbo=false] , [data-subscriber=false] {
+	display: none;
+}
+[data-modo=true], [data-subscriber=true] {
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	font-size: 0;
+	background:url("favicon.png");
+	background-size: contain;
+	vertical-align: top;
 }

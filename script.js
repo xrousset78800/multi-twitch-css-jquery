@@ -420,24 +420,16 @@ const formScam = jQuery('form[name="spam-area"]');
 	
 	
 
-		client.on('message', (channel, tags, message, self) => {						
-			
-			
-		let infos = ""
-		
-			
-			
+		client.on('message', (channel, tags, message, self) => {									
 		  jQuery('.twitch-description'+channel.toLowerCase()+' > .scroll > div')
 			  .append(""+
 				  "<div class='embed-message "+tags.id+"'>" +
-						"<div class='time'>"+
-							"<p>display-name: "+tags['display-name']+"</p>"+
-							"<p>first-msg: "+tags['first-msg']+"</p>"+
-							"<p>flags: "+tags['flags']+"</p>"+
-							"<p>modo: "+tags['mod']+"</p>"+
-							"<p>subscriber: "+tags['subscriber']+"</p>"+
-							"<p>turbo: "+tags['turbo']+"</p>"+
-						"</div>"+
+				  
+				  "<span data-first-message='"+tags['first-msg']+"'>OMG ! Premier message !<br></span>"+
+				  "<span title='OMG ! Flags !' data-flags='"+tags['flags']+"'>"+tags['flags']+"</span>"+
+				  "<span title='OMG ! Modo !' data-modo='"+tags['mod']+"'> MODO: </span>"+
+				  "<span title='OMG ! Turbo !' data-turbo='"+tags['turbo']+"'>TURBO</span>"+
+				  "<span title='OMG ! Sub !' data-subscriber='"+tags['subscriber']+"'> SUB </span>"+
 					  "<span style='color:"+tags['color']+"' class='scamer'>"+tags['display-name']+"</span>"+
 					  "<span class='message'>"+message+"</span>"+
 				  "</div>"
@@ -484,9 +476,9 @@ choisir ses chats embed
 
 redo scrollToBottom chat 
 
-remove from cookie
-
 css 7viewer + description + position
+
+icones sub + modo + first + flags
 
 */
 
