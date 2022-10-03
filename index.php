@@ -50,8 +50,6 @@
 						<div class="offline-stream">
 						</div>
 						<div class="chat">
-							<input type="radio" name="active_chat" value="playertwitch"/><label for="active_chat">Show Twitch chat</label>
-							<br />
 							<input type="radio" name="active_chat" value="video"/><label for="active_chat">Hide chat</label>
 							<br />
 							<input checked="checked" type="radio" name="active_chat" value="embed"/><label for="active_chat">Embed chat</label>
@@ -74,6 +72,7 @@
 					</form>
 				</div>
 			</div>
+			<h1 title="In full scam please" id="go-button">Full Scam</h1>
 			<h1 class="toggleShit hide" name="toggle">Menu</h1>
 			<div class="twitch-video">
 				<!-- Load the Twitch embed JavaScript file -->
@@ -90,7 +89,6 @@
 			</div>
       </main>
     </div>
-	<h1 title="In full scam please" id="go-button">Full Scam</h1>
 
 	<script async src="https://www.googletagmanager.com/gtag/js?id=G-9FP44RMCTK"></script>
 	<script>

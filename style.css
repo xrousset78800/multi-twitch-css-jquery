@@ -435,12 +435,12 @@ small.game {
     right: 10px;
     z-index: 1;
     color: white;
-    font-size: 25px;
-    line-height: 80px;
+	font-size: 25px;
+    line-height: 30px;
     cursor: pointer;
     margin: 0;
     height: 30px;
-    top: 10px;
+    top: 35px;
 }
 .toggleShit:before {    
 	content: 'x';
@@ -611,7 +611,7 @@ height: 50%;
   cursor: pointer;
   border-color: green;
   border-width: 2px;
-    top: 7px;
+    top: 5px;
     vertical-align: top;
 }
 .online-icon:before {
@@ -642,7 +642,7 @@ height: 50%;
   cursor: pointer;
   border-color: #eb0400;
   border-width: 2px;
-    top: 7px;
+    top: 5px;
     vertical-align: top;
 }
 
@@ -661,7 +661,7 @@ height: 50%;
 #go-button {
 	color:white;
     position: absolute;
-    top: 10px;
+    top: 0;
     right: 15px;
     z-index: 1;
     font-size: 14px;
@@ -909,10 +909,19 @@ height: 50%;
 	position: absolute; 
 	top: 0;
 	right: 5px;
+	font-weight: bold;
+    font-size: 18px;
 }
 
-.channels .remove:hover {
+.channels:hover label{
+	font-weight: bold;
+} 
+
+.channels:hover .remove{
 	color: red;
+}
+.channels:hover{
+	background: #ffffffee;
 }
 
 .online-stream.highlight , .offline-stream.highlight  {

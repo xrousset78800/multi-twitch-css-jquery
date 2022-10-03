@@ -86,11 +86,6 @@ function StartThisShit(config) {
 	}
 
 	jQuery("body").addClass("viewer"+config.scamers.length+"video", );
-	
-		var layout="video";
-		if(config.showChat.player == 'playertwitch') {
-			layout="video-with-chat";
-		}
 
 		for(var i=0; i< config.scamers.length; i++){
 		jQuery(".twitch-video").append("<div class='viewer'><div class='twitch-description' id='"+config.scamers[i]+"'><nav class='scroll'><div class='chatscroll'></div></nav></div><div class='twitch-embed'  id='twitch-embed"+(i+1)+"'></div></div>");
@@ -98,7 +93,7 @@ function StartThisShit(config) {
 		  new Twitch.Embed("twitch-embed"+(i+1), {
 			width: "100%",
 			height: "100%",
-			layout: layout,
+			layout: "video",
 			channel: config.scamers[i]
 		  });	 
 		}
