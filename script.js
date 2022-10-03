@@ -32,12 +32,11 @@ if(getCookie("Scamers") === undefined) {
 
 if(newScamer) {
 	console.log("New scamer");
-	if(!scamersTotalList.includes(newScamer)) {
+	if(!scamersTotalList.includes(newScamer) || newScamer == '') {
 		scamersTotalList.push(newScamer);
-		setCookie('Scamers', "", 60);
 		setCookie('Scamers', scamersTotalList, 60);
 	} else {
-		console.log("already exist -- skip")
+		console.log("already exist or empty -- skip");
 	}
 }
 
