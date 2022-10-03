@@ -28,7 +28,7 @@
 		<header class="blog-header home row">
 			<div class="cell cell-12">
 				<h1 class="page-title"></h1>
-				<p class="omg">Gère jusqu'a 9 players (rip la mémoire par contre)</p>
+				<p class="omg">Gère jusqu'a 9 players</p>
 				<div class="postmessage">
 					<form action="#" name="spam-area">
 					<select id="channel-to-feed" name="channel-to-feed">
@@ -78,6 +78,15 @@
 			<div class="twitch-video">
 				<!-- Load the Twitch embed JavaScript file -->
 				<script src="https://embed.twitch.tv/embed/v1.js"></script>
+				<div class="instructions">
+					<h1>Instructions</h1>
+					<ol>
+						<li class="tuto-add">Ajoutez des chaines dans le menu</li>
+						<li class="tuto-select">Selectionnez les chaines à charger</li>
+						<li class="tuto-options">Choisissez les options du player</li>
+						<li class="tuto-enjoy">Enjoy</li>
+					</ol>
+				</div>
 			</div>
       </main>
     </div>

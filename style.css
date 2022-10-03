@@ -915,3 +915,41 @@ height: 50%;
 	    text-align: center;
     margin: 20px 0;
 }
+
+.instructions {
+	display: none;
+}
+
+.viewer0video .instructions {
+    display: inline-block;
+    width: 50%;
+    margin: 0 auto;
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin-top: 50px;
+    color: white;
+	text-align: center;
+}
+.viewer0video .status {
+    display: inline-block !important;
+}
+
+.instructions li {
+	cursor: pointer;
+	text-align: left;
+}
+.instructions li:hover {
+	color: red;
+	text-decoration: underline;
+}
+.highlight {
+	border: 4px dotted red;
+}
+.online-stream.highlight , .offline-stream.highlight  {
+
+}
+
+.online-stream.highlight:before , .offline-stream.highlight:before  {
+
+}

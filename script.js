@@ -28,29 +28,18 @@ if(getCookie("Scamers") === undefined) {
 
 } else {
 	scamersTotalList = getCookie("Scamers").split(',');
-	console.log(scamersTotalList);
 }
 
 if(newScamer) {
 	console.log("New scamer");
-	console.log(newScamer);
 	if(!scamersTotalList.includes(newScamer)) {
-		console.log("Not exist");
 		scamersTotalList.push(newScamer);
 		setCookie('Scamers', "", 60);
 		setCookie('Scamers', scamersTotalList, 60);
-		console.log(scamersTotalList);
 	} else {
 		console.log("already exist -- skip")
 	}
 }
-
-
-jQuery(scamGet).each(function(i, val){
-	if(val.length !== 0){
-		checker.push(val);
-	}
-});
 
 /*
 var full_scam_now = urlParams.get('full_scam_after_reload');
@@ -80,7 +69,7 @@ jQuery("#embed_chat_position [value='"+chat_position+"']").prop("selected", true
 
 var result = {
 	'showChat': {'player': player, 'position': chat_position},
-	'scamers': checker,
+	'scamers': scamGet,
 	'full_scam': false
 }
 
@@ -299,10 +288,56 @@ jQuery(document).ready(function(){
 	
 	StartThisShit(scamConf);
 	
+	
+	
+	
 	jQuery("h1.toggleShit").click(function(){
 		jQuery(this).toggleClass("hide");
 		jQuery(".status").toggle(300, "linear");
-	});	
+	});		
+	
+	
+	
+	jQuery(".tuto-add").hover(function(){
+		jQuery('input[name=newScamer]').addClass('highlight');
+		}, 
+		function(){
+			jQuery('input[name=newScamer]').removeClass('highlight');	
+		}
+	);	
+	
+	jQuery(".tuto-select").hover(function(){
+		jQuery('.online-stream, .offline-stream').addClass('highlight');
+		}, 
+		function(){
+			jQuery('.online-stream, .offline-stream').removeClass('highlight');	
+		}
+	);	
+	jQuery(".tuto-options").hover(function(){
+		jQuery('.chat').addClass('highlight');
+		}, 
+		function(){
+			jQuery('.chat').removeClass('highlight');	
+		}
+	);	
+	jQuery(".tuto-enjoy").hover(function(){
+		jQuery('.omg').addClass('highlight');
+		}, 
+		function(){
+			jQuery('.omg').removeClass('highlight');	
+		}
+	);
+	
+	
+	jQuery('[name=scamer]').removeAttr('checked');
+	jQuery(scamConf["scamers"]).each(function(i, val){
+		if(val.length !== 0){
+			console.log(val);
+			console.log(jQuery("input[name=scamer][value=" + val + "]"));
+			jQuery("input[name=scamer]#"+val).prop('checked', 'checked');
+		}
+	});
+
 	
 	jQuery("#go-button").on('click', function() {
 		if(IsFullScreenCurrently())
