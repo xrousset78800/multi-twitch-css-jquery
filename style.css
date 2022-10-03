@@ -406,6 +406,7 @@ font-style: italic;
  padding: 0 10px;
  text-align: left;
 line-height: 25px;
+    position: relative;
 }
 .channels:hover {
 	cursor: pointer;
@@ -946,6 +947,16 @@ height: 50%;
 .highlight {
 	border: 4px dotted red;
 }
+.channels .remove {
+	position: absolute; 
+	top: 0;
+	right: 5px;
+}
+
+.channels .remove:hover {
+	color: red;
+}
+
 .online-stream.highlight , .offline-stream.highlight  {
 
 }

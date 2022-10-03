@@ -2,6 +2,8 @@ let authToken = "";
 let clientID = "";
 
 var scamersTotalList = [];
+var bufferMessageSize = 150;
+
 
 function getCookie(name) {
   const value = document.cookie;
@@ -20,8 +22,6 @@ var newScamer = urlParams.get('newScamer');
 var chat_position = urlParams.get('embed_chat_position');
 var scamGet = urlParams.getAll('scamer');
 var checker = [];
-
-console.log(getCookie("Scamers"));
 
 if(getCookie("Scamers") === undefined) {
 	console.log("cookie vide");
@@ -64,8 +64,8 @@ if(!chat_position && showChat == "embed") {
 	chat_position = "top-right";
 }
 
-jQuery("#embed_chat_position").prop("selected", false);
-jQuery("#embed_chat_position [value='"+chat_position+"']").prop("selected", true);
+jQuery("[name=embed_chat_position]").prop("checked", false);
+jQuery("[name=embed_chat_position][value='"+chat_position+"']").prop("checked", true);
 
 var result = {
 	'showChat': {'player': player, 'position': chat_position},
@@ -157,6 +157,7 @@ function updateScammerStatus(online, scamer) {
 			"</div>"+
 			"<i class='online-icon'></i><label for='" + scamer.user_login + "' >" + scamer.user_name + "</label>"+
 			"<small class='game'><i>"+game+"</i></small>"+
+			"<div data-scamer='" + scamer.user_name + "' class='remove'>x</div>"+
 		"</div>"
 		);
 	}else{
@@ -165,9 +166,26 @@ function updateScammerStatus(online, scamer) {
 				"<input type='checkbox' id='"+scamer+"' name='scamer' value='"+scamer+"'/>"+
 				"<i class='offline-icon'></i>"+
 				"<label for='" + scamer + "'>" + scamer + "</label>"+
+				"<div data-scamer='" + scamer + "' class='remove'>x</div>"+
 			"</div>"
 		);
 	}
+	
+	jQuery('.channels .remove').on('click', function() {		
+		var scamer = jQuery(this).data("scamer");
+		jQuery(this).parent(".channels").remove();
+		var scamersTotalList = getCookie("Scamers").split(',');
+		
+		const index = scamersTotalList.indexOf(scamer);
+		if (index > -1) {
+		  scamersTotalList.splice(index, 1);
+		}
+		console.log(scamersTotalList.join(","));
+		
+		setCookie('Scamers', scamersTotalList.join(","), 60);
+		return true;
+	});
+	
 		return true;
 }
 
@@ -260,6 +278,10 @@ function deleteCookie(name) {
   })
 }
 
+function removeChannel(channel) {
+	console.log(channel);
+}
+
 jQuery(document).ready(function(){
 	var scamConf = loadScam();
 	var urlscammers = "";
@@ -326,18 +348,13 @@ jQuery(document).ready(function(){
 		function(){
 			jQuery('.omg').removeClass('highlight');	
 		}
-	);
-	
-	
+	);	
 	jQuery('[name=scamer]').removeAttr('checked');
 	jQuery(scamConf["scamers"]).each(function(i, val){
 		if(val.length !== 0){
-			console.log(val);
-			console.log(jQuery("input[name=scamer][value=" + val + "]"));
 			jQuery("input[name=scamer]#"+val).prop('checked', 'checked');
 		}
-	});
-
+	});	
 	
 	jQuery("#go-button").on('click', function() {
 		if(IsFullScreenCurrently())
@@ -395,20 +412,21 @@ const formScam = jQuery('form[name="spam-area"]');
 		e.preventDefault();
         client2.action(jQuery('#channel-to-feed').val(), jQuery('#spam-content').val())
         .then(data => {
-            console.log(`Sent "${data[1]}" to`, jQuery('#channel-to-feed').val());
+            //console.log(`Sent "${data[1]}" to`, jQuery('#channel-to-feed').val());
         })
         .catch(err => {
-            console.log('[ERR]', err);
+            //console.log('[ERR]', err);
         });
 	});
 	
 	
-	
-	
-	
-	
-	
+
 		client.on('message', (channel, tags, message, self) => {						
+			
+			
+		let infos = ""
+		
+			
 			
 		  jQuery('.twitch-description'+channel.toLowerCase()+' > .scroll > div')
 			  .append(""+
@@ -437,7 +455,7 @@ const formScam = jQuery('form[name="spam-area"]');
 
 				jQuery(channel.toLowerCase()+' > nav.scroll').scrollTop(jQuery(channel.toLowerCase()+' > nav.scroll > div.chatscroll').height());
 				
-				if(jQuery(channel.toLowerCase()+' > nav.scroll > .chatscroll > div').length == 150) {
+				if(jQuery(channel.toLowerCase()+' > nav.scroll > .chatscroll > div').length == bufferMessageSize) {
 					jQuery(channel.toLowerCase()+' > nav.scroll > .chatscroll > div').eq(0).remove();
 				}
 			/*	
@@ -459,7 +477,7 @@ const formScam = jQuery('form[name="spam-area"]');
 
 /*
 
-------- envoyer message -----
+envoyer message
 
 (modifier qualité pour tous (formulaire))
 
@@ -467,7 +485,7 @@ choisir ses chats embed
 
 redo scrollToBottom chat 
 
-bug input position
+remove from cookie
 
 css 7viewer + description + position
 
