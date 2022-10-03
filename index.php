@@ -30,11 +30,11 @@
 				<h1 class="page-title"></h1>
 				<p class="omg">Gère jusqu'a 9 players</p>
 				<div class="postmessage">
-					<form action="#" name="spam-area">
-					<select id="channel-to-feed" name="channel-to-feed">
+					<form action="" name="spam-area">
+					<select disabled id="channel-to-feed" name="channel-to-feed">
 						<option value="" selected disabled hidden>--Chaine--</option>
 					</select>
-					<input disabled type="text" id="spam-content" value="" placeholder="Envoyer un message"/>
+					<input disabled type="text" id="spam-content" value="" placeholder="(TODO) Envoyer un message"/>
 					<input disabled type="submit" value="Go"/>
 					</form>
 				</div>
@@ -43,7 +43,7 @@
         <main id="myScamPlayer" class="page-content">
 			<div class="status">
 				<div class="status-text">
-					<form action="" method="GET" class="channel-form">
+					<form action="#" method="GET" class="channel-form">
 						<input type="text" name="newScamer" placeholder="Add new scamer in list" value="">
 						<div class="online-stream">
 						</div>

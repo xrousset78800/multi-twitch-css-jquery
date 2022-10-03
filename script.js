@@ -33,7 +33,7 @@ if(getCookie("Scamers") === undefined) {
 if(newScamer) {
 	console.log("New scamer");
 	if(!scamersTotalList.includes(newScamer) || newScamer == '') {
-		scamersTotalList.push(newScamer);
+		scamersTotalList.push(newScamer.toLowerCase());
 		setCookie('Scamers', scamersTotalList, 60);
 	} else {
 		console.log("already exist or empty -- skip");
@@ -156,7 +156,7 @@ function updateScammerStatus(online, scamer) {
 			"</div>"+
 			"<i class='online-icon'></i><label for='" + scamer.user_login + "' >" + scamer.user_name + "</label>"+
 			"<small class='game'><i>"+game+"</i></small>"+
-			"<div data-scamer='" + scamer.user_name + "' class='remove'>x</div>"+
+			"<div data-scamer='" + scamer.user_login + "' class='remove'>x</div>"+
 		"</div>"
 		);
 	}else{
@@ -206,7 +206,6 @@ function timeDiffCalc(dateFuture, dateNow) {
 }
 
 function getBroadcast(scamerId) {
-
 jQuery.ajax(
 {
    type: 'GET',
@@ -222,9 +221,7 @@ jQuery.ajax(
 		console.log("bId erreur");
       }
    }
-
 });
-
 }
 
 
@@ -277,10 +274,6 @@ function deleteCookie(name) {
   })
 }
 
-function removeChannel(channel) {
-	console.log(channel);
-}
-
 jQuery(document).ready(function(){
 	var scamConf = loadScam();
 	var urlscammers = "";
@@ -308,8 +301,6 @@ jQuery(document).ready(function(){
 	});
 	
 	StartThisShit(scamConf);
-	
-	
 	
 	
 	jQuery("h1.toggleShit").click(function(){
@@ -370,7 +361,7 @@ jQuery(document).ready(function(){
 		else
 			GoInFullscreen(jQuery("#myScamPlayer").get(0));
 	}
-	*/
+	
 	
 	jQuery(document).on('fullscreenchange webkitfullscreenchange mozfullscreenchange MSFullscreenChange', function() {
 		if(IsFullScreenCurrently()) {
@@ -380,7 +371,8 @@ jQuery(document).ready(function(){
 
 		}
 	});
-	if(scamConf['showChat']['player'] == 'embed') {		
+	*/
+	if(scamConf['showChat']['player'] == 'embed') {
 	
 		const client = new tmi.Client({
 			channels: scamConf['scamers']
@@ -389,34 +381,35 @@ jQuery(document).ready(function(){
 		
 		
 		
-const option = {
-  options: {
-    debug: true
-  },
-  connection: {
-    cluster: "aws",
-    reconnect: true
-  },
-  identity: {
-    username: 'scamerbot',
-    password: 'oauth:ebio7i23n0oa5qfwfrteza6xfj90w9'
-    },
-  channels: ["xou____"]
-};
-const client2 = new tmi.client(option);
-const formScam = jQuery('form[name="spam-area"]');
-	client2.connect().catch((err) => {console.log('Connection error!', err)});
+		const option = {
+		  options: {
+			debug: true
+		  },
+		  connection: {
+			cluster: "aws",
+			reconnect: true
+		  },
+		  identity: {
+			username: 'scamerbot',
+			password: 'oauth:'
+			},
+		  channels: ["xou____"]
+		};
+		const client2 = new tmi.client(option);
+		
+		const formScam = jQuery('form[name="spam-area"]');
+		client2.connect().catch((err) => {console.log('Connection error!', err)});
 
-	formScam.on("submit", function(e) {
-		e.preventDefault();
-        client2.action(jQuery('#channel-to-feed').val(), jQuery('#spam-content').val())
-        .then(data => {
-            //console.log(`Sent "${data[1]}" to`, jQuery('#channel-to-feed').val());
-        })
-        .catch(err => {
-            //console.log('[ERR]', err);
-        });
-	});
+		formScam.on("submit", function(e) {
+			e.preventDefault();
+			client2.action(jQuery('#channel-to-feed').val(), jQuery('#spam-content').val())
+			.then(data => {
+				//console.log(`Sent "${data[1]}" to`, jQuery('#channel-to-feed').val());
+			})
+			.catch(err => {
+				//console.log('[ERR]', err);
+			});
+		});
 	
 	
 
@@ -480,6 +473,7 @@ css 7viewer + description + position
 
 icones sub + modo + first + flags
 
+Raccourcis clavier 1-9
 */
 
 
