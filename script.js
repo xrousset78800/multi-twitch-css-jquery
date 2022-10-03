@@ -1,26 +1,57 @@
 let authToken = "";
 let clientID = "";
 
-var scamersTotalList = [
-	'xou____', 
-	'zed_b', 
-	'emizdar', 
-	'patayencroute',
-	'amouranth', 
-	'mistermv', 
-	'aminematue', 
-	'etoiles', 
-	'mlle_sunny', 
-	'jeanmassiet'
-	];
+var scamersTotalList = [];
+
+function getCookie(name) {
+  const value = document.cookie;
+  const parts = value.split(`; `+name+`=`);
+
+  if (parts.length === 2) return parts.pop().split(';').shift();
+}
 
 
 function loadScam() {
 
 var urlParams = new URLSearchParams(window.location.search);
-var scamGet = urlParams.getAll('scamer');
+
 var showChat = urlParams.get('active_chat');
+var newScamer = urlParams.get('newScamer');
 var chat_position = urlParams.get('embed_chat_position');
+var scamGet = urlParams.getAll('scamer');
+var checker = [];
+
+console.log(getCookie("Scamers"));
+
+if(getCookie("Scamers") === undefined) {
+	console.log("cookie vide");
+
+} else {
+	scamersTotalList = getCookie("Scamers").split(',');
+	console.log(scamersTotalList);
+}
+
+if(newScamer) {
+	console.log("New scamer");
+	console.log(newScamer);
+	if(!scamersTotalList.includes(newScamer)) {
+		console.log("Not exist");
+		scamersTotalList.push(newScamer);
+		setCookie('Scamers', "", 60);
+		setCookie('Scamers', scamersTotalList, 60);
+		console.log(scamersTotalList);
+	} else {
+		console.log("already exist -- skip")
+	}
+}
+
+
+jQuery(scamGet).each(function(i, val){
+	if(val.length !== 0){
+		checker.push(val);
+	}
+});
+
 /*
 var full_scam_now = urlParams.get('full_scam_after_reload');
 
@@ -28,20 +59,8 @@ var full_scam_now = urlParams.get('full_scam_after_reload');
 
 	*/
 	
-var checker = [];
-	
-if(scamGet.length == 0) {
-	scamGet[0] = "zed_b";
-} else {
-	jQuery(scamGet).each(function(i, val){
-		if(val.length !== 0){
-			scamersTotalList.indexOf(scamGet[i]) === -1 ? scamersTotalList.push(scamGet[i]) : console.log("scamer exist") ;
-			checker.push(val);
-		}
-	});
-}
-for(var i=0; i<checker.length; i++) {
-	jQuery("#channel-to-feed").append("<option value='"+checker[i]+"'>"+checker[i]+"</option>");
+for(var i=0; i<scamersTotalList.length; i++) {
+	jQuery("#channel-to-feed").append("<option value='"+scamersTotalList[i]+"'>"+scamersTotalList[i]+"</option>");
 }
 
 if(!showChat) {
@@ -154,7 +173,7 @@ function updateScammerStatus(online, scamer) {
 	}else{
 		jQuery(".channel-form .offline-stream").prepend(""+
 			"<div class='channels'>"+
-				"<input type='checkbox' id='"+scamer+"' name='scamer' value='"+scamer.toLowerCase()+"'/>"+
+				"<input type='checkbox' id='"+scamer+"' name='scamer' value='"+scamer+"'/>"+
 				"<i class='offline-icon'></i>"+
 				"<label for='" + scamer + "'>" + scamer + "</label>"+
 			"</div>"
@@ -204,7 +223,7 @@ jQuery.ajax(
 
 
 
-/* Get into full screen */
+
 function GoInFullscreen(element) {
 	if(element.requestFullscreen)
 		element.requestFullscreen();
@@ -215,7 +234,7 @@ function GoInFullscreen(element) {
 	else if(element.msRequestFullscreen)
 		element.msRequestFullscreen();
 }
-/* Get out of full screen */
+
 function GoOutFullscreen() {
 	if(document.exitFullscreen)
 		document.exitFullscreen();
@@ -227,7 +246,6 @@ function GoOutFullscreen() {
 		document.msExitFullscreen();
 }
 
-/* Is currently in full screen or not */
 function IsFullScreenCurrently() {
 	var full_screen_element = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement || null;
 	// If no element is in full-screen
@@ -236,28 +254,17 @@ function IsFullScreenCurrently() {
 	else
 		return true;
 }
-function setCookie(name, value, options = {}) {
 
-  options = {
-    path: '/',
-  };
-
-  if (options.expires instanceof Date) {
-    options.expires = options.expires.toUTCString();
-  }
-
-  let updatedCookie = encodeURIComponent(name) + "=" + encodeURIComponent(value);
-
-  for (let optionKey in options) {
-    updatedCookie += "; " + optionKey;
-    let optionValue = options[optionKey];
-    if (optionValue !== true) {
-      updatedCookie += "=" + optionValue;
+function setCookie(name,value,days) {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days*24*60*60*1000));
+        expires = "; expires=" + date.toUTCString();
     }
-  }
-
-  document.cookie = updatedCookie;
+    document.cookie = name + "=" + (value || "")  + expires + "; path=/";
 }
+
 function deleteCookie(name) {
   setCookie(name, "", {
     'max-age': -1
@@ -266,7 +273,6 @@ function deleteCookie(name) {
 
 jQuery(document).ready(function(){
 	var scamConf = loadScam();
-setCookie('user', 'John', {secure: true, 'max-age': 3600});
 	var urlscammers = "";
 
 	scamersTotalList.forEach(function(scam) {
@@ -304,8 +310,7 @@ setCookie('user', 'John', {secure: true, 'max-age': 3600});
 		else
 			GoInFullscreen(jQuery("#myScamPlayer").get(0));
 	});
-
-	//setCookie('Scamers', scamConf["scamers"], {secure: true, 'max-age': 2147483647});
+	
 /*
 	Pas possible de full screen sans action utilisateur
 	if(scamConf.full_scam) {
@@ -316,7 +321,6 @@ setCookie('user', 'John', {secure: true, 'max-age': 3600});
 	}
 	*/
 	
-	
 	jQuery(document).on('fullscreenchange webkitfullscreenchange mozfullscreenchange MSFullscreenChange', function() {
 		if(IsFullScreenCurrently()) {
 
@@ -326,11 +330,49 @@ setCookie('user', 'John', {secure: true, 'max-age': 3600});
 		}
 	});
 	if(scamConf['showChat']['player'] == 'embed') {		
+	
 		const client = new tmi.Client({
 			channels: scamConf['scamers']
 		});
-
 		client.connect();
+		
+		
+		
+const option = {
+  options: {
+    debug: true
+  },
+  connection: {
+    cluster: "aws",
+    reconnect: true
+  },
+  identity: {
+    username: 'scamerbot',
+    password: 'oauth:ebio7i23n0oa5qfwfrteza6xfj90w9'
+    },
+  channels: ["xou____"]
+};
+const client2 = new tmi.client(option);
+const formScam = jQuery('form[name="spam-area"]');
+	client2.connect().catch((err) => {console.log('Connection error!', err)});
+
+	formScam.on("submit", function(e) {
+		e.preventDefault();
+        client2.action(jQuery('#channel-to-feed').val(), jQuery('#spam-content').val())
+        .then(data => {
+            console.log(`Sent "${data[1]}" to`, jQuery('#channel-to-feed').val());
+        })
+        .catch(err => {
+            console.log('[ERR]', err);
+        });
+	});
+	
+	
+	
+	
+	
+	
+	
 		client.on('message', (channel, tags, message, self) => {						
 			
 		  jQuery('.twitch-description'+channel.toLowerCase()+' > .scroll > div')
@@ -382,7 +424,7 @@ setCookie('user', 'John', {secure: true, 'max-age': 3600});
 
 /*
 
--------envoyer message dans l'embed chat-----
+------- envoyer message -----
 
 (modifier qualité pour tous (formulaire))
 
@@ -390,9 +432,7 @@ choisir ses chats embed
 
 redo scrollToBottom chat 
 
-finir position du player
-
-Scammer list en SESSION
+bug input position
 
 css 7viewer + description + position
 

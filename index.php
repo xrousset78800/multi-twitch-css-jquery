@@ -14,6 +14,7 @@
   <meta property="og:image" content="">
   
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
   <script src="/scam-is-real/script.js"></script>
   <script src="/scam-is-real/tmi.min.js"></script>
   
@@ -29,10 +30,13 @@
 				<h1 class="page-title"></h1>
 				<p class="omg">Gère jusqu'a 9 players (rip la mémoire par contre)</p>
 				<div class="postmessage">
+					<form action="#" name="spam-area">
 					<select id="channel-to-feed" name="channel-to-feed">
-					
+						<option value="" selected disabled hidden>--Chaine--</option>
 					</select>
-					<input type="text" name="message" value="" placeholder="Envoyer un message"/>
+					<input disabled type="text" id="spam-content" value="" placeholder="Envoyer un message"/>
+					<input disabled type="submit" value="Go"/>
+					</form>
 				</div>
 			</div>
 		</header>
@@ -40,7 +44,7 @@
 			<div class="status">
 				<div class="status-text">
 					<form action="" method="GET" class="channel-form">
-						<input type="text" name="scamer" placeholder="or another scamer" value="">
+						<input type="text" name="newScamer" placeholder="Add new scamer in list" value="">
 						<div class="online-stream">
 						</div>
 						<div class="offline-stream">
@@ -53,25 +57,17 @@
 							<input checked="checked" type="radio" name="active_chat" value="embed"/><label for="active_chat">Embed chat</label>
 							<div class="position">
 								<label class="top-left-icon" for="top-left">
-							    </label>
-								<input type="radio" name="embed_chat_position" value="top-left">
+								<input type="radio" name="embed_chat_position" value="top-left"></label>
 								<label class="top-right-icon" for="top-right">
-								</label>
 								<input type="radio" name="embed_chat_position" value="top-right">
-									<br>
+								</label>
 								<label class="bottom-left-icon" for="bottom-left">
-								</label>
 								<input type="radio" name="embed_chat_position" value="bottom-left">
-								<label class="bottom-right-icon" for="bottom-right">
 								</label>
+								<label class="bottom-right-icon" for="bottom-right">
 								<input type="radio" name="embed_chat_position" value="bottom-right">
+								</label>
 							</div>
-							<select id="embed_chat_position" name="embed_chat_position">
-							  <option value="top-right" >Haut droite</option>
-							  <option value="top-left">Haut gauche</option>
-							  <option value="bottom-left">Bas gauche</option>
-							  <option value="bottom-right">Bas droite</option>
-							</select>			
 							<!--input type="checkbox" name="full_scam_after_reload" value="true"/><label for="full_scam_after_reload">full scam on load</label-->							
 						</div>						
 						<input type="submit" value="Load this shit" />

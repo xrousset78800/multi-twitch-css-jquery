@@ -893,19 +893,24 @@ height: 50%;
 } 
 
 .chat .position input {
-	margin: 0;
+    position: relative;
+    left: 20px;
 }
 .chat .position input:checked + label {
 	color: red;
 }
 .chat .position label{
-    margin: 10px;
+    margin: 10px 0;
     cursor: pointer;
+    display: block;
 }
 .chat .position label:hover{
     color: red;
 }
 
+.chat .position input:nth-of-type(2), .chat .position input:nth-of-type(4) {
+
+}
 .chat .position {
 	    text-align: center;
     margin: 20px 0;
