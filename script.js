@@ -38,13 +38,6 @@ if(newScamer) {
 		console.log("already exist or empty -- skip");
 	}
 }
-
-/*
-var full_scam_now = urlParams.get('full_scam_after_reload');
-
-	Pas possible de full screen sans action utilisateur
-
-	*/
 	
 for(var i=0; i<scamersTotalList.length; i++) {
 	jQuery("#channel-to-feed").append("<option value='"+scamersTotalList[i]+"'>"+scamersTotalList[i]+"</option>");
@@ -310,6 +303,58 @@ jQuery(document).ready(function(){
 		jQuery(".status").toggle(300, "linear");
 	});		
 	
+	jQuery(document).keydown(function(e) {
+	    var value = e.which;	
+		
+		switch (value) {
+			case 32:
+				if(IsFullScreenCurrently())
+					GoOutFullscreen();
+				else
+					GoInFullscreen(jQuery("#myScamPlayer").get(0));
+				break;
+			case 17:
+				//toggle menu
+				jQuery("h1.toggleShit").toggleClass("hide");
+				jQuery(".status").toggle(300, "linear");
+				break;
+
+			case 96: 
+				jQuery('.viewer').removeClass('mainViewer');
+				break;
+				
+			case 37:
+				//left
+				var current = jQuery('.viewer.mainViewer').index();
+				var newId = ((current-1) % scamConf["scamers"].length);
+				jQuery('.viewer').removeClass('mainViewer');
+				jQuery('.viewer').eq(newId).addClass('mainViewer');
+				
+				break;
+			case 39:
+				//right
+				var current = jQuery('.viewer.mainViewer').index();
+				var newId = (current % scamConf["scamers"].length);
+				
+				jQuery('.viewer').removeClass('mainViewer');
+				jQuery('.viewer').eq(newId).addClass('mainViewer');
+				break;
+				
+			default:
+				switch(true)
+				{
+					case ((value > 96) && (value <= 96+scamConf["scamers"].length)): 
+						
+						jQuery('.viewer').removeClass('mainViewer');
+						jQuery('.viewer').eq((value-96)-1).addClass('mainViewer');
+						
+						break;
+				}
+		}
+		
+	});
+	
+	
 	
 	
 	jQuery(".tuto-add").hover(function(){
@@ -335,6 +380,7 @@ jQuery(document).ready(function(){
 		}
 	);	
 	jQuery('[name=scamer]').removeAttr('checked');
+	
 	jQuery(scamConf["scamers"]).each(function(i, val){
 		if(val.length !== 0){
 			jQuery("input[name=scamer]#"+val).prop('checked', 'checked');
@@ -348,25 +394,6 @@ jQuery(document).ready(function(){
 			GoInFullscreen(jQuery("#myScamPlayer").get(0));
 	});
 	
-/*
-	Pas possible de full screen sans action utilisateur
-	if(scamConf.full_scam) {
-		if(IsFullScreenCurrently())
-			GoOutFullscreen();
-		else
-			GoInFullscreen(jQuery("#myScamPlayer").get(0));
-	}
-	
-	
-	jQuery(document).on('fullscreenchange webkitfullscreenchange mozfullscreenchange MSFullscreenChange', function() {
-		if(IsFullScreenCurrently()) {
-
-		}
-		else {
-
-		}
-	});
-	*/
 	if(scamConf['showChat']['player'] == 'embed') {
 	
 		const client = new tmi.Client({
@@ -374,7 +401,7 @@ jQuery(document).ready(function(){
 		});
 		client.connect();
 		
-		
+/*		
 		
 		const option = {
 		  options: {
@@ -407,7 +434,7 @@ jQuery(document).ready(function(){
 			});
 		});
 	
-	
+*/	
 
 		client.on('message', (channel, tags, message, self) => {	
 		
@@ -440,12 +467,6 @@ jQuery(document).ready(function(){
 				if(jQuery(channel.toLowerCase()+' > nav.scroll > .chatscroll > div').length == bufferMessageSize) {
 					jQuery(channel.toLowerCase()+' > nav.scroll > .chatscroll > div').eq(0).remove();
 				}
-			/*	
-				jQuery(channel.toLowerCase()).animate( {
-					scrollTop: jQuery(channel.toLowerCase()+' div').height()
-				}, 
-				300
-			);*/
 		});
 		
 		client.on("connected", function (address, port) {
@@ -459,15 +480,17 @@ jQuery(document).ready(function(){
 
 envoyer message
 
-(modifier qualité pour tous (formulaire))
-Options par chat (afficher, police, longueur, hauteur)
+Options par chat (afficher, police)
+resize chat 
 
-redo scrollToBottom chat 
+stop autoscroll on chat hover
 
-css 7viewer + description + position
+css Xviewer css
+
 icones sub + modo + first + flags
 
-Raccourcis clavier 1-9
+Bouton soft reload
+Raccourcis clavier suivant précédent 
 */
 
 

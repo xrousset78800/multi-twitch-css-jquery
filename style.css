@@ -386,13 +386,12 @@ animation: 60s ease-in 1s infinite both running slidein;
   border: 3px solid black;
   border-radius: 5px;
   background: #ffffffcc;
-  z-index: 1;
+  z-index: 2;
   width: 200px;
     position: absolute;
     top: 75px;
     right: 10px;
     text-align: center;
-    display: none;
 }
 
 .infos, .date {
@@ -436,7 +435,7 @@ small.game {
 .toggleShit {
     position: absolute;
     right: 10px;
-    z-index: 1;
+    z-index: 2;
     color: white;
 	font-size: 25px;
     line-height: 30px;
@@ -468,7 +467,18 @@ small.game {
     padding: 10px;
     float:left;
 	overflow: hidden;
-    //transition: width height 1s linear;
+    transition: width 0.3s ease-in-out, height 0.3s ease-in-out;
+}
+.viewer.mainViewer {
+    width: 100% !important;
+    height: 100% !important;
+    position: absolute;
+    z-index: 1;
+	top: 0;
+	bottom: 0;
+	left:0;
+	right: 0;
+	margin: auto;
 }
 
 .viewer2video .viewer{
@@ -669,7 +679,7 @@ height: 50%;
     position: absolute;
     top: 0;
     right: 15px;
-    z-index: 1;
+    z-index: 2;
     font-size: 14px;
     cursor: pointer;
     margin: 0;
@@ -751,7 +761,7 @@ height: 50%;
 	text-align: center;
 }
 .viewer0video .status {
-    display: inline-block !important;
+    display: inline-block;
 }
 
 .instructions li {

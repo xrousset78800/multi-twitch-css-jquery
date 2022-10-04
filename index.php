@@ -63,8 +63,8 @@
 						</form>
 					</div>
 				</div>
-				<h1 title="In full scam please" id="go-button">Full Scam(icone)</h1>
-				<h1 class="toggleShit hide" name="toggle">Menu</h1>
+				<h1 title="In full scam please" id="go-button">Full Scam</h1>
+				<h1 class="toggleShit" name="toggle">Menu</h1>
 				<div class="twitch-video">
 					<!-- Load the Twitch embed JavaScript file -->
 					<script src="https://embed.twitch.tv/embed/v1.js"></script>
@@ -75,6 +75,13 @@
 							<li class="tuto-select">Selectionnez les chaines à charger</li>
 							<li class="tuto-enjoy">Enjoy</li>
 						</ol>
+						<h5>Raccourcis claviers</h5>
+						<ul>
+							<li>Ctrl >> menu</li>
+							<li>espace >> full screen</li>
+							<li>0 >> vue multigrille</li>
+							<li>[1-N] >> basculer vers Nieme stream</li>
+						</ul>
 					</div>
 				</div>
 		  </main>
