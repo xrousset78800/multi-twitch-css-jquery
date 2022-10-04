@@ -398,6 +398,9 @@ font-style: italic;
 line-height: 25px;
     position: relative;
 }
+.channels label {
+	text-transform: capitalize;
+}
 .channels:hover {
 	cursor: pointer;
 }

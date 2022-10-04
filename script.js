@@ -29,9 +29,8 @@ if(getCookie("Scamers") === undefined) {
 
 if(newScamer) {
 	for(var i=0; i<newScamer.length; i++) {	
-	console.log(newScamer[i]);
-		if(!scamersTotalList.includes(newScamer[i]) && newScamer[i] !== '') {
-			scamersTotalList.push(newScamer[i]);
+		if(!scamersTotalList.includes(newScamer[i].toLowerCase()) && newScamer[i] !== '') {
+			scamersTotalList.push(newScamer[i].toLowerCase());
 			setCookie('Scamers', scamersTotalList, 60);
 		} else {
 			console.log("already exist or empty -- skip");
