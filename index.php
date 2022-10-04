@@ -32,8 +32,7 @@
 			<header class="blog-header home row">
 				<div class="cell cell-12">
 					<h1 class="page-title"></h1>
-					<p class="omg">Gère jusqu'a 9 players</p>
-					<div class="postmessage">
+					<!--div class="postmessage">
 						<form action="" name="spam-area">
 						<select disabled id="channel-to-feed" name="channel-to-feed">
 							<option value="" selected disabled hidden>--Chaine--</option>
@@ -41,7 +40,7 @@
 						<input disabled type="text" id="spam-content" value="" placeholder="(TODO) Envoyer un message"/>
 						<input disabled type="submit" value="Go"/>
 						</form>
-					</div>
+					</div-->
 				</div>
 			</header>
 			<main id="myScamPlayer" class="page-content">
@@ -79,6 +78,7 @@
 							<li>espace >> full screen</li>
 							<li>0 >> vue multigrille</li>
 							<li>[1-N] >> basculer vers Nieme stream</li>
+							<li>left-right >> suivant(premier) - précédent(dernier)</li>
 						</ul>
 					</div>
 				</div>

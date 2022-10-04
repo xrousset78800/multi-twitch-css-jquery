@@ -326,15 +326,22 @@ jQuery(document).ready(function(){
 			case 37:
 				//left
 				var current = jQuery('.viewer.mainViewer').index();
-				var newId = ((current-1) % scamConf["scamers"].length);
+				
+				if(current == -1) current = scamConf["scamers"].length + 1;
+				
+				var newId = ((current-1) % scamConf["scamers"].length-1);
+				
 				jQuery('.viewer').removeClass('mainViewer');
 				jQuery('.viewer').eq(newId).addClass('mainViewer');
 				
 				break;
 			case 39:
 				//right
-				var current = jQuery('.viewer.mainViewer').index();
-				var newId = (current % scamConf["scamers"].length);
+				var current = jQuery('.viewer.mainViewer').index();	
+
+				if(current == -1) current = scamConf["scamers"].length;				
+				
+				var newId = ((current+1) % scamConf["scamers"].length-1);
 				
 				jQuery('.viewer').removeClass('mainViewer');
 				jQuery('.viewer').eq(newId).addClass('mainViewer');
@@ -479,18 +486,12 @@ jQuery(document).ready(function(){
 /*
 
 envoyer message
-
 Options par chat (afficher, police)
 resize chat 
-
 stop autoscroll on chat hover
-
-css Xviewer css
-
 icones sub + modo + first + flags
+(Bouton soft reload)
 
-Bouton soft reload
-Raccourcis clavier suivant précédent 
 */
 
 
