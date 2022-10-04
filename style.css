@@ -459,7 +459,7 @@ small.game {
     padding: 4px;
     float:left;
 	overflow: hidden;
-    transition: width 0.3s ease-in-out, height 0.3s ease-in-out;
+    /*transition: width 0.3s ease-in-out, height 0.3s ease-in-out;*/
 }
 .viewer.mainViewer {
     width: 100% !important;
@@ -510,24 +510,6 @@ height: 50%;
 	top: 20px;
 	left: 20px;
 	overflow: hidden;
-    /*overflow-y: auto;
-}
-
-.twitch-description.hide {
-    width: 40px;
-    height: 40px;
-    left: 0 !important;
-    right: 0 !important;
-    top: 20px !important;
-    margin: 0 auto;
-}
-
-.twitch-description.hide .chatscroll {
-	display: none;
-}
-
-.twitch-description:hover  > nav > div > div {
-	/*float: left;*/
 }
 
 .postmessage {

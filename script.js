@@ -18,24 +18,24 @@ function loadScam() {
 var urlParams = new URLSearchParams(window.location.search);
 
 var showChat = urlParams.get('active_chat');
-var newScamer = urlParams.get('newScamer');
+var newScamer = urlParams.getAll('newScamer');
 var scamGet = urlParams.getAll('scamer');
 var checker = [];
 
 if(getCookie("Scamers") === undefined) {
-	console.log("cookie vide");
-
 } else {
 	scamersTotalList = getCookie("Scamers").split(',');
 }
 
 if(newScamer) {
-	console.log("New scamer");
-	if(!scamersTotalList.includes(newScamer) || newScamer == '') {
-		scamersTotalList.push(newScamer.toLowerCase());
-		setCookie('Scamers', scamersTotalList, 60);
-	} else {
-		console.log("already exist or empty -- skip");
+	for(var i=0; i<newScamer.length; i++) {	
+	console.log(newScamer[i]);
+		if(!scamersTotalList.includes(newScamer[i]) && newScamer[i] !== '') {
+			scamersTotalList.push(newScamer[i]);
+			setCookie('Scamers', scamersTotalList, 60);
+		} else {
+			console.log("already exist or empty -- skip");
+		}
 	}
 }
 	

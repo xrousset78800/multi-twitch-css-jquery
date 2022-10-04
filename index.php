@@ -47,7 +47,7 @@
 				<div class="status">
 					<div class="status-text">
 						<form action="#" method="GET" class="channel-form">
-							<input type="text" name="newScamer" placeholder="Add a dude in list" value="">
+							<input type="text" name="newScamer" placeholder="Add a Twitch dude in list" value="">
 							<div class="online-stream">
 							</div>
 							<div class="offline-stream">
@@ -74,11 +74,11 @@
 						</ol>
 						<h5>Raccourcis claviers</h5>
 						<ul>
-							<li>Ctrl >> menu</li>
-							<li>espace >> full screen</li>
-							<li>0 >> vue multigrille</li>
-							<li>[1-N] >> basculer vers Nieme stream</li>
-							<li>left-right >> suivant(premier) - précédent(dernier)</li>
+							<li><b><u>Ctrl</u></b> - menu</li>
+							<li><b><u>espace</u></b> - full screen</li>
+							<li><b><u>0</u></b> - vue multigrille</li>
+							<li><b><u>[1-N]</u></b> - basculer vers Nieme stream</li>
+							<li><b><u>left-right</u></b> - suivant(premier) - précédent(dernier)</li>
 						</ul>
 					</div>
 				</div>
