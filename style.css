@@ -186,9 +186,7 @@ animation: 60s ease-in 1s infinite both running slidein;
 
 .page {
     position: relative;
-    padding: 20px auto;
     min-height: 100%;
-    padding-bottom: 20px;
     overflow: hidden;
     height: 100%;
     width: 100%;
@@ -237,13 +235,6 @@ animation: 60s ease-in 1s infinite both running slidein;
 .home-header p {
     font-size: 24px;
     margin-bottom: 60px
-}
-
-.blog-header,
-.home-nav {
-    padding-top: 15px;
-    padding-bottom: 15px;
-    position: absolute;
 }
 
 .home-nav {
@@ -422,6 +413,7 @@ small.game {
     display: block;
 }
 .page-content {
+	padding: 0 10px;
     padding-top: 60px;
     height: 100%;
 }
@@ -464,7 +456,7 @@ small.game {
     position: relative;
     height: 100%;
     width: 100%;
-    padding: 10px;
+    padding: 4px;
     float:left;
 	overflow: hidden;
     transition: width 0.3s ease-in-out, height 0.3s ease-in-out;

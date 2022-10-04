@@ -65,9 +65,7 @@
 				</div>
 				<h1 title="In full scam please" id="go-button">Full Scam</h1>
 				<h1 class="toggleShit" name="toggle">Menu</h1>
-				<div class="twitch-video">
-					<!-- Load the Twitch embed JavaScript file -->
-					<script src="https://embed.twitch.tv/embed/v1.js"></script>
+				<div class="home">
 					<div class="instructions">
 						<h1>Instructions</h1>
 						<ol>
@@ -83,6 +81,11 @@
 							<li>[1-N] >> basculer vers Nieme stream</li>
 						</ul>
 					</div>
+				</div>
+				<div class="twitch-video">
+					<!-- Load the Twitch embed JavaScript file -->
+					<script src="https://embed.twitch.tv/embed/v1.js"></script>
+
 				</div>
 		  </main>
 		</div>
