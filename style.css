@@ -501,30 +501,27 @@ height: 50%;
     height: 50%;
 	border-radius: 8px;
     color: #f1f1f1;
+	background: none;
+	border: 0;
     padding: 5px;
     font-size: 0.8rem;
+	top: 20px;
+	left: 20px;
 	overflow: hidden;
-    overflow-y: auto;
+    /*overflow-y: auto;
 }
 
-.twitch-description.top-left {
-	left: 50px;
-    top: 40px;
+.twitch-description.hide {
+    width: 40px;
+    height: 40px;
+    left: 0 !important;
+    right: 0 !important;
+    top: 20px !important;
+    margin: 0 auto;
 }
 
-.twitch-description.top-right {
-	right: 30px;
-    top: 40px;
-}
-
-.twitch-description.bottom-left {
-    left: 50px;
-    bottom: 30px;
-
-}
-.twitch-description.bottom-right {
-	right: 30px;
-    bottom: 30px;
+.twitch-description.hide .chatscroll {
+	display: none;
 }
 
 .twitch-description:hover  > nav > div > div {
@@ -544,14 +541,20 @@ height: 50%;
 	padding: 3px;
 	word-break: break-word;
 }
-
+.twitch-description .sender-message{
+    display: inline-block;
+    width: 35%;
+    vertical-align: top;
+	text-align: right;
+}
 .twitch-description .embed-message:hover{
     background: #ffffffcc;
 	color: #111111;
 }
 
 .twitch-description .message{
-	
+	display: inline-block;
+    width: 65%;
 }
 .twitch-description .scamer{
 	font-weight: bold;

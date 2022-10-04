@@ -3,14 +3,14 @@
 	<head>
 	  <meta charset="utf-8">
 	  <meta name="viewport" content="width=device-width, initial-scale=1">
-	  <title>Scam</title>
+	  <title>Multi twitch player</title>
 	  <meta name="description" content="Scam">
 	  <meta name="author" content="Scam">
 	  
-	  <meta property="og:title" content="Scam">
+	  <meta property="og:title" content="Multi twitch player">
 	  <meta property="og:type" content="website">
 	  <meta property="og:url" content="">
-	  <meta property="og:description" content="A simple Scam">
+	  <meta property="og:description" content="A simple jquery-css3 Multi twitch player">
 	  <meta property="og:image" content="">
 	  
 	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -20,6 +20,9 @@
 	  <script src="/scam-is-real/script.js"></script>
 	  <script src="/scam-is-real/tmi.min.js"></script>
 	  
+	  
+	  <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css"/>
+
 	  <link rel="icon" type="image/png" href="/scam-is-real/favicon.png" />
 	  <link href="/scam-is-real/style.css" rel="stylesheet" />
 	  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Quicksand" />
@@ -45,7 +48,7 @@
 				<div class="status">
 					<div class="status-text">
 						<form action="#" method="GET" class="channel-form">
-							<input type="text" name="newScamer" placeholder="Add new scamer in list" value="">
+							<input type="text" name="newScamer" placeholder="Add a dude in list" value="">
 							<div class="online-stream">
 							</div>
 							<div class="offline-stream">
@@ -60,7 +63,7 @@
 						</form>
 					</div>
 				</div>
-				<h1 title="In full scam please" id="go-button">Full Scam</h1>
+				<h1 title="In full scam please" id="go-button">Full Scam(icone)</h1>
 				<h1 class="toggleShit hide" name="toggle">Menu</h1>
 				<div class="twitch-video">
 					<!-- Load the Twitch embed JavaScript file -->

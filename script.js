@@ -69,12 +69,14 @@ var result = {
 
 function StartThisShit(config) {
 	if(config.scamers.length == 1) {
-		jQuery(".page-title").append(config.scamers[0] + " scam");
-		jQuery(document).prop('title', config.scamers[0] + " scam");
+		jQuery(".page-title").append(config.scamers[0] + " player");
+		jQuery(document).prop('title', config.scamers[0] + " player");
 		jQuery("body").addClass(config.scamers[0]);
+		var muted = false;
 	} else {
-		jQuery(".page-title").append("Multi scam");
-		jQuery(document).prop('title', "Multi scam ("+ config.scamers.join(', ')+")");
+		jQuery(".page-title").append("Multi player");
+		jQuery(document).prop('title', "Multi player ("+ config.scamers.join(', ')+")");
+		var muted = true;
 	}
 
 	jQuery("body").addClass("viewer"+config.scamers.length+"video", );
@@ -86,14 +88,21 @@ function StartThisShit(config) {
 			width: "100%",
 			height: "100%",
 			layout: "video",
+			allowfullscreen: false,
+			muted: muted,
 			channel: config.scamers[i]
 		  });	 
 		}
 		
 		jQuery(".twitch-description").draggable({ containment: "parent" });
-		 //nope 
-		//jQuery(".twitch-description").resizable();	
-		
+		jQuery(".twitch-description").dblclick(function() {
+			jQuery(this).toggleClass("hide");
+		});
+
+		jQuery(".twitch-description").resizable({
+		  containment: 'parent'
+		});	
+
 		jQuery(".viewer > div").each(function(viewer){
 			jQuery(viewer).addClass(viewer);
 		});
@@ -239,7 +248,7 @@ function GoOutFullscreen() {
 		document.webkitExitFullscreen();
 	else if(document.msExitFullscreen)
 		document.msExitFullscreen();
-	jQuery(element).removeClass("fullscreen");
+	jQuery("#myScamPlayer").removeClass("fullscreen");
 }
 
 function IsFullScreenCurrently() {
@@ -405,13 +414,14 @@ jQuery(document).ready(function(){
 		  jQuery('.twitch-description'+channel.toLowerCase()+' > .scroll > div')
 			  .append(""+
 				  "<div class='embed-message "+tags.id+"'>" +
-				  
-				  "<span data-first-message='"+tags['first-msg']+"'>OMG ! Premier message !<br></span>"+
-				  "<span title='OMG ! Flags !' data-flags='"+tags['flags']+"'>"+tags['flags']+"</span>"+
-				  "<span title='OMG ! Modo !' data-modo='"+tags['mod']+"'> MODO: </span>"+
-				  "<span title='OMG ! Turbo !' data-turbo='"+tags['turbo']+"'>TURBO</span>"+
-				  "<span title='OMG ! Sub !' data-subscriber='"+tags['subscriber']+"'> SUB </span>"+
+					"<div class='sender-message'>" +
+					  "<span data-first-message='"+tags['first-msg']+"'>OMG ! Premier message !<br></span>"+
+					  "<span title='OMG ! Flags !' data-flags='"+tags['flags']+"'>"+tags['flags']+"</span>"+
+					  "<span title='OMG ! Modo !' data-modo='"+tags['mod']+"'> MODO: </span>"+
+					  "<span title='OMG ! Turbo !' data-turbo='"+tags['turbo']+"'>TURBO</span>"+
+					  "<span title='OMG ! Sub !' data-subscriber='"+tags['subscriber']+"'> SUB </span>"+
 					  "<span style='color:"+tags['color']+"' class='scamer'>"+tags['display-name']+"</span>"+
+					"</div>" +
 					  "<span class='message'>"+message+"</span>"+
 				  "</div>"
 				);
