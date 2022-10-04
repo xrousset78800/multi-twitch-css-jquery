@@ -11,4 +11,4 @@ TODO:
 - (Bouton soft reload)
 - A bit of documentation
 
-
+(In case of app crash, delete 'Scamers' cookie)
