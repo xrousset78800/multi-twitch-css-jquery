@@ -14,14 +14,15 @@
   <meta property="og:image" content="">
   
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+
   <script src="/scam-is-real/script.js"></script>
   <script src="/scam-is-real/tmi.min.js"></script>
   
   <link rel="icon" type="image/png" href="/scam-is-real/favicon.png">
   <link href="/scam-is-real/style.css" rel="stylesheet">
-  <link rel="stylesheet"
-          href="https://fonts.googleapis.com/css?family=Quicksand">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Quicksand">
 </head>
   <body class="vsc-initialized">
     <div class="page wrapper">
@@ -53,19 +54,6 @@
 							<input type="radio" name="active_chat" value="video"/><label for="active_chat">Hide chat</label>
 							<br />
 							<input checked="checked" type="radio" name="active_chat" value="embed"/><label for="active_chat">Embed chat</label>
-							<div class="position">
-								<label class="top-left-icon" for="top-left">
-								<input type="radio" name="embed_chat_position" value="top-left"></label>
-								<label class="top-right-icon" for="top-right">
-								<input type="radio" name="embed_chat_position" value="top-right">
-								</label>
-								<label class="bottom-left-icon" for="bottom-left">
-								<input type="radio" name="embed_chat_position" value="bottom-left">
-								</label>
-								<label class="bottom-right-icon" for="bottom-right">
-								<input type="radio" name="embed_chat_position" value="bottom-right">
-								</label>
-							</div>
 							<!--input type="checkbox" name="full_scam_after_reload" value="true"/><label for="full_scam_after_reload">full scam on load</label-->							
 						</div>						
 						<input type="submit" value="Load this shit" />
@@ -82,7 +70,6 @@
 					<ol>
 						<li class="tuto-add">Ajoutez des chaines dans le menu</li>
 						<li class="tuto-select">Selectionnez les chaines à charger</li>
-						<li class="tuto-options">Choisissez les options du player</li>
 						<li class="tuto-enjoy">Enjoy</li>
 					</ol>
 				</div>

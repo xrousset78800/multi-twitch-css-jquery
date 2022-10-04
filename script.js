@@ -19,7 +19,6 @@ var urlParams = new URLSearchParams(window.location.search);
 
 var showChat = urlParams.get('active_chat');
 var newScamer = urlParams.get('newScamer');
-var chat_position = urlParams.get('embed_chat_position');
 var scamGet = urlParams.getAll('scamer');
 var checker = [];
 
@@ -59,15 +58,8 @@ if(!showChat) {
 jQuery('[name="active_chat"]').removeAttr('checked');
 jQuery("input[name=active_chat][value=" + player + "]").prop('checked', true);
 
-if(!chat_position && showChat == "embed") {
-	chat_position = "top-right";
-}
-
-jQuery("[name=embed_chat_position]").prop("checked", false);
-jQuery("[name=embed_chat_position][value='"+chat_position+"']").prop("checked", true);
-
 var result = {
-	'showChat': {'player': player, 'position': chat_position},
+	'showChat': {'player': player},
 	'scamers': scamGet,
 	'full_scam': false
 }
@@ -88,7 +80,7 @@ function StartThisShit(config) {
 	jQuery("body").addClass("viewer"+config.scamers.length+"video", );
 
 		for(var i=0; i< config.scamers.length; i++){
-		jQuery(".twitch-video").append("<div class='viewer'><div class='twitch-description' id='"+config.scamers[i]+"'><nav class='scroll'><div class='chatscroll'></div></nav></div><div class='twitch-embed'  id='twitch-embed"+(i+1)+"'></div></div>");
+		jQuery(".twitch-video").append("<div class='viewer'><div class='ui-widget-content twitch-description' id='"+config.scamers[i]+"'><nav class='scroll'><div class='chatscroll'></div></nav></div><div class='twitch-embed'  id='twitch-embed"+(i+1)+"'></div></div>");
 		
 		  new Twitch.Embed("twitch-embed"+(i+1), {
 			width: "100%",
@@ -97,6 +89,10 @@ function StartThisShit(config) {
 			channel: config.scamers[i]
 		  });	 
 		}
+		
+		jQuery(".twitch-description").draggable({ containment: "parent" });
+		 //nope 
+		//jQuery(".twitch-description").resizable();	
 		
 		jQuery(".viewer > div").each(function(viewer){
 			jQuery(viewer).addClass(viewer);
@@ -174,7 +170,6 @@ function updateScammerStatus(online, scamer) {
 		if (index > -1) {
 		  scamersTotalList.splice(index, 1);
 		}
-		console.log(scamersTotalList.join(","));
 		
 		setCookie('Scamers', scamersTotalList.join(","), 60);
 		return true;
@@ -231,6 +226,8 @@ function GoInFullscreen(element) {
 		element.webkitRequestFullscreen();
 	else if(element.msRequestFullscreen)
 		element.msRequestFullscreen();
+	
+	jQuery(element).addClass("fullscreen");
 }
 
 function GoOutFullscreen() {
@@ -242,6 +239,7 @@ function GoOutFullscreen() {
 		document.webkitExitFullscreen();
 	else if(document.msExitFullscreen)
 		document.msExitFullscreen();
+	jQuery(element).removeClass("fullscreen");
 }
 
 function IsFullScreenCurrently() {
@@ -320,13 +318,6 @@ jQuery(document).ready(function(){
 			jQuery('.online-stream, .offline-stream').removeClass('highlight');	
 		}
 	);	
-	jQuery(".tuto-options").hover(function(){
-		jQuery('.chat').addClass('highlight');
-		}, 
-		function(){
-			jQuery('.chat').removeClass('highlight');	
-		}
-	);	
 	jQuery(".tuto-enjoy").hover(function(){
 		jQuery('.omg').addClass('highlight');
 		}, 
@@ -393,6 +384,7 @@ jQuery(document).ready(function(){
 		const client2 = new tmi.client(option);
 		
 		const formScam = jQuery('form[name="spam-area"]');
+		
 		client2.connect().catch((err) => {console.log('Connection error!', err)});
 
 		formScam.on("submit", function(e) {
@@ -408,7 +400,8 @@ jQuery(document).ready(function(){
 	
 	
 
-		client.on('message', (channel, tags, message, self) => {									
+		client.on('message', (channel, tags, message, self) => {	
+		
 		  jQuery('.twitch-description'+channel.toLowerCase()+' > .scroll > div')
 			  .append(""+
 				  "<div class='embed-message "+tags.id+"'>" +
@@ -446,9 +439,7 @@ jQuery(document).ready(function(){
 		});
 		
 		client.on("connected", function (address, port) {
-			jQuery(scamConf['scamers']).each(function(i, scamerViewer){
-				jQuery('.twitch-description'+scamerViewer).addClass(scamConf['showChat']['position']);
-			});
+
 		});
 	}
 	
@@ -459,13 +450,11 @@ jQuery(document).ready(function(){
 envoyer message
 
 (modifier qualité pour tous (formulaire))
-
-choisir ses chats embed
+Options par chat (afficher, police, longueur, hauteur)
 
 redo scrollToBottom chat 
 
 css 7viewer + description + position
-
 icones sub + modo + first + flags
 
 Raccourcis clavier 1-9

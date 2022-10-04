@@ -426,6 +426,9 @@ small.game {
     padding-top: 60px;
     height: 100%;
 }
+.page-content.fullscreen {
+    padding-top: 0;
+}
 .twitch-video {
 	height: 100%;
 }
@@ -705,152 +708,6 @@ height: 50%;
 }
 
 
-/* Arrows */
- .bottom-left-icon {
- box-sizing: border-box;
- position: relative;
- display: inline-block;
- transform: scale(var(--ggs,1));
- width: 16px;
- height: 16px;
- box-shadow: -6px 6px 0 -4px
-}
-
-.bottom-left-icon::before {
- content: "";
- display: block;
- box-sizing: border-box;
- position: absolute;
- width: 8px;
- height: 8px;
- border: 2px solid;
- border-radius: 1px;
- right: 0
-}
-
-.bottom-left-icon::after {
- content: "";
- display: block;
- box-sizing: border-box;
- position: absolute;
- background: currentColor;
- width: 2px;
- height: 10px;
- transform: rotate(45deg);
- top: 8px;
- left: 2px;
- border-radius: 4px
-} 
- .bottom-right-icon {
- box-sizing: border-box;
- position: relative;
- display: inline-block;
- transform: scale(var(--ggs,1));
- width: 16px;
- height: 16px;
- box-shadow: 6px 6px 0 -4px
-}
-
-.bottom-right-icon::before {
- content: "";
- display: block;
- box-sizing: border-box;
- position: absolute;
- width: 8px;
- height: 8px;
- border: 2px solid;
- border-radius: 1px;
- left: 0
-}
-
-.bottom-right-icon::after {
- content: "";
- display: block;
- box-sizing: border-box;
- position: absolute;
- background: currentColor;
- width: 2px;
- height: 10px;
- transform: rotate(-45deg);
- top: 8px;
- right: 2px;
- border-radius: 4px
-} 
-
- .top-left-icon {
- box-sizing: border-box;
- position: relative;
- display: inline-block;
- transform: scale(var(--ggs,1));
- width: 16px;
- height: 16px;
- box-shadow: -6px -6px 0 -4px
-}
-
-.top-left-icon::before {
- content: "";
- display: block;
- box-sizing: border-box;
- position: absolute;
- width: 8px;
- height: 8px;
- border: 2px solid;
- border-radius: 1px;
- right: 0;
- bottom: 0
-}
-
-.top-left-icon::after {
- content: "";
- display: block;
- box-sizing: border-box;
- position: absolute;
- background: currentColor;
- width: 2px;
- height: 10px;
- transform: rotate(-45deg);
- bottom: 8px;
- left: 2px;
- border-radius: 4px
-} 
-
- .top-right-icon {
- box-sizing: border-box;
- position: relative;
- display: inline-block;
- transform: scale(var(--ggs,1));
- width: 16px;
- height: 16px;
- box-shadow: 6px -6px 0 -4px
-}
-
-.top-right-icon::before {
- content: "";
- display: block;
- box-sizing: border-box;
- position: absolute;
- width: 8px;
- height: 8px;
- border: 2px solid;
- border-radius: 1px;
- left: 0;
- bottom: 0
-}
-
-.top-right-icon::after {
- content: "";
- display: block;
- box-sizing: border-box;
- position: absolute;
- background: currentColor;
- width: 2px;
- height: 10px;
- transform: rotate(45deg);
- bottom: 8px;
- right: 2px;
- border-radius: 4px
-} 
-
 .chat .position input {
     position: relative;
     left: 20px;
@@ -924,13 +781,6 @@ height: 50%;
 	background: #ffffffee;
 }
 
-.online-stream.highlight , .offline-stream.highlight  {
-
-}
-
-.online-stream.highlight:before , .offline-stream.highlight:before  {
-
-}
 
 [data-first-message=false], [data-flags=null] , [data-modo=false] , [data-turbo=false] , [data-subscriber=false] {
 	display: none;
