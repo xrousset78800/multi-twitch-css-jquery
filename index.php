@@ -47,7 +47,8 @@
 				<div class="status">
 					<div class="status-text">
 						<form action="#" method="GET" class="channel-form">
-							<input type="text" name="newScamer" placeholder="Add a Twitch dude in list" value="">
+							<label for="newScamer">Add a dude in list</label>
+							<input class="" type="text" name="newScamer" placeholder="Just here" value="">
 							<div class="online-stream">
 							</div>
 							<div class="offline-stream">
