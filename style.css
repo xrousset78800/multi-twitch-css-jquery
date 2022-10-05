@@ -376,7 +376,8 @@ animation: 60s ease-in 1s infinite both running slidein;
 .status {
   border: 3px solid black;
   border-radius: 5px;
-  background: #ffffffcc;
+  background: #000000cc;
+  color: #eeeeee;
   z-index: 2;
   width: 200px;
     position: absolute;
@@ -514,6 +515,11 @@ height: 50%;
 	left: 20px;
 	overflow: hidden;
 }
+
+.twitch-video {
+
+}
+
 
 .postmessage {
 	display: inline-block;
@@ -675,9 +681,10 @@ height: 50%;
   overflow-x: hidden;
   display: inline-block;
   position: absolute;
-  right: 0;
+  right: -10px;
   top: 0;
 }
+
 
 .scroll::-webkit-scrollbar {
   width: 10px;

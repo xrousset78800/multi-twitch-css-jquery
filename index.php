@@ -4,24 +4,24 @@
 	  <meta charset="utf-8">
 	  <meta name="viewport" content="width=device-width, initial-scale=1">
 	  <title>Multi twitch player</title>
-	  <meta name="description" content="Scam">
-	  <meta name="author" content="Scam">
+	  <meta name="description" content="Multi twitch player">
+	  <meta name="author" content="Xou____">
 	  
 	  <meta property="og:title" content="Multi twitch player">
 	  <meta property="og:type" content="website">
-	  <meta property="og:url" content="">
+	  <meta property="og:url" content="https://xouindaplace.fr/scam-is-real/">
 	  <meta property="og:description" content="A simple jquery-css3 Multi twitch player">
 	  <meta property="og:image" content="">
 	  
 	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 	  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 	  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+	  <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css"/>
 
 	  <script src="/scam-is-real/script.js"></script>
 	  <script src="/scam-is-real/tmi.min.js"></script>
 	  
 	  
-	  <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css"/>
 
 	  <link rel="icon" type="image/png" href="/scam-is-real/favicon.png" />
 	  <link href="/scam-is-real/style.css" rel="stylesheet" />
@@ -56,9 +56,8 @@
 								<input type="radio" name="active_chat" value="video"/><label for="active_chat">Hide chat</label>
 								<br />
 								<input checked="checked" type="radio" name="active_chat" value="embed"/><label for="active_chat">Embed chat</label>
-								<!--input type="checkbox" name="full_scam_after_reload" value="true"/><label for="full_scam_after_reload">full scam on load</label-->							
 							</div>						
-							<input type="submit" value="Load this shit" />
+							<input type="submit" value="Go" />
 						</form>
 					</div>
 				</div>

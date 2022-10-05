@@ -92,7 +92,20 @@ function StartThisShit(config) {
 		});
 
 		jQuery(".twitch-description").resizable({
-		  containment: 'parent'
+		  containment: 'parent',
+		  minWidth: 200,
+		  minHeight: 200,
+		  //maxWidth: 800,
+		  classes: {
+		  },
+		  
+		  handles: "n, e, s, w, ne, se, sw, nw",
+		  start: function( event, ui ) {
+			  jQuery(this).parent().css("pointer-events", "none");
+		  },
+		  stop: function( event, ui ) {
+			  jQuery(this).parent().css("pointer-events", "initial");
+		  }
 		});	
 
 		jQuery(".viewer > div").each(function(viewer){
@@ -497,7 +510,6 @@ jQuery(document).ready(function(){
 /*
 envoyer message
 Options par chat (afficher, police)
-resize chat 
 stop autoscroll on chat hover
 icones sub + modo + first + flags
 (Bouton soft reload)
