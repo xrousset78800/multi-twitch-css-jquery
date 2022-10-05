@@ -103,6 +103,7 @@ function StartThisShit(config) {
 }
 
 function updateStatuses(response, scamersToShowList) {	
+	jQuery(".channels").remove();
 	jQuery(scamersTotalList).each(function(scam, value){
             var scamer = value;
 		let flag = false;
@@ -276,24 +277,31 @@ jQuery(document).ready(function(){
 	   urlscammers = urlscammers + "user_login=" + scam + "&";
 	});	
 	
-	jQuery.ajax(
-	{
-	   type: 'GET',
-	   url: 'https://api.twitch.tv/helix/streams?' + urlscammers,
-	   headers: {
-		 'Client-ID': clientID,
-		 'Authorization': 'Bearer ' + authToken, 
-	   },
-	   success: function(c){
-		  //data array is empty when queried channel is offline
-		if (c.data.length > 0) {
-			console.log(c.data);
-		  }
-		  console.log(scamConf);
-		  updateStatuses(c.data, scamConf["scamers"]);
-	   }
-	});
-	
+	function myPeriodicMethod() {
+		jQuery.ajax(
+		{
+		   type: 'GET',
+		   url: 'https://api.twitch.tv/helix/streams?' + urlscammers,
+		   headers: {
+			 'Client-ID': clientID,
+			 'Authorization': 'Bearer ' + authToken, 
+		   },
+		   success: function(c){
+			  //data array is empty when queried channel is offline
+			if (c.data.length > 0) {
+				console.log(c.data);
+			  }
+			  console.log(scamConf);
+			  updateStatuses(c.data, scamConf["scamers"]);
+		   },
+		   complete: function() {
+			  // schedule the next request *only* when the current one is complete:
+			  setTimeout(myPeriodicMethod, 30000);
+			}
+		});	
+	}
+
+	myPeriodicMethod();
 	StartThisShit(scamConf);
 	
 	
@@ -307,18 +315,20 @@ jQuery(document).ready(function(){
 		
 		switch (value) {
 			case 32:
+				//space
 				if(IsFullScreenCurrently())
 					GoOutFullscreen();
 				else
 					GoInFullscreen(jQuery("#myScamPlayer").get(0));
 				break;
 			case 17:
-				//toggle menu
+				//ctrl
 				jQuery("h1.toggleShit").toggleClass("hide");
 				jQuery(".status").toggle(300, "linear");
 				break;
 
 			case 96: 
+				// 0 
 				jQuery('.viewer').removeClass('mainViewer');
 				break;
 				
@@ -347,6 +357,7 @@ jQuery(document).ready(function(){
 				break;
 				
 			default:
+				// 1-9 (1-N)
 				switch(true)
 				{
 					case ((value > 96) && (value <= 96+scamConf["scamers"].length)): 
@@ -482,8 +493,8 @@ jQuery(document).ready(function(){
 	
 });
 
-/*
 
+/*
 envoyer message
 Options par chat (afficher, police)
 resize chat 
