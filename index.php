@@ -61,6 +61,7 @@
 							<input type="submit" value="Go" />
 						</form>
 					</div>
+					<span class="reset" data-reset-app>reset app</span>
 				</div>
 				<h1 title="In full scam please" id="go-button">Full Scam</h1>
 				<h1 class="toggleShit" name="toggle">Menu</h1>
@@ -68,7 +69,7 @@
 					<div class="instructions">
 						<h1>Instructions</h1>
 						<ol>
-							<li class="tuto-add">Ajoutez des chaines dans le menu</li>
+							<li class="tuto-add">Ajoutez des chaines dans le menu(supporte les virgules)</li>
 							<li class="tuto-select">Selectionnez les chaines à charger</li>
 							<li class="tuto-enjoy">Enjoy</li>
 						</ol>

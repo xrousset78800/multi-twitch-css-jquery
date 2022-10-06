@@ -345,7 +345,19 @@ animation: 60s ease-in 1s infinite both running slidein;
     margin-left: 0;
     margin-right: 0
 }
-
+.reset {
+	position: absolute;
+    bottom: 0;
+    right: 0;
+    font-size: 11px;
+	cursor: pointer;
+}
+.suggest {
+	color: white;
+}
+.suggest:hover {
+	color: #ddd;
+}
 .title {
     opacity: 0;
     transition: opacity 0.8s;

@@ -23,17 +23,30 @@ var scamGet = urlParams.getAll('scamer');
 var checker = [];
 
 if(getCookie("Scamers") === undefined) {
+	
 } else {
 	scamersTotalList = getCookie("Scamers").split(',');
+	scamersTotalList = scamersTotalList.filter(function(val){
+    if( val == '' || val == NaN || val == undefined || val == null ){
+        return false;
+    }
+    return true;
+});
 }
 
 if(newScamer) {
 	for(var i=0; i<newScamer.length; i++) {	
+	console.log(newScamer[i]);
+		//Mono
 		if(!scamersTotalList.includes(newScamer[i].toLowerCase()) && newScamer[i] !== '') {
 			scamersTotalList.push(newScamer[i].toLowerCase());
 			setCookie('Scamers', scamersTotalList, 60);
 		} else {
 			console.log("already exist or empty -- skip");
+		}
+		//multi
+		if(newScamer[i].indexOf(',') != -1 ){
+			scamersTotalList = newScamer[i].split(',');
 		}
 	}
 }
@@ -282,7 +295,15 @@ function deleteCookie(name) {
   })
 }
 
+
+
 jQuery(document).ready(function(){
+	
+	jQuery("[data-reset-app]").on('click', function(){
+		deleteCookie('Scamers');
+		window.location.replace("/scam-is-real/");
+	});
+	
 	var scamConf = loadScam();
 	var urlscammers = "";
 
@@ -300,10 +321,6 @@ jQuery(document).ready(function(){
 			 'Authorization': 'Bearer ' + authToken, 
 		   },
 		   success: function(c){
-			  //data array is empty when queried channel is offline
-			if (c.data.length > 0) {
-				console.log(c.data);
-			  }
 			  console.log(scamConf);
 			  updateStatuses(c.data, scamConf["scamers"]);
 		   },
@@ -313,10 +330,28 @@ jQuery(document).ready(function(){
 			}
 		});	
 	}
-
+	
 	myPeriodicMethod();
 	StartThisShit(scamConf);
 	
+	jQuery.ajax(
+	{
+	   type: 'GET',
+	   url: 'https://api.twitch.tv/helix/streams?',
+	   headers: {
+		 'Client-ID': clientID,
+		 'Authorization': 'Bearer ' + authToken, 
+	   },
+	   success: function(c){
+		  //data array is empty when queried channel is offline
+		if (c.data.length > 0) {
+			jQuery(".home .instructions").append("<h4>Suggestions</h4>");
+			jQuery(c.data).each(function(i, val){
+				jQuery(".home .instructions").append("<a class='suggest' href='/scam-is-real/?newScamer="+val.user_name+"'>"+val.user_name+"</a>, ");
+			});
+		  }
+	   },
+	});
 	
 	jQuery("h1.toggleShit").click(function(){
 		jQuery(this).toggleClass("hide");
@@ -508,13 +543,17 @@ jQuery(document).ready(function(){
 
 
 /*
-envoyer message
-reset list button
-Options par chat (afficher, police)
-stop autoscroll on chat hover
-icones sub + modo + first + flags
-(Bouton soft reload (keep fullscreen))
 autocomplete addNewscamer https://dev.twitch.tv/docs/api/reference#search-channels
+envoyer message
+
+Options par chat (afficher, police)
+
+stop autoscroll on chat hover
+
+icones sub + modo + first + flags
+
+(Bouton soft reload (keep fullscreen))
+
 smileys in chat
 */
 
