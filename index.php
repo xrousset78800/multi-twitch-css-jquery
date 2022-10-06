@@ -80,6 +80,7 @@
 							<li><b><u>0</u></b> - vue multigrille</li>
 							<li><b><u>[1-N]</u></b> - basculer vers Nieme stream</li>
 							<li><b><u>left-right</u></b> - suivant(premier) - précédent(dernier)</li>
+							<li><b><u>dbl click sur le chat</u></b>Toggle</li>
 						</ul>
 					</div>
 				</div>

@@ -36,7 +36,6 @@ if(getCookie("Scamers") === undefined) {
 
 if(newScamer) {
 	for(var i=0; i<newScamer.length; i++) {	
-	console.log(newScamer[i]);
 		//Mono
 		if(!scamersTotalList.includes(newScamer[i].toLowerCase()) && newScamer[i] !== '') {
 			scamersTotalList.push(newScamer[i].toLowerCase());
@@ -100,6 +99,7 @@ function StartThisShit(config) {
 		}
 		
 		jQuery(".twitch-description").draggable({ containment: "parent" });
+		
 		jQuery(".twitch-description").dblclick(function() {
 			jQuery(this).toggleClass("hide");
 		});
@@ -107,7 +107,7 @@ function StartThisShit(config) {
 		jQuery(".twitch-description").resizable({
 		  containment: 'parent',
 		  minWidth: 200,
-		  minHeight: 200,
+		  minHeight: 80,
 		  //maxWidth: 800,
 		  classes: {
 		  },
@@ -132,9 +132,7 @@ function updateStatuses(response, scamersToShowList) {
 	/* Save user checked channels */
 	var old = [];
 	jQuery(".channels input").each(function(){
-		console.log("test");
 		if(jQuery(this).is(':checked')){
-			console.log("checked");
 			old.push(jQuery(this).attr("id"));
 		}
 	});
@@ -309,7 +307,9 @@ function deleteCookie(name) {
   })
 }
 
-
+function scrollToBottom(channel) {
+	jQuery(channel.toLowerCase()+' > nav.scroll').scrollTop(jQuery(channel.toLowerCase()+' > nav.scroll > div.chatscroll').height());
+}
 
 jQuery(document).ready(function(){
 	
@@ -340,7 +340,7 @@ jQuery(document).ready(function(){
 		   },
 		   complete: function() {
 			  // schedule the next request *only* when the current one is complete:
-			  setTimeout(myPeriodicMethod, 10000);
+			  setTimeout(myPeriodicMethod, 60000);
 			}
 		});	
 	}
@@ -451,6 +451,28 @@ jQuery(document).ready(function(){
 			jQuery('.online-stream, .offline-stream').removeClass('highlight');	
 		}
 	);	
+	
+	
+	
+	
+	
+	
+	jQuery(".scroll").hover(function(){
+		//var channel= "#"+jQuery(this).parent().attr("id");
+		
+		jQuery(this).find('.chatscroll').css("width", jQuery(this).css("width")).css("height", jQuery(this).css("height"));
+		
+		//jQuery(channel.toLowerCase()+' > nav.scroll').scrollTop(jQuery(channel.toLowerCase()+' > nav.scroll > div.chatscroll').height());
+		
+	},function(){
+		var channel= "#"+jQuery(this).parent().attr("id");
+		jQuery(this).find('.chatscroll').css("width", "auto").css("height", "auto");	
+	});	
+	
+	
+	
+	
+	
 	jQuery(".tuto-enjoy").hover(function(){
 		jQuery('.omg').addClass('highlight');
 		}, 
@@ -519,30 +541,56 @@ jQuery(document).ready(function(){
 			let premium = "";
 			let subscriber = "";
 			let subgifts = "";
-			console.log(message);
+			let noaudio = "";
+			let flags = [];
+			
 			console.log(tags);
 			if(tags.badges !== null) {
-				premium = tags.badges.premium;
+				premium = tags.badges['premium'];
 				subscriber = tags.badges['subscriber'];	
-				subgifts = tags.badges['sub-gifter'];	
+				subgifts = tags.badges['sub-gifter'];
+				noaudio = tags.badges['no_audio'];
 			}
+			if(tags.flags !== null) {
+				flags = tags.flags;
+			}
+			
+			/*
+			Liste des badges/tags
+			
+			sub
+			vip
+			modo
+			prime
+			flags
+			
+			no_audio
+			no_video
+			
+			<img src='https://static-cdn.jtvnw.net/emoticons/v2/<id>/default/dark/2.0'>
+			*/			
+			
 		    jQuery('.twitch-description'+channel.toLowerCase()+' > .scroll > div')
 			  .append(""+
 				  "<div class='embed-message "+tags.id+"'>" +
+					"<span data-first-message='"+tags['first-msg']+"'>OMG ! Premier message !</span>"+
 					"<div class='sender-message'>" +
-					  "<span data-first-message='"+tags['first-msg']+"'>OMG ! Premier message !<br></span>"+
-					  "<span title='OMG ! Flags !' data-flags='"+tags['flags']+"'>"+tags['flags']+"</span>"+
-					  "<span title='OMG ! Modo !' data-modo='"+tags['mod']+"'> MODO: </span>"+
-					  "<span title='OMG ! Turbo !' data-turbo='"+tags['turbo']+"'>TURBO</span>"+
-					  "<span title='OMG ! Sub !' data-subscriber='"+tags['subscriber']+"'> SUB </span>"+
+					  "<span title='Prime' data-prime-"+premium+">PRIME</span>"+
+					  "<span title='OMG ! Modo !' data-modo='"+tags['mod']+"'>MODO</span>"+
+					  "<span title='OMG ! Sub depuis "+subscriber+" Mois' data-subscriber='"+tags['subscriber']+"'> SUB </span>"+
+					  
+					  
+					  "<span title='OMG ! Flags !' data-flags='"+tags['flags']+"'>FLAGS</span>"+
+					  "<span title='OMG ! Turbo !' data-turbo='"+tags['turbo']+"'> TURBO </span>"+
 					  "<span style='color:"+tags['color']+"' class='scamer'>"+tags['display-name']+"</span>"+
 					"</div>" +
-					  "<span class='message'>: "+tags['flags']+" -- "+subgifts+" -- "+premium+" -- "+subscriber+" -- "+message+"</span>"+
+					  "<span class='message'>: "+message+"</span>"+
 				  "</div>"
 				);
-
-				jQuery(channel.toLowerCase()+' > nav.scroll').scrollTop(jQuery(channel.toLowerCase()+' > nav.scroll > div.chatscroll').height());
 				
+				scrollToBottom(channel);
+				
+				/* Keep 150 messages */
 				if(jQuery(channel.toLowerCase()+' > nav.scroll > .chatscroll > div').length == bufferMessageSize) {
 					jQuery(channel.toLowerCase()+' > nav.scroll > .chatscroll > div').eq(0).remove();
 				}
@@ -562,15 +610,18 @@ username pas utf8
 
 envoyer message
 
-Options par chat (afficher, police)
+Options par chat (police)
 
-stop autoscroll on chat hover
+icones sub + modo + first + flags + no audio + no video 
 
-icones sub + modo + first + flags
+smileys in chat
+
+
+
+
 
 (Bouton soft reload (keep fullscreen))
 
-smileys in chat
 */
 
 

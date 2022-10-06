@@ -524,6 +524,35 @@ height: 50%;
 	top: 20px;
 	left: 20px;
 	overflow: hidden;
+	cursor: pointer;
+}
+
+.scroll:hover .chatscroll{
+    position: fixed;
+    overflow-y: auto;
+	    width: auto;
+    height: auto;
+}
+
+.twitch-description.hide{
+    width: 40px !important;
+    height: 40px !important;
+    background-color: #00000088;
+    top: 20px !important;
+    /*right: 20px !important;*/
+    left: 20px !important;
+	border: 1px solid #ffffff44;
+	transition: left 0.6s, top 0.6s;
+}
+
+
+.ui-widget-content .ui-icon {
+    background-image: url("http://download.jqueryui.com/themeroller/images/ui-icons_ffffff_256x240.png");
+}
+
+
+.twitch-description.hide .chatscroll{
+	display: none;
 }
 
 .twitch-video {
@@ -543,6 +572,8 @@ height: 50%;
 	cursor: pointer;
 	padding: 3px;
 	word-break: break-word;
+	padding-right: 20px;
+	padding-left: 10px;
 }
 .twitch-description .sender-message{
     display: inline-block;
@@ -783,7 +814,7 @@ height: 50%;
 }
 
 
-[data-first-message=false], [data-flags=null] , [data-modo=false] , [data-turbo=false] , [data-subscriber=false] {
+[data-first-message=false], [data-flags=null] , [data-modo=false] , [data-turbo=false] , [data-subscriber=false], [data-prime-undefined], [data-prime-] {
 	display: none;
 }
 [data-modo=true], [data-subscriber=true] {
@@ -795,6 +826,17 @@ height: 50%;
 	background-size: contain;
 	vertical-align: top;
 }
+[data-first-message=true] {
+    display: block;
+    border-bottom: 1px dotted #ffffff;
+    border-top: 1px dotted #ffffff;
+    text-align: center;
+    padding: 4px 0;
+}
+[data-prime-1] {
+	display: inline-block;
+}
+
 
 /*Input */
 
