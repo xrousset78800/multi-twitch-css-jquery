@@ -351,7 +351,7 @@ animation: 60s ease-in 1s infinite both running slidein;
     transition: opacity 0.8s;
     position: absolute;
     border-radius: 5px;
-    right: 197px;
+    right: 257px;
     top: 0;
     width: 200px;
     background: #000000ee;
@@ -371,7 +371,7 @@ animation: 60s ease-in 1s infinite both running slidein;
   background: #000000cc;
   color: #eeeeee;
   z-index: 2;
-  width: 200px;
+  width: 260px;
     position: absolute;
     top: 75px;
     right: 10px;
@@ -530,9 +530,7 @@ height: 50%;
 }
 .twitch-description .sender-message{
     display: inline-block;
-    width: 35%;
     vertical-align: top;
-	text-align: right;
 }
 .twitch-description .embed-message:hover{
     background: #ffffffcc;
@@ -540,12 +538,9 @@ height: 50%;
 }
 
 .twitch-description .message{
-	display: inline-block;
-    width: 65%;
 }
 .twitch-description .scamer{
 	font-weight: bold;
-	margin-right: 10px;
 }
 
 .viewer4video .viewer{
@@ -793,7 +788,8 @@ height: 50%;
     padding: 0;
 	margin: 0;
 	margin-bottom: 10px;
-    padding-bottom: 8px;
+    padding: 8px;
+	padding-left: 10px;
 	
     color: white;
     border-bottom: 1px solid white;

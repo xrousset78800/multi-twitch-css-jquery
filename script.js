@@ -160,7 +160,7 @@ function updateScammerStatus(online, scamer) {
 				"<div class='infos'>"+scamer.viewer_count+" Victimes</div>"+
 				"<div class='date'>"+duration+"</div>"+
 			"</div>"+
-			"<i class='online-icon'></i><label for='" + scamer.user_login + "' >" + scamer.user_name + "</label>"+
+			"<i class='online-icon'></i><label for='" + scamer.user_login + "' >" + scamer.user_name +"<small> ("+scamer.viewer_count+")</small></label>"+
 			"<small class='game'><i>"+game+"</i></small>"+
 			"<div data-scamer='" + scamer.user_login + "' class='remove'>x</div>"+
 		"</div>"
@@ -467,8 +467,17 @@ jQuery(document).ready(function(){
 */	
 
 		client.on('message', (channel, tags, message, self) => {	
-		
-		  jQuery('.twitch-description'+channel.toLowerCase()+' > .scroll > div')
+			let premium = "";
+			let subscriber = "";
+			let subgifts = "";
+			console.log(message);
+			console.log(tags);
+			if(tags.badges !== null) {
+				premium = tags.badges.premium;
+				subscriber = tags.badges.subscriber;	
+				subgifts = tags.badges.sub-gifter;	
+			}
+		    jQuery('.twitch-description'+channel.toLowerCase()+' > .scroll > div')
 			  .append(""+
 				  "<div class='embed-message "+tags.id+"'>" +
 					"<div class='sender-message'>" +
@@ -479,18 +488,9 @@ jQuery(document).ready(function(){
 					  "<span title='OMG ! Sub !' data-subscriber='"+tags['subscriber']+"'> SUB </span>"+
 					  "<span style='color:"+tags['color']+"' class='scamer'>"+tags['display-name']+"</span>"+
 					"</div>" +
-					  "<span class='message'>"+message+"</span>"+
+					  "<span class='message'>: "+tags['flags']+" -- "+subgifts+" -- "+premium+" -- "+subscriber+" -- "+message+"</span>"+
 				  "</div>"
 				);
-			
-				if(tags.badges !== null) {
-					jQuery('.twitch-description'+tags.id+' > .embed-message > .time').append(""+
-						"<span class='premium'>"+(tags.badges.premium)+"</span>"
-					);
-					jQuery('.twitch-description'+tags.id+' > .embed-message > .time').append(""+
-						"<span class='subscriber'>"+(tags.badges.subscriber)+"</span>"
-					);		
-				}
 
 				jQuery(channel.toLowerCase()+' > nav.scroll').scrollTop(jQuery(channel.toLowerCase()+' > nav.scroll > div.chatscroll').height());
 				
@@ -509,11 +509,13 @@ jQuery(document).ready(function(){
 
 /*
 envoyer message
+reset list button
 Options par chat (afficher, police)
 stop autoscroll on chat hover
 icones sub + modo + first + flags
-(Bouton soft reload)
-
+(Bouton soft reload (keep fullscreen))
+autocomplete addNewscamer https://dev.twitch.tv/docs/api/reference#search-channels
+smileys in chat
 */
 
 
