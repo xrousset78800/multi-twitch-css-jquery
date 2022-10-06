@@ -377,6 +377,10 @@ animation: 60s ease-in 1s infinite both running slidein;
     position: absolute;
 
 }
+.status-text {
+
+}
+
 .status {
   border: 3px solid black;
   border-radius: 5px;
@@ -731,14 +735,14 @@ height: 50%;
 
 .viewer0video .instructions {
     display: inline-block;
-    width: 50%;
+    width: 90%;
     margin: 0 auto;
     position: absolute;
     left: 0;
     right: 0;
     margin-top: 50px;
     color: white;
-	text-align: center;
+	text-align: left;
 }
 .viewer0video .status {
     display: inline-block;

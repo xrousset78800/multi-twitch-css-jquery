@@ -42,11 +42,11 @@ if(newScamer) {
 			scamersTotalList.push(newScamer[i].toLowerCase());
 			setCookie('Scamers', scamersTotalList, 60);
 		} else {
+			if(newScamer[i].indexOf(',') != -1){
+				scamersTotalList.push(newScamer[i].split(','));
+				setCookie('Scamers', scamersTotalList, 60);
+			}
 			console.log("already exist or empty -- skip");
-		}
-		//multi
-		if(newScamer[i].indexOf(',') != -1 ){
-			scamersTotalList = newScamer[i].split(',');
 		}
 	}
 }
@@ -543,7 +543,6 @@ jQuery(document).ready(function(){
 
 
 /*
-autocomplete addNewscamer https://dev.twitch.tv/docs/api/reference#search-channels
 envoyer message
 
 Options par chat (afficher, police)

@@ -69,7 +69,7 @@
 					<div class="instructions">
 						<h1>Instructions</h1>
 						<ol>
-							<li class="tuto-add">Ajoutez des chaines dans le menu(supporte les virgules)</li>
+							<li class="tuto-add">Ajoutez une/des chaines dans le menu (séparateur ",")</li>
 							<li class="tuto-select">Selectionnez les chaines à charger</li>
 							<li class="tuto-enjoy">Enjoy</li>
 						</ol>
