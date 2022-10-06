@@ -53,11 +53,6 @@
 							</div>
 							<div class="offline-stream">
 							</div>
-							<div class="chat">
-								<input type="radio" name="active_chat" value="video"/><label for="active_chat"><strike>Chat</strike></label>
-								<br />
-								<input checked="checked" type="radio" name="active_chat" value="embed"/><label for="active_chat">Chat</label>
-							</div>						
 							<input type="submit" value="Go" />
 						</form>
 					</div>

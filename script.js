@@ -17,7 +17,6 @@ function loadScam() {
 
 var urlParams = new URLSearchParams(window.location.search);
 
-var showChat = urlParams.get('active_chat');
 var newScamer = urlParams.getAll('newScamer');
 var scamGet = urlParams.getAll('scamer');
 var checker = [];
@@ -54,16 +53,9 @@ for(var i=0; i<scamersTotalList.length; i++) {
 	jQuery("#channel-to-feed").append("<option value='"+scamersTotalList[i]+"'>"+scamersTotalList[i]+"</option>");
 }
 
-if(!showChat) {
-	var player = "embed";
-} else {
-	var player = showChat;
-}
 jQuery('[name="active_chat"]').removeAttr('checked');
-jQuery("input[name=active_chat][value=" + player + "]").prop('checked', true);
 
 var result = {
-	'showChat': {'player': player},
 	'scamers': scamGet,
 	'full_scam': false
 }
@@ -433,30 +425,6 @@ jQuery(document).ready(function(){
 		
 	});
 	
-	
-	
-	
-	jQuery(".tuto-add").hover(function(){
-		jQuery('input[name=newScamer]').addClass('highlight');
-		}, 
-		function(){
-			jQuery('input[name=newScamer]').removeClass('highlight');	
-		}
-	);	
-	
-	jQuery(".tuto-select").hover(function(){
-		jQuery('.online-stream, .offline-stream').addClass('highlight');
-		}, 
-		function(){
-			jQuery('.online-stream, .offline-stream').removeClass('highlight');	
-		}
-	);	
-	
-	
-	
-	
-	
-	
 	jQuery(".scroll").hover(function(){
 		//var channel= "#"+jQuery(this).parent().attr("id");
 		
@@ -494,112 +462,109 @@ jQuery(document).ready(function(){
 		else
 			GoInFullscreen(jQuery("#myScamPlayer").get(0));
 	});
-	
-	if(scamConf['showChat']['player'] == 'embed') {
-	
-		const client = new tmi.Client({
-			channels: scamConf['scamers']
-		});
-		client.connect();
 		
+	const client = new tmi.Client({
+		channels: scamConf['scamers']
+	});
+	client.connect();
+	
 /*		
-		
-		const option = {
-		  options: {
-			debug: true
-		  },
-		  connection: {
-			cluster: "aws",
-			reconnect: true
-		  },
-		  identity: {
-			username: 'scamerbot',
-			password: 'oauth:'
-			},
-		  channels: ["xou____"]
-		};
-		const client2 = new tmi.client(option);
-		
-		const formScam = jQuery('form[name="spam-area"]');
-		
-		client2.connect().catch((err) => {console.log('Connection error!', err)});
-
-		formScam.on("submit", function(e) {
-			e.preventDefault();
-			client2.action(jQuery('#channel-to-feed').val(), jQuery('#spam-content').val())
-			.then(data => {
-				//console.log(`Sent "${data[1]}" to`, jQuery('#channel-to-feed').val());
-			})
-			.catch(err => {
-				//console.log('[ERR]', err);
-			});
-		});
 	
+	const option = {
+	  options: {
+		debug: true
+	  },
+	  connection: {
+		cluster: "aws",
+		reconnect: true
+	  },
+	  identity: {
+		username: 'scamerbot',
+		password: 'oauth:'
+		},
+	  channels: ["xou____"]
+	};
+	const client2 = new tmi.client(option);
+	
+	const formScam = jQuery('form[name="spam-area"]');
+	
+	client2.connect().catch((err) => {console.log('Connection error!', err)});
+
+	formScam.on("submit", function(e) {
+		e.preventDefault();
+		client2.action(jQuery('#channel-to-feed').val(), jQuery('#spam-content').val())
+		.then(data => {
+			//console.log(`Sent "${data[1]}" to`, jQuery('#channel-to-feed').val());
+		})
+		.catch(err => {
+			//console.log('[ERR]', err);
+		});
+	});
+
 */	
 
-		client.on('message', (channel, tags, message, self) => {	
-			let premium = "";
-			let subscriber = "";
-			let subgifts = "";
-			let noaudio = "";
-			let flags = [];
-			
-			console.log(tags);
-			if(tags.badges !== null) {
-				premium = tags.badges['premium'];
-				subscriber = tags.badges['subscriber'];	
-				subgifts = tags.badges['sub-gifter'];
-				noaudio = tags.badges['no_audio'];
-			}
-			if(tags.flags !== null) {
-				flags = tags.flags;
-			}
-			
-			/*
-			Liste des badges/tags
-			
-			sub
-			vip
-			modo
-			prime
-			flags
-			
-			no_audio
-			no_video
-			
-			<img src='https://static-cdn.jtvnw.net/emoticons/v2/<id>/default/dark/2.0'>
-			*/			
-			
-		    jQuery('.twitch-description'+channel.toLowerCase()+' > .scroll > div')
-			  .append(""+
-				  "<div class='embed-message "+tags.id+"'>" +
-					"<span data-first-message='"+tags['first-msg']+"'>OMG ! Premier message !</span>"+
-					"<div class='sender-message'>" +
-					  "<span title='Prime' data-prime-"+premium+">PRIME</span>"+
-					  "<span title='OMG ! Modo !' data-modo='"+tags['mod']+"'>MODO</span>"+
-					  "<span title='OMG ! Sub depuis "+subscriber+" Mois' data-subscriber='"+tags['subscriber']+"'> SUB </span>"+
-					  
-					  
-					  "<span title='OMG ! Flags !' data-flags='"+tags['flags']+"'>FLAGS</span>"+
-					  "<span title='OMG ! Turbo !' data-turbo='"+tags['turbo']+"'> TURBO </span>"+
-					  "<span style='color:"+tags['color']+"' class='scamer'>"+tags['display-name']+"</span>"+
-					"</div>" +
-					  "<span class='message'>: "+message+"</span>"+
-				  "</div>"
-				);
-				
-				scrollToBottom(channel);
-				
-				/* Keep 150 messages */
-				if(jQuery(channel.toLowerCase()+' > nav.scroll > .chatscroll > div').length == bufferMessageSize) {
-					jQuery(channel.toLowerCase()+' > nav.scroll > .chatscroll > div').eq(0).remove();
-				}
-		});
+	client.on('message', (channel, tags, message, self) => {	
+		let premium = "";
+		let subscriber = "";
+		let subgifts = "";
+		let noaudio = "";
+		let flags = [];
 		
-		client.on("connected", function (address, port) {
+		console.log(tags);
+		if(tags.badges !== null) {
+			premium = tags.badges['premium'];
+			subscriber = tags.badges['subscriber'];	
+			subgifts = tags.badges['sub-gifter'];
+			noaudio = tags.badges['no_audio'];
+		}
+		if(tags.flags !== null) {
+			flags = tags.flags;
+		}
+		
+		/*
+		Liste des badges/tags
+		
+		sub
+		vip
+		modo
+		prime
+		flags
+		
+		no_audio
+		no_video
+		
+		<img src='https://static-cdn.jtvnw.net/emoticons/v2/<id>/default/dark/2.0'>
+		*/			
+		
+		jQuery('.twitch-description'+channel.toLowerCase()+' > .scroll > div')
+		  .append(""+
+			  "<div class='embed-message "+tags.id+"'>" +
+				"<span data-first-message='"+tags['first-msg']+"'>OMG ! Premier message !</span>"+
+				"<div class='sender-message'>" +
+				  "<span title='Prime' data-prime-"+premium+">PRIME</span>"+
+				  "<span title='OMG ! Modo !' data-modo='"+tags['mod']+"'>MODO</span>"+
+				  "<span title='OMG ! Sub depuis "+subscriber+" Mois' data-subscriber='"+tags['subscriber']+"'> SUB </span>"+
+				  
+				  
+				  "<span title='OMG ! Flags !' data-flags='"+tags['flags']+"'>FLAGS</span>"+
+				  "<span title='OMG ! Turbo !' data-turbo='"+tags['turbo']+"'> TURBO </span>"+
+				  "<span style='color:"+tags['color']+"' class='scamer'>"+tags['display-name']+"</span>"+
+				"</div>" +
+				  "<span class='message'>: "+message+"</span>"+
+			  "</div>"
+			);
+			
+			scrollToBottom(channel);
+			
+			/* Keep 150 messages */
+			if(jQuery(channel.toLowerCase()+' > nav.scroll > .chatscroll > div').length == bufferMessageSize) {
+				jQuery(channel.toLowerCase()+' > nav.scroll > .chatscroll > div').eq(0).remove();
+			}
+	});
+	
+	client.on("connected", function (address, port) {
 
-		});
-	}
+	});
 	
 });
 
@@ -609,8 +574,6 @@ jQuery(document).ready(function(){
 username pas utf8
 
 envoyer message
-
-Options par chat (police)
 
 icones sub + modo + first + flags + no audio + no video 
 
