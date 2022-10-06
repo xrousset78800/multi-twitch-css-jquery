@@ -128,8 +128,18 @@ function StartThisShit(config) {
 	return true;
 }
 
-function updateStatuses(response, scamersToShowList) {	
+function updateStatuses(response, scamersToShowList) {
+	/* Save user checked channels */
+	var old = [];
+	jQuery(".channels input").each(function(){
+		console.log("test");
+		if(jQuery(this).is(':checked')){
+			console.log("checked");
+			old.push(jQuery(this).attr("id"));
+		}
+	});
 	jQuery(".channels").remove();
+	
 	jQuery(scamersTotalList).each(function(scam, value){
             var scamer = value;
 		let flag = false;
@@ -146,6 +156,10 @@ function updateStatuses(response, scamersToShowList) {
 			updateScammerStatus(false, scamer);
 		}
 	});
+
+	if(old.length > 0) {
+		scamersToShowList = old;
+	}
 
 	for(var i = 0; i<scamersToShowList.length;i++) {
 		if(scamersToShowList[i].indexOf("#") != -1) {
@@ -326,7 +340,7 @@ jQuery(document).ready(function(){
 		   },
 		   complete: function() {
 			  // schedule the next request *only* when the current one is complete:
-			  setTimeout(myPeriodicMethod, 30000);
+			  setTimeout(myPeriodicMethod, 10000);
 			}
 		});	
 	}
@@ -509,8 +523,8 @@ jQuery(document).ready(function(){
 			console.log(tags);
 			if(tags.badges !== null) {
 				premium = tags.badges.premium;
-				subscriber = tags.badges.subscriber;	
-				subgifts = tags.badges.sub-gifter;	
+				subscriber = tags.badges['subscriber'];	
+				subgifts = tags.badges['sub-gifter'];	
 			}
 		    jQuery('.twitch-description'+channel.toLowerCase()+' > .scroll > div')
 			  .append(""+
@@ -543,6 +557,9 @@ jQuery(document).ready(function(){
 
 
 /*
+
+username pas utf8
+
 envoyer message
 
 Options par chat (afficher, police)
