@@ -171,7 +171,6 @@ function updateScammerStatus(online, scamer) {
 
 		jQuery(".channel-form .online-stream").prepend(""+
 		"<div class='channels'>"+
-			"<input type='checkbox' id='"+scamer.user_login+"' name='scamer' value='"+scamer.user_login+"'/>"+
 			"<input type='checkbox' id='"+scamer.user_login+"' tabIndex='3' name='scamer' value='"+scamer.user_login+"'/>"+
 			"<div class='title'>"+
 				"<img src='"+ thumbnail_resized+"'/>"+ scamer.title +" "+
