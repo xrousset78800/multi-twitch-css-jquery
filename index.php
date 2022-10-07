@@ -31,7 +31,7 @@
 		<div class="page wrapper">
 			<header class="blog-header home row">
 				<div class="cell cell-12">
-					<h1 class="page-title"></h1>
+					<a href="/scam-is-real/"><h1 class="page-title"></h1></a>
 					<!--div class="postmessage">
 						<form action="" name="spam-area">
 						<select disabled id="channel-to-feed" name="channel-to-feed">

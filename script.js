@@ -383,8 +383,10 @@ jQuery(document).ready(function(){
 
 			case 96: 
 				// 0 
-				jQuery('.viewer').removeClass('mainViewer');
-				break;
+				if(scamConf["scamers"].length != 1){
+					jQuery('.viewer').removeClass('mainViewer');
+				}
+					break;
 				
 			case 37:
 				//left
@@ -411,15 +413,17 @@ jQuery(document).ready(function(){
 				break;
 				
 			default:
-				// 1-9 (1-N)
-				switch(true)
-				{
-					case ((value > 96) && (value <= 96+scamConf["scamers"].length)): 
-						
-						jQuery('.viewer').removeClass('mainViewer');
-						jQuery('.viewer').eq((value-96)-1).addClass('mainViewer');
-						
-						break;
+				if(scamConf["scamers"].length != 1){
+					// 1-9 (1-N)
+					switch(true)
+					{
+						case ((value > 96) && (value <= 96+scamConf["scamers"].length)): 
+							
+							jQuery('.viewer').removeClass('mainViewer');
+							jQuery('.viewer').eq((value-96)-1).addClass('mainViewer');
+							
+							break;
+					}
 				}
 		}
 		
@@ -438,7 +442,42 @@ jQuery(document).ready(function(){
 	});	
 	
 	
-	
+	jQuery(function () {
+		var timer;
+		var fadeInBuffer = false;
+		jQuery(document).mousemove(function () {
+			if (!fadeInBuffer) {
+				if (timer) {
+					console.log("clearTimer");
+					clearTimeout(timer);
+					timer = 0;
+				}
+
+					console.log("fadeIn");
+				jQuery('html').css({
+					cursor: ''
+				});
+			} else {
+				 jQuery('.viewer').css({
+					cursor: 'default'
+				});
+				fadeInBuffer = false;
+			}
+
+
+			timer = setTimeout(function () {
+				console.log("fadeout");
+				 jQuery('.viewer').css({
+					cursor: 'none'
+				});
+			 
+				fadeInBuffer = true;
+			}, 1500)
+		});
+		jQuery('.viewer').css({
+			cursor: 'default'
+		});
+	});
 	
 	
 	jQuery(".tuto-enjoy").hover(function(){

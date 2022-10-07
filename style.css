@@ -476,7 +476,7 @@ small.game {
     padding: 4px;
     float:left;
 	overflow: hidden;
-    /*transition: width 0.3s ease-in-out, height 0.3s ease-in-out;*/
+    transition: width 0.3s ease-in-out, height 0.3s ease-in-out;
 }
 .viewer.mainViewer {
     width: 100% !important;
@@ -543,7 +543,6 @@ height: 50%;
     color: #f1f1f1;
 	background: none;
 	border: 0;
-    padding: 5px;
     font-size: 0.8rem;
 	top: 20px;
 	left: 20px;
@@ -552,12 +551,16 @@ height: 50%;
 	z-index: 2;
 }
 
+.twitch-description:hover .scroll {
+	padding-right:10px;
+}
+
 .ui-widget-content .ui-icon {
-    background-image: url("http://download.jqueryui.com/themeroller/images/ui-icons_ffffff_256x240.png");
+    background-image: none !important;
 	z-index: initial !important;
 }
-.twitch-description.hide .ui-widget-content .ui-icon{
-	background-image: none;
+.viewer:hover .twitch-description.ui-widget-content .ui-icon{
+	background-image: url("http://download.jqueryui.com/themeroller/images/ui-icons_ffffff_256x240.png") !important;
 }
 
 .scroll:hover .chatscroll{
@@ -743,7 +746,7 @@ height: 50%;
   overflow-x: hidden;
   display: inline-block;
   position: absolute;
-  right: -10px;
+  right: -11px;
   top: 0;
 }
 
@@ -811,13 +814,9 @@ height: 50%;
 }
 
 .instructions li {
-	cursor: pointer;
 	text-align: left;
 }
-.instructions li:hover {
-	color: red;
-	text-decoration: underline;
-}
+
 .highlight {
 	border: 4px dotted red;
 }
