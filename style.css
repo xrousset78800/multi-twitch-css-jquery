@@ -124,7 +124,7 @@ body {
 
 body {
     padding: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);
-    background: url(sheep.jpg);
+    background: url(img/sheep.jpg);
 animation: 60s ease-in 1s infinite both running slidein;
 }
 
@@ -392,6 +392,7 @@ animation: 60s ease-in 1s infinite both running slidein;
     top: 75px;
     right: 10px;
     text-align: center;
+	   display: none;
 }
 
 .infos, .date {
@@ -425,6 +426,8 @@ opacity: 1;
 }
 small.game {
     display: block;
+	position: relative;
+	left: 44px;
 }
 .page-content {
 	padding: 0 10px;
@@ -499,8 +502,29 @@ small.game {
 }
 
 .twitch-embed{
+    display: block;
+    position: relative;
+    z-index: 0;
 	height: 100%;
 }
+.twitch-embed iframe{
+    display: block;
+    position: relative;
+    z-index: 1;
+}
+.twitch-embed:before{
+	content: '';
+    box-shadow: inset 0px 11px 8px -10px transparent, inset 0px -11px 8px -10px transparent;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+	pointer-events: auto;
+	z-index: 2;
+	height: 80%;
+    position: absolute;
+}
+
 
 .viewer3video .viewer{
 	width: 50%;
@@ -525,6 +549,15 @@ height: 50%;
 	left: 20px;
 	overflow: hidden;
 	cursor: pointer;
+	z-index: 2;
+}
+
+.ui-widget-content .ui-icon {
+    background-image: url("http://download.jqueryui.com/themeroller/images/ui-icons_ffffff_256x240.png");
+	z-index: initial !important;
+}
+.twitch-description.hide .ui-widget-content .ui-icon{
+	background-image: none;
 }
 
 .scroll:hover .chatscroll{
@@ -537,18 +570,16 @@ height: 50%;
 .twitch-description.hide{
     width: 40px !important;
     height: 40px !important;
-    background-color: #00000088;
     top: 20px !important;
     /*right: 20px !important;*/
     left: 20px !important;
-	border: 1px solid #ffffff44;
 	transition: left 0.6s, top 0.6s;
 }
 
-
-.ui-widget-content .ui-icon {
-    background-image: url("http://download.jqueryui.com/themeroller/images/ui-icons_ffffff_256x240.png");
+.viewer:hover .twitch-description{
+	border: 1px solid #ffffff44;
 }
+
 
 
 .twitch-description.hide .chatscroll{
@@ -817,15 +848,26 @@ height: 50%;
 [data-first-message=false], [data-flags=null] , [data-modo=false] , [data-turbo=false] , [data-subscriber=false], [data-prime-undefined], [data-prime-] {
 	display: none;
 }
-[data-modo=true], [data-subscriber=true] {
+
+[data-modo=true], [data-subscriber=true], [data-prime-1] {
 	display: inline-block;
 	width: 20px;
 	height: 20px;
-	font-size: 0;
-	background:url("favicon.png");
+	background:url("img/modo.png");
 	background-size: contain;
 	vertical-align: top;
 }
+
+[data-subscriber=true] {
+	background:url("img/sub.png");
+}
+[data-subscriber=true] {
+	background:url("img/sub.png");
+}
+[data-prime-1] {
+	background:url("img/favicon.png");
+}
+
 [data-first-message=true] {
     display: block;
     border-bottom: 1px dotted #ffffff;
@@ -833,13 +875,14 @@ height: 50%;
     text-align: center;
     padding: 4px 0;
 }
-[data-prime-1] {
-	display: inline-block;
-}
+
+
+
+
+
 
 
 /*Input */
-
 [name=newScamer] {	
 	border: 0;
     background: transparent;

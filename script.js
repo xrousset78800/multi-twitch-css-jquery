@@ -172,6 +172,7 @@ function updateScammerStatus(online, scamer) {
 		jQuery(".channel-form .online-stream").prepend(""+
 		"<div class='channels'>"+
 			"<input type='checkbox' id='"+scamer.user_login+"' name='scamer' value='"+scamer.user_login+"'/>"+
+			"<input type='checkbox' id='"+scamer.user_login+"' tabIndex='3' name='scamer' value='"+scamer.user_login+"'/>"+
 			"<div class='title'>"+
 				"<img src='"+ thumbnail_resized+"'/>"+ scamer.title +" "+
 				"<div class='infos'>"+scamer.viewer_count+" Victimes</div>"+
@@ -179,16 +180,16 @@ function updateScammerStatus(online, scamer) {
 			"</div>"+
 			"<i class='online-icon'></i><label for='" + scamer.user_login + "' >" + scamer.user_name +"<small> ("+scamer.viewer_count+")</small></label>"+
 			"<small class='game'><i>"+game+"</i></small>"+
-			"<div data-scamer='" + scamer.user_login + "' class='remove'>x</div>"+
+			"<div data-scamer='" + scamer.user_login + "' tabIndex='4' class='remove'>x</div>"+
 		"</div>"
 		);
 	}else{
 		jQuery(".channel-form .offline-stream").prepend(""+
 			"<div class='channels'>"+
-				"<input type='checkbox' id='"+scamer+"' name='scamer' value='"+scamer+"'/>"+
+				"<input type='checkbox' id='"+scamer+"' tabIndex='3' name='scamer' value='"+scamer+"'/>"+
 				"<i class='offline-icon'></i>"+
 				"<label for='" + scamer + "'>" + scamer + "</label>"+
-				"<div data-scamer='" + scamer + "' class='remove'>x</div>"+
+				"<div data-scamer='" + scamer + "' tabIndex='4' class='remove'>x</div>"+
 			"</div>"
 		);
 	}
@@ -541,9 +542,9 @@ jQuery(document).ready(function(){
 			  "<div class='embed-message "+tags.id+"'>" +
 				"<span data-first-message='"+tags['first-msg']+"'>OMG ! Premier message !</span>"+
 				"<div class='sender-message'>" +
-				  "<span title='Prime' data-prime-"+premium+">PRIME</span>"+
-				  "<span title='OMG ! Modo !' data-modo='"+tags['mod']+"'>MODO</span>"+
-				  "<span title='OMG ! Sub depuis "+subscriber+" Mois' data-subscriber='"+tags['subscriber']+"'> SUB </span>"+
+				  "<span title='Prime' data-prime-"+premium+"></span>"+
+				  "<span title='OMG ! Modo !' data-modo='"+tags['mod']+"'></span>"+
+				  "<span title='OMG ! Sub depuis "+subscriber+" Mois' data-subscriber='"+tags['subscriber']+"'></span>"+
 				  
 				  
 				  "<span title='OMG ! Flags !' data-flags='"+tags['flags']+"'>FLAGS</span>"+
@@ -575,16 +576,17 @@ username pas utf8
 
 envoyer message
 
-icones sub + modo + first + flags + no audio + no video 
+icones flags + no audio + no video + prime + badges
 
 smileys in chat
 
+css on streamer menu
 
+animation switch de stream 
 
+scroll to fix
 
-
-(Bouton soft reload (keep fullscreen))
-
+toggle vers chat global 
 */
 
 

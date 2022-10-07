@@ -11,7 +11,7 @@
 	  <meta property="og:type" content="website">
 	  <meta property="og:url" content="https://xouindaplace.fr/scam-is-real/">
 	  <meta property="og:description" content="A simple jquery-css3 Multi twitch player">
-	  <meta property="og:image" content="">
+	  <meta property="og:image" content="/scam-is-real/favicon.png">
 	  
 	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 	  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
@@ -44,21 +44,22 @@
 				</div>
 			</header>
 			<main id="myScamPlayer" class="page-content">
-				<div class="status">
+				<div class="status hide">
 					<div class="status-text">
 						<form action="#" method="GET" class="channel-form">
 							<label for="newScamer">Add a dude in list</label>
-							<input class="" type="text" name="newScamer" placeholder="Just here" value="">
+							<input class="" tabIndex="1" type="text" name="newScamer" placeholder="Just here" value="">
 							<div class="online-stream">
 							</div>
 							<div class="offline-stream">
 							</div>
+
 							<input type="submit" value="Go" />
 						</form>
 					</div>
 					<span class="reset" data-reset-app>reset app</span>
 				</div>
-				<h1 title="In full scam please" id="go-button">Full Scam</h1>
+				<h1 title="In full scam please" tabIndex="2" id="go-button">Full Scam</h1>
 				<h1 class="toggleShit" name="toggle">Menu</h1>
 				<div class="home">
 					<div class="instructions">
