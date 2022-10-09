@@ -124,7 +124,7 @@ body {
 
 body {
     padding: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);
-    background: url(img/sheep.jpg);
+    background: url('img/sheep.jpg');
 animation: 60s ease-in 1s infinite both running slidein;
 }
 
@@ -386,7 +386,7 @@ animation: 60s ease-in 1s infinite both running slidein;
   border-radius: 5px;
   background: #000000cc;
   color: #eeeeee;
-  z-index: 2;
+  z-index: 4;
   width: 260px;
     position: absolute;
     top: 75px;
@@ -444,7 +444,7 @@ small.game {
 .toggleShit {
     position: absolute;
     right: 10px;
-    z-index: 2;
+    z-index: 4;
     color: white;
 	font-size: 25px;
     line-height: 30px;
@@ -476,13 +476,14 @@ small.game {
     padding: 4px;
     float:left;
 	overflow: hidden;
-    transition: width 0.3s ease-in-out, height 0.3s ease-in-out;
+    /*transition: width 0.3s ease-in-out, height 0.3s ease-in-out;*/
+	transition: none;
 }
 .viewer.mainViewer {
     width: 100% !important;
     height: 100% !important;
     position: absolute;
-    z-index: 1;
+    z-index: 3;
 	top: 0;
 	bottom: 0;
 	left:0;
@@ -661,6 +662,46 @@ height: 50%;
 	width: 50%;
 }
 
+.specialgrid .viewer {
+	width: 11.11111% !important;
+    height: 12%;
+	margin-right: 0;
+	display: inline-block;
+	right: 0;
+    bottom: 0;
+	position: absolute;
+}
+
+
+.specialgrid .viewer.mainViewer {
+    bottom: inherit;
+    width: 100% !important;
+    height: 88% !important;
+    left: inherit;
+	margin-right: 0 !important;
+	right: 0 !important;
+	/*transition: width 0.1s, height 0.1s;*/
+	transition: none;
+}
+.specialgrid .viewer.mainViewer .tw{
+	padding-left: 15%;
+}
+.specialgrid .page-content {
+	padding: 0;
+}
+.specialgrid .viewer .twitch-description {
+	display: none;
+}
+.specialgrid .mainViewer .twitch-description {
+	display: inline-block;
+	height: 100%;
+    top: 0;
+    left: 0;
+	width: 15%;
+	background: #000000;
+}
+
+
 .online-icon {
   animation-duration: 1s;
   animation-iteration-count: infinite;
@@ -727,7 +768,7 @@ height: 50%;
     position: absolute;
     top: 0;
     right: 15px;
-    z-index: 2;
+    z-index: 4;
     font-size: 14px;
     cursor: pointer;
     margin: 0;
@@ -746,7 +787,6 @@ height: 50%;
   overflow-x: hidden;
   display: inline-block;
   position: absolute;
-  right: -11px;
   top: 0;
 }
 
@@ -852,19 +892,19 @@ height: 50%;
 	display: inline-block;
 	width: 20px;
 	height: 20px;
-	background:url("img/modo.png");
+	background-image:url("img/modo.png");
 	background-size: contain;
 	vertical-align: top;
 }
 
 [data-subscriber=true] {
-	background:url("img/sub.png");
+	background-image:url("img/sub.png");
 }
 [data-subscriber=true] {
-	background:url("img/sub.png");
+	background-image:url("img/sub.png");
 }
 [data-prime-1] {
-	background:url("img/favicon.png");
+	background-image:url("favicon.png");
 }
 
 [data-first-message=true] {

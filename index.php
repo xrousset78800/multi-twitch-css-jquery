@@ -77,6 +77,7 @@
 							<li><b><u>[1-N]</u></b> - basculer vers Nieme stream</li>
 							<li><b><u>left-right</u></b> - suivant(premier) - précédent(dernier)</li>
 							<li><b><u>dbl click sur le chat</u></b>Toggle</li>
+							<li><b><u>. en vue multigrille</u></b>Vue secondaire</li>
 						</ul>
 					</div>
 				</div>

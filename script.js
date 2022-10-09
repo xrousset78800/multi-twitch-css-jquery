@@ -366,7 +366,6 @@ jQuery(document).ready(function(){
 	
 	jQuery(document).keydown(function(e) {
 	    var value = e.which;	
-		
 		switch (value) {
 			case 32:
 				//space
@@ -385,6 +384,7 @@ jQuery(document).ready(function(){
 				// 0 
 				if(scamConf["scamers"].length != 1){
 					jQuery('.viewer').removeClass('mainViewer');
+					jQuery(".viewer").css("right", "0");
 				}
 					break;
 				
@@ -398,6 +398,25 @@ jQuery(document).ready(function(){
 				
 				jQuery('.viewer').removeClass('mainViewer');
 				jQuery('.viewer').eq(newId).addClass('mainViewer');
+				
+				break;
+			case 110:
+				var current = jQuery('.viewer.mainViewer').index();
+				/*if(current == -1) {
+					break;				
+				}*/
+				
+				jQuery(scamConf["scamers"]).each(function(i, val){
+					jQuery(".viewer").eq(i).css("right", 11.11111*(i)+"%");
+					
+					/*if(jQuery(".viewer").eq(i).hasClass("mainViewer")) {
+						console.log("insert");
+						jQuery(".viewer").eq(i).insertBefore("<div class='viewer'></div>");
+					}*/
+				});
+
+				jQuery('body').toggleClass('specialgrid');
+				
 				
 				break;
 			case 39:
@@ -448,12 +467,9 @@ jQuery(document).ready(function(){
 		jQuery(document).mousemove(function () {
 			if (!fadeInBuffer) {
 				if (timer) {
-					console.log("clearTimer");
 					clearTimeout(timer);
 					timer = 0;
 				}
-
-					console.log("fadeIn");
 				jQuery('html').css({
 					cursor: ''
 				});
@@ -466,7 +482,6 @@ jQuery(document).ready(function(){
 
 
 			timer = setTimeout(function () {
-				console.log("fadeout");
 				 jQuery('.viewer').css({
 					cursor: 'none'
 				});
@@ -549,7 +564,7 @@ jQuery(document).ready(function(){
 		let noaudio = "";
 		let flags = [];
 		
-		console.log(tags);
+		//console.log(tags);
 		if(tags.badges !== null) {
 			premium = tags.badges['premium'];
 			subscriber = tags.badges['subscriber'];	
@@ -613,6 +628,7 @@ jQuery(document).ready(function(){
 username pas utf8
 
 envoyer message
+toggle vers chat global 
 
 icones flags + no audio + no video + prime + badges
 
@@ -624,7 +640,8 @@ animation switch de stream
 
 scroll to fix
 
-toggle vers chat global 
+qualité bloqué par background transparent
+
 */
 
 
