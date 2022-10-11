@@ -365,10 +365,10 @@ animation: 60s ease-in 1s infinite both running slidein;
     border-radius: 5px;
     right: 257px;
     top: 0;
-    width: 400px;
+    width: 0;
     background: #000000ee;
     color: white;
-    padding: 20px;
+    padding: 0;
     font-size: 1rem;
     line-height: 1.3rem;
     z-index: 1;
@@ -420,6 +420,8 @@ line-height: 25px;
 }
 .channels:hover .title {
 opacity: 1;
+width: 400px;
+padding: 20px;
 }
 .channels:hover small {
 	color: black;
@@ -612,11 +614,6 @@ height: 50%;
 	z-index: 2;
 }
 
-[data-down-font], [data-up-font] {
-	position:absolute;
-	right: -20px;
-}
-
 .ui-widget-content .ui-icon {
     background-image: none !important;
 	z-index: initial !important;
@@ -657,7 +654,6 @@ height: 50%;
 }
 .twitch-description .embed-message{
 	background-color: #00000088;	
-	line-height: 1rem;
 	cursor: pointer;
 	padding: 3px;
 	word-break: break-word;
@@ -909,7 +905,18 @@ height: 50%;
 }
 
 
-[data-first-message=false], [data-flags=null] , [data-modo=false] , [data-turbo=false] , [data-subscriber=false], [data-prime-undefined], [data-prime-] {
+[data-down-font], [data-up-font] {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    z-index: 10;
+	cursor: pointer;
+}
+[data-up-font] {
+	left: 20px;
+}
+
+[data-flags=null] , [data-modo=false] , [data-turbo=false] , [data-subscriber=false], [data-prime-undefined], [data-prime-] {
 	display: none;
 }
 
@@ -932,18 +939,11 @@ height: 50%;
 	background-image:url("favicon.png");
 }
 
-[data-first-message=true] {
-    display: block;
+[data-first-message=true] .message{
+    font-weight: bold;
     border-bottom: 1px dotted #ffffff;
     border-top: 1px dotted #ffffff;
-    text-align: center;
-    padding: 4px 0;
 }
-
-
-
-
-
 
 
 /*Input */

@@ -309,26 +309,32 @@ function scrollToBottom(channel) {
 	jQuery(channel.toLowerCase()+' nav.scroll').scrollTop(jQuery(channel.toLowerCase()+' nav.scroll > div.chatscroll').height());
 }
 
+String.prototype.replaceAll = function(search, replacement) {
+    var target = this;
+    return target.split(search).join(replacement);
+};
+
+
 function getMessage(message, tags) {
-	var msg = message;	
+	var msg = message;
+	var url = "";
+	var newSubstr = "";
+	var substr = "";
+	
 	if(tags['emotes'] !== null){
-		jQuery(tags['emotes']).each(function(i, tag){
-			var arrEmotes = Object.keys(tag);
-			var values = Object.values(tag);
-			var url = 'https://static-cdn.jtvnw.net/emoticons/v2/'+arrEmotes[0]+'/default/dark/1.0';
+		var size = Object.keys(tags['emotes']).length;
+		var arrEmotes = Object.keys(tags['emotes']);
+		var offset = 0;
+
+		for (let i = 0; i < size; ++i) {		
+			var extract = tags['emotes'][arrEmotes[i]][0].split('-');
+			var url = 'https://static-cdn.jtvnw.net/emoticons/v2/'+arrEmotes[i]+'/default/dark/1.0';
+			var length = extract[1] - extract[0] + 1;		
+			var substr = message.slice(extract[0],extract[1]+1).slice(0, length);
+			var newSubstr = "<img title='"+substr+"' width='20' height='20' src='"+url+"'>";
 			
-			jQuery(values).each(function(j, val){
-				var occurences = this.length;
-				for(var k=0; k<occurences; k++){
-					var extract = val[k].split('-');
-					var substr = message.slice(extract[0],extract[1]+1);
-					console.log(substr);
-					var newSubstr = "<img width='20' height='20' src='"+url+"'>";
-				}
-				//moche
-				msg = message.replace(/substr/g, newSubstr);
-			});
-		});
+			msg = msg.replaceAll(substr, newSubstr);
+		}
 	}
 	return msg;
 }
@@ -541,7 +547,22 @@ jQuery(document).ready(function(){
 		else
 			GoInFullscreen(jQuery("#myScamPlayer").get(0));
 	});
+	
+	jQuery("[data-down-font]").on('click', function() {
+		var lineHeight = jQuery(this).parent('.viewer').find('.twitch-description').css('line-height');
+		var fontSize = jQuery(this).parent('.viewer').find('.twitch-description').css('font-size');
 		
+		jQuery(this).parent('.viewer').find('.twitch-description').css('line-height',parseInt(lineHeight, 10)-1+"px").css('font-size',parseInt(fontSize, 10)-1+"px");
+	});
+	
+	jQuery("[data-up-font]").on('click', function() {
+		var lineHeight = jQuery(this).parent('.viewer').find('.twitch-description').css('line-height');
+		var fontSize = jQuery(this).parent('.viewer').find('.twitch-description').css('font-size');
+		
+		jQuery(this).parent('.viewer').find('.twitch-description').css('line-height',parseInt(lineHeight, 10)+1+"px").css('font-size',parseInt(fontSize, 10)+1+"px");
+	});
+
+	
 	const client = new tmi.Client({
 		channels: scamConf['scamers']
 	});
@@ -619,7 +640,7 @@ jQuery(document).ready(function(){
 		jQuery('.twitch-description'+channel.toLowerCase()+' > .scroll > div')
 		  .append(""+
 			  "<div class='embed-message "+tags.id+"'>" +
-				"<span data-first-message='"+tags['first-msg']+"'>OMG ! Premier message !</span>"+
+				"<span data-first-message='"+tags['first-msg']+"'>"+
 				"<div class='sender-message'>" +
 				  "<span title='Prime' data-prime-"+premium+"></span>"+
 				  "<span title='Modo !' data-modo='"+tags['mod']+"'></span>"+
@@ -630,7 +651,7 @@ jQuery(document).ready(function(){
 				  "<span title='Turbo !' data-turbo='"+tags['turbo']+"'> TURBO </span>"+
 				  "<span style='color:"+tags['color']+"' class='scamer'>"+tags['display-name']+"</span>"+
 				"</div>" +
-				  "<span class='message'>: "+getMessage(message, tags)+"</span>"+
+				  "<span class='message'>: "+getMessage(message, tags)+"</span></span>"+
 			  "</div>"
 			);
 			
@@ -654,8 +675,7 @@ jQuery(document).ready(function(){
 
 -----------------envoyer message
 
-
-
+pluie d'emotes
 icones flags + no audio + no video + prime + badges
 animation switch de stream 
 qualité bloqué par background transparent
