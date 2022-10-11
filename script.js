@@ -504,10 +504,19 @@ jQuery(document).ready(function(){
 				jQuery('html').css({
 					cursor: ''
 				});
+
 			} else {
 				 jQuery('.viewer').css({
 					cursor: 'default'
 				});
+				jQuery('#go-button').css({
+					opacity: 1
+				});
+				jQuery('.toggleShit').css({
+					opacity: 1
+				});
+				jQuery('.twitch-description').css('border-color', '#aaaaaadd');
+				
 				fadeInBuffer = false;
 			}
 
@@ -516,7 +525,13 @@ jQuery(document).ready(function(){
 				 jQuery('.viewer').css({
 					cursor: 'none'
 				});
-			 
+				 jQuery('#go-button').css({
+					opacity: 0
+				});
+				jQuery('.toggleShit').css({
+					opacity: 0
+				});
+				jQuery('.twitch-description').css('border-color', 'transparent');
 				fadeInBuffer = true;
 			}, 1500)
 		});
@@ -621,22 +636,6 @@ jQuery(document).ready(function(){
 		if(tags.flags !== null) {
 			flags = tags.flags;
 		}	
-		
-		/*
-		Liste des badges/tags
-		
-		sub
-		vip
-		modo
-		prime
-		flags
-		
-		no_audio
-		no_video
-		
-		
-		*/			
-		
 		jQuery('.twitch-description'+channel.toLowerCase()+' > .scroll > div')
 		  .append(""+
 			  "<div class='embed-message "+tags.id+"'>" +
@@ -674,11 +673,23 @@ jQuery(document).ready(function(){
 /*
 
 -----------------envoyer message
+------------------qualité bloqué par background transparent
 
 pluie d'emotes
 icones flags + no audio + no video + prime + badges
 animation switch de stream 
-qualité bloqué par background transparent
+
+
+	
+	sub
+	vip
+	modo
+	prime
+	flags
+	
+	no_audio
+	no_video
+
 
 */
 

@@ -465,6 +465,7 @@ small.game {
     margin: 0;
     height: 30px;
     top: 35px;
+	transition: opacity 0.5s;
 }
 .toggleShit:before {    
 	content: 'x';
@@ -603,6 +604,7 @@ height: 50%;
     width: 25%;
     height: 50%;
 	border-radius: 8px;
+	border-style: inset;
     color: #f1f1f1;
 	background: none;
 	border: 0;
@@ -612,6 +614,7 @@ height: 50%;
 	overflow: hidden;
 	cursor: pointer;
 	z-index: 2;
+	transition: border-color 0.5s;
 }
 
 .ui-widget-content .ui-icon {
@@ -788,6 +791,7 @@ height: 50%;
     font-size: 14px;
     cursor: pointer;
     margin: 0;
+	transition: opacity 0.5s;
 }
 
 @keyframes grow {

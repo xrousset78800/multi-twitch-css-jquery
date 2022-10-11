@@ -59,7 +59,7 @@
 					</div>
 					<span class="reset" data-reset-app>reset app</span>
 				</div>
-				<h1 title="In full scam please" tabIndex="2" id="go-button">Full Scam</h1>
+				<h1 title="In full screen please" tabIndex="2" id="go-button">Full Screen</h1>
 				<h1 class="toggleShit" name="toggle">Menu</h1>
 				<div class="home">
 					<div class="instructions">
