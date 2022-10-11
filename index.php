@@ -63,21 +63,14 @@
 				<h1 class="toggleShit" name="toggle">Menu</h1>
 				<div class="home">
 					<div class="instructions">
-						<h1>Instructions</h1>
-						<ol>
-							<li class="tuto-add">Ajoutez une/des chaines dans le menu (séparateur ",")</li>
-							<li class="tuto-select">Selectionnez les chaines à charger</li>
-							<li class="tuto-enjoy">Enjoy</li>
-						</ol>
 						<h5>Raccourcis claviers</h5>
 						<ul>
 							<li><b><u>Ctrl</u></b> - menu</li>
 							<li><b><u>espace</u></b> - full screen</li>
-							<li><b><u>0</u></b> - vue multigrille</li>
-							<li><b><u>[1-N]</u></b> - basculer vers Nieme stream</li>
 							<li><b><u>left-right</u></b> - suivant(premier) - précédent(dernier)</li>
-							<li><b><u>dbl click sur le chat</u></b>Toggle</li>
-							<li><b><u>. en vue multigrille</u></b>Vue secondaire</li>
+							<li><b><u>[1-N]</u></b> - basculer vers Nieme stream</li>
+							<li><b><u>0</u></b> - vue multigrille</li>
+							<li><b><u>.</u></b> - Vue secondaire</li>
 						</ul>
 					</div>
 				</div>

@@ -371,7 +371,6 @@ animation: 60s ease-in 1s infinite both running slidein;
     padding: 0;
     font-size: 1rem;
     line-height: 1.3rem;
-    z-index: 1;
 }
 .home.row {
     position: absolute;

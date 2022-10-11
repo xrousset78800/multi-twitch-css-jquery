@@ -582,8 +582,8 @@ jQuery(document).ready(function(){
 		channels: scamConf['scamers']
 	});
 	client.connect();
-	
 /*	
+	
 	const option = {
 	  options: {
 		debug: true
