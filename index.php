@@ -34,11 +34,11 @@
 					<a href="/scam-is-real/"><h1 class="page-title"></h1></a>
 					<!--div class="postmessage">
 						<form action="" name="spam-area">
-						<select disabled id="channel-to-feed" name="channel-to-feed">
+						<select id="channel-to-feed" name="channel-to-feed">
 							<option value="" selected disabled hidden>--Chaine--</option>
 						</select>
-						<input disabled type="text" id="spam-content" value="" placeholder="(TODO) Envoyer un message"/>
-						<input disabled type="submit" value="Go"/>
+						<input type="text" id="spam-content" value="" placeholder="Envoyer un message"/>
+						<input type="submit" value="Go"/>
 						</form>
 					</div-->
 				</div>
@@ -47,8 +47,8 @@
 				<div class="status hide">
 					<div class="status-text">
 						<form action="#" method="GET" class="channel-form">
-							<label for="newScamer">Add a dude in list</label>
-							<input class="" tabIndex="1" type="text" name="newScamer" placeholder="Just here" value="">
+							<label for="add">Add a dude in list</label>
+							<input class="" tabIndex="1" type="text" name="add" placeholder="Just here" value="">
 							<div class="online-stream">
 							</div>
 							<div class="offline-stream">

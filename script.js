@@ -17,8 +17,8 @@ function loadScam() {
 
 var urlParams = new URLSearchParams(window.location.search);
 
-var newScamer = urlParams.getAll('newScamer');
-var scamGet = urlParams.getAll('scamer');
+var newScamer = urlParams.getAll('add');
+var scamGet = urlParams.getAll('show');
 var checker = [];
 
 if(getCookie("Scamers") === undefined) {
@@ -49,11 +49,9 @@ if(newScamer) {
 	}
 }
 	
-for(var i=0; i<scamersTotalList.length; i++) {
-	jQuery("#channel-to-feed").append("<option value='"+scamersTotalList[i]+"'>"+scamersTotalList[i]+"</option>");
+for(var i=0; i<scamGet.length; i++) {
+	jQuery("#channel-to-feed").append("<option value='"+scamGet[i]+"'>"+scamGet[i]+"</option>");
 }
-
-jQuery('[name="active_chat"]').removeAttr('checked');
 
 var result = {
 	'scamers': scamGet,
@@ -76,20 +74,25 @@ function StartThisShit(config) {
 	}
 
 	jQuery("body").addClass("viewer"+config.scamers.length+"video", );
-
+		var player = [];
 		for(var i=0; i< config.scamers.length; i++){
-		jQuery(".twitch-video").append("<div class='viewer'><div class='ui-widget-content twitch-description' id='"+config.scamers[i]+"'><nav class='scroll'><div class='chatscroll'></div></nav></div><div class='twitch-embed'  id='twitch-embed"+(i+1)+"'></div></div>");
+		jQuery(".twitch-video").append("<div class='viewer'><span class='ui-icon ui-icon-circle-minus' data-down-font></span><span  class='ui-icon ui-icon-circle-plus' data-up-font></span><div class='ui-widget-content twitch-description' id='"+config.scamers[i]+"'><nav class='scroll'><div class='chatscroll'></div></nav></div><div class='twitch-embed'  id='twitch-embed"+(i+1)+"'></div></div>");
 		
-		  new Twitch.Embed("twitch-embed"+(i+1), {
+		  var options = {
 			width: "100%",
 			height: "100%",
-			layout: "video",
+			channel: config.scamers[i],
 			allowfullscreen: false,
-			muted: muted,
-			channel: config.scamers[i]
-		  });	 
+			// only needed if your site is also embedded on embed.example.com and othersite.example.com
+			//parent: ["embed.example.com"]
+		  };
+		  
+		  player[i] = new Twitch.Player("twitch-embed"+(i+1), options);
+		  player[i].setVolume(0.0);
+
 		}
 		
+		//player[0].setVolume(0.5);
 		jQuery(".twitch-description").draggable({ containment: "parent" });
 		
 		jQuery(".twitch-description").dblclick(function() {
@@ -171,9 +174,12 @@ function updateScammerStatus(online, scamer) {
 
 		jQuery(".channel-form .online-stream").prepend(""+
 		"<div class='channels'>"+
-			"<input type='checkbox' id='"+scamer.user_login+"' tabIndex='3' name='scamer' value='"+scamer.user_login+"'/>"+
+			"<input type='checkbox' id='"+scamer.user_login+"' tabIndex='3' name='show' value='"+scamer.user_login+"'/>"+
 			"<div class='title'>"+
-				"<img src='"+ thumbnail_resized+"'/>"+ scamer.title +" "+
+				"<div class='game'>"+
+					"<img src='"+ thumbnail_resized+"'/>"+
+					"<div class='game'>"+scamer.title +"</div>"+
+				"</div>"+
 				"<div class='infos'>"+scamer.viewer_count+" Victimes</div>"+
 				"<div class='date'>"+duration+"</div>"+
 			"</div>"+
@@ -185,7 +191,7 @@ function updateScammerStatus(online, scamer) {
 	}else{
 		jQuery(".channel-form .offline-stream").prepend(""+
 			"<div class='channels'>"+
-				"<input type='checkbox' id='"+scamer+"' tabIndex='3' name='scamer' value='"+scamer+"'/>"+
+				"<input type='checkbox' id='"+scamer+"' tabIndex='3' name='show' value='"+scamer+"'/>"+
 				"<i class='offline-icon'></i>"+
 				"<label for='" + scamer + "'>" + scamer + "</label>"+
 				"<div data-scamer='" + scamer + "' tabIndex='4' class='remove'>x</div>"+
@@ -300,8 +306,33 @@ function deleteCookie(name) {
 }
 
 function scrollToBottom(channel) {
-	jQuery(channel.toLowerCase()+' > nav.scroll').scrollTop(jQuery(channel.toLowerCase()+' > nav.scroll > div.chatscroll').height());
+	jQuery(channel.toLowerCase()+' nav.scroll').scrollTop(jQuery(channel.toLowerCase()+' nav.scroll > div.chatscroll').height());
 }
+
+function getMessage(message, tags) {
+	var msg = message;	
+	if(tags['emotes'] !== null){
+		jQuery(tags['emotes']).each(function(i, tag){
+			var arrEmotes = Object.keys(tag);
+			var values = Object.values(tag);
+			var url = 'https://static-cdn.jtvnw.net/emoticons/v2/'+arrEmotes[0]+'/default/dark/1.0';
+			
+			jQuery(values).each(function(j, val){
+				var occurences = this.length;
+				for(var k=0; k<occurences; k++){
+					var extract = val[k].split('-');
+					var substr = message.slice(extract[0],extract[1]+1);
+					console.log(substr);
+					var newSubstr = "<img width='20' height='20' src='"+url+"'>";
+				}
+				//moche
+				msg = message.replace(/substr/g, newSubstr);
+			});
+		});
+	}
+	return msg;
+}
+
 
 jQuery(document).ready(function(){
 	
@@ -327,7 +358,6 @@ jQuery(document).ready(function(){
 			 'Authorization': 'Bearer ' + authToken, 
 		   },
 		   success: function(c){
-			  console.log(scamConf);
 			  updateStatuses(c.data, scamConf["scamers"]);
 		   },
 		   complete: function() {
@@ -343,7 +373,7 @@ jQuery(document).ready(function(){
 	jQuery.ajax(
 	{
 	   type: 'GET',
-	   url: 'https://api.twitch.tv/helix/streams?',
+	   url: 'https://api.twitch.tv/helix/streams',
 	   headers: {
 		 'Client-ID': clientID,
 		 'Authorization': 'Bearer ' + authToken, 
@@ -353,7 +383,7 @@ jQuery(document).ready(function(){
 		if (c.data.length > 0) {
 			jQuery(".home .instructions").append("<h4>Suggestions</h4>");
 			jQuery(c.data).each(function(i, val){
-				jQuery(".home .instructions").append("<a class='suggest' href='/scam-is-real/?newScamer="+val.user_name+"'>"+val.user_name+"</a>, ");
+				jQuery(".home .instructions").append("<a class='suggest' href='/scam-is-real/?add="+val.user_login+"'>"+val.user_name+"</a>, ");
 			});
 		  }
 	   },
@@ -447,17 +477,12 @@ jQuery(document).ready(function(){
 		}
 		
 	});
-	
+	var pauseScroll = false;
 	jQuery(".scroll").hover(function(){
-		//var channel= "#"+jQuery(this).parent().attr("id");
-		
-		jQuery(this).find('.chatscroll').css("width", jQuery(this).css("width")).css("height", jQuery(this).css("height"));
-		
-		//jQuery(channel.toLowerCase()+' > nav.scroll').scrollTop(jQuery(channel.toLowerCase()+' > nav.scroll > div.chatscroll').height());
+		pauseScroll = true;
 		
 	},function(){
-		var channel= "#"+jQuery(this).parent().attr("id");
-		jQuery(this).find('.chatscroll').css("width", "auto").css("height", "auto");	
+		pauseScroll = false;
 	});	
 	
 	
@@ -502,11 +527,11 @@ jQuery(document).ready(function(){
 			jQuery('.omg').removeClass('highlight');	
 		}
 	);	
-	jQuery('[name=scamer]').removeAttr('checked');
+	jQuery('[name=show]').removeAttr('checked');
 	
 	jQuery(scamConf["scamers"]).each(function(i, val){
 		if(val.length !== 0){
-			jQuery("input[name=scamer]#"+val).prop('checked', 'checked');
+			jQuery("input[name=show]#"+val).prop('checked', 'checked');
 		}
 	});	
 	
@@ -522,8 +547,7 @@ jQuery(document).ready(function(){
 	});
 	client.connect();
 	
-/*		
-	
+/*	
 	const option = {
 	  options: {
 		debug: true
@@ -533,29 +557,31 @@ jQuery(document).ready(function(){
 		reconnect: true
 	  },
 	  identity: {
-		username: 'scamerbot',
+		username: 'Xou____',
 		password: 'oauth:'
 		},
 	  channels: ["xou____"]
 	};
 	const client2 = new tmi.client(option);
 	
-	const formScam = jQuery('form[name="spam-area"]');
 	
 	client2.connect().catch((err) => {console.log('Connection error!', err)});
 
+	const formScam = jQuery('form[name="spam-area"]');
 	formScam.on("submit", function(e) {
 		e.preventDefault();
 		client2.action(jQuery('#channel-to-feed').val(), jQuery('#spam-content').val())
+
 		.then(data => {
-			//console.log(`Sent "${data[1]}" to`, jQuery('#channel-to-feed').val());
+			console.log(`Sent "${data[1]}" to`, jQuery('#channel-to-feed').val());
 		})
 		.catch(err => {
-			//console.log('[ERR]', err);
+			console.log('[ERR]', err);
 		});
 	});
 
-*/	
+*/
+
 
 	client.on('message', (channel, tags, message, self) => {	
 		let premium = "";
@@ -564,7 +590,7 @@ jQuery(document).ready(function(){
 		let noaudio = "";
 		let flags = [];
 		
-		//console.log(tags);
+		console.log();
 		if(tags.badges !== null) {
 			premium = tags.badges['premium'];
 			subscriber = tags.badges['subscriber'];	
@@ -573,7 +599,7 @@ jQuery(document).ready(function(){
 		}
 		if(tags.flags !== null) {
 			flags = tags.flags;
-		}
+		}	
 		
 		/*
 		Liste des badges/tags
@@ -587,7 +613,7 @@ jQuery(document).ready(function(){
 		no_audio
 		no_video
 		
-		<img src='https://static-cdn.jtvnw.net/emoticons/v2/<id>/default/dark/2.0'>
+		
 		*/			
 		
 		jQuery('.twitch-description'+channel.toLowerCase()+' > .scroll > div')
@@ -596,23 +622,24 @@ jQuery(document).ready(function(){
 				"<span data-first-message='"+tags['first-msg']+"'>OMG ! Premier message !</span>"+
 				"<div class='sender-message'>" +
 				  "<span title='Prime' data-prime-"+premium+"></span>"+
-				  "<span title='OMG ! Modo !' data-modo='"+tags['mod']+"'></span>"+
-				  "<span title='OMG ! Sub depuis "+subscriber+" Mois' data-subscriber='"+tags['subscriber']+"'></span>"+
+				  "<span title='Modo !' data-modo='"+tags['mod']+"'></span>"+
+				  "<span title='Sub depuis "+subscriber+" Mois' data-subscriber='"+tags['subscriber']+"'></span>"+
 				  
 				  
-				  "<span title='OMG ! Flags !' data-flags='"+tags['flags']+"'>FLAGS</span>"+
-				  "<span title='OMG ! Turbo !' data-turbo='"+tags['turbo']+"'> TURBO </span>"+
+				  "<span title='Flags !' data-flags='"+tags['flags']+"'>FLAGS</span>"+
+				  "<span title='Turbo !' data-turbo='"+tags['turbo']+"'> TURBO </span>"+
 				  "<span style='color:"+tags['color']+"' class='scamer'>"+tags['display-name']+"</span>"+
 				"</div>" +
-				  "<span class='message'>: "+message+"</span>"+
+				  "<span class='message'>: "+getMessage(message, tags)+"</span>"+
 			  "</div>"
 			);
 			
-			scrollToBottom(channel);
+			if(pauseScroll == false)
+				scrollToBottom(channel);
 			
 			/* Keep 150 messages */
-			if(jQuery(channel.toLowerCase()+' > nav.scroll > .chatscroll > div').length == bufferMessageSize) {
-				jQuery(channel.toLowerCase()+' > nav.scroll > .chatscroll > div').eq(0).remove();
+			if(jQuery(channel.toLowerCase()+' nav.scroll > .chatscroll > div').length == bufferMessageSize) {
+				jQuery(channel.toLowerCase()+' nav.scroll > .chatscroll > div').eq(0).remove();
 			}
 	});
 	
@@ -625,21 +652,12 @@ jQuery(document).ready(function(){
 
 /*
 
-username pas utf8
+-----------------envoyer message
 
-envoyer message
-toggle vers chat global 
+
 
 icones flags + no audio + no video + prime + badges
-
-smileys in chat
-
-css on streamer menu
-
 animation switch de stream 
-
-scroll to fix
-
 qualité bloqué par background transparent
 
 */

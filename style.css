@@ -365,7 +365,7 @@ animation: 60s ease-in 1s infinite both running slidein;
     border-radius: 5px;
     right: 257px;
     top: 0;
-    width: 200px;
+    width: 400px;
     background: #000000ee;
     color: white;
     padding: 20px;
@@ -429,6 +429,17 @@ small.game {
 	position: relative;
 	left: 44px;
 }
+.channels .title .game img {
+	display: inline-block;
+    width: 60px;
+	vertical-align: top;
+}
+.channels .title .game div{
+	display: inline-block;
+	width: 80%;
+	padding: 0 15px;
+}
+
 .page-content {
 	padding: 0 10px;
     padding-top: 60px;
@@ -494,11 +505,60 @@ small.game {
 .viewer2video .viewer{
 	width: 50%;
 }
+.viewer4video .viewer{
+	width: 50%;
+	height: 50%;
+}
 
-@media (max-width: 1250px) { 
+.viewer6video .twitch-description, 
+.viewer5video .twitch-description, 
+.viewer4video .twitch-description, 
+.viewer3video .twitch-description
+{
+	height: 71%;
+}
+
+.viewer5video .viewer:nth-of-type(4), .viewer5video .viewer:nth-of-type(5){
+	width: 50%;
+}
+.viewer3video .viewer:last-of-type{
+	width: 100%;
+}
+.viewer6video .viewer, .viewer5video .viewer{
+	width: 33.3333333%;
+	height: 50%;
+}
+
+.viewer9video .viewer, .viewer8video .viewer, .viewer7video .viewer{
+	height: 33.3333333%;
+}
+.viewer9video .viewer, .viewer8video .viewer, .viewer7video .viewer{
+	width: 33.3333333%;
+}
+.viewer8video .viewer:nth-of-type(7), .viewer8video .viewer:nth-of-type(8){
+	width: 50%;
+}
+.viewer7video .viewer:nth-of-type(4), .viewer7video .viewer:nth-of-type(5), .viewer7video .viewer:nth-of-type(6), .viewer7video .viewer:nth-of-type(7){
+	width: 50%;
+}
+
+@media (max-width: 800px) { 
 .viewer2video .viewer{
 	width: 100%;
      height: 50%;
+}
+
+.viewer3video .viewer{
+	width: 100%;
+     height: 33.33333%;
+}
+.viewer4video .viewer{
+	width: 100%;
+     height: 25%;
+}
+.viewer6video .viewer{
+	width: 50%;
+     height: 33.33333%;
 }
 }
 
@@ -552,8 +612,9 @@ height: 50%;
 	z-index: 2;
 }
 
-.twitch-description:hover .scroll {
-	padding-right:10px;
+[data-down-font], [data-up-font] {
+	position:absolute;
+	right: -20px;
 }
 
 .ui-widget-content .ui-icon {
@@ -561,14 +622,7 @@ height: 50%;
 	z-index: initial !important;
 }
 .viewer:hover .twitch-description.ui-widget-content .ui-icon{
-	background-image: url("http://download.jqueryui.com/themeroller/images/ui-icons_ffffff_256x240.png") !important;
-}
-
-.scroll:hover .chatscroll{
-    position: fixed;
-    overflow-y: auto;
-	    width: auto;
-    height: auto;
+	background-image: url("https://download.jqueryui.com/themeroller/images/ui-icons_ffffff_256x240.png") !important;
 }
 
 .twitch-description.hide{
@@ -621,45 +675,11 @@ height: 50%;
 
 .twitch-description .message{
 }
+.twitch-description .message img {
+	vertical-align: top;
+}
 .twitch-description .scamer{
 	font-weight: bold;
-}
-
-.viewer4video .viewer{
-	width: 50%;
-	height: 50%;
-}
-
-.viewer6video .twitch-description, 
-.viewer5video .twitch-description, 
-.viewer4video .twitch-description, 
-.viewer3video .twitch-description
-{
-	height: 71%;
-}
-
-.viewer5video .viewer:nth-of-type(4), .viewer5video .viewer:nth-of-type(5){
-	width: 50%;
-}
-.viewer3video .viewer:last-of-type{
-	width: 100%;
-}
-.viewer6video .viewer, .viewer5video .viewer{
-	width: 33.3333333%;
-	height: 50%;
-}
-
-.viewer9video .viewer, .viewer8video .viewer, .viewer7video .viewer{
-	height: 33.3333333%;
-}
-.viewer9video .viewer, .viewer8video .viewer, .viewer7video .viewer{
-	width: 33.3333333%;
-}
-.viewer8video .viewer:nth-of-type(7), .viewer8video .viewer:nth-of-type(8){
-	width: 50%;
-}
-.viewer7video .viewer:nth-of-type(4), .viewer7video .viewer:nth-of-type(5), .viewer7video .viewer:nth-of-type(6), .viewer7video .viewer:nth-of-type(7){
-	width: 50%;
 }
 
 .specialgrid .viewer {
@@ -788,13 +808,18 @@ height: 50%;
   display: inline-block;
   position: absolute;
   top: 0;
+  left: 0;
 }
 
 
 .scroll::-webkit-scrollbar {
-  width: 10px;
+  width: 0;
   height: 10px;
 }
+.scroll:hover::-webkit-scrollbar{
+    width: 10px;
+}
+
 .scroll::-webkit-scrollbar-track {
   border-radius: 10px;
   background: #eee;
