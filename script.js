@@ -76,7 +76,7 @@ function StartThisShit(config) {
 	jQuery("body").addClass("viewer"+config.scamers.length+"video", );
 		var player = [];
 		for(var i=0; i< config.scamers.length; i++){
-		jQuery(".twitch-video").append("<div class='viewer'><span class='ui-icon ui-icon-circle-minus' data-down-font></span><span  class='ui-icon ui-icon-circle-plus' data-up-font></span><div class='ui-widget-content twitch-description' id='"+config.scamers[i]+"'><nav class='scroll'><div class='chatscroll'></div></nav></div><div class='twitch-embed'  id='twitch-embed"+(i+1)+"'></div></div>");
+		jQuery(".twitch-video").append("<div class='viewer'><span class='ui-btn ui-shadow ui-corner-all ui-icon ui-icon-minus ui-btn-icon-notext ui-btn-inline' data-down-font></span><span  class='ui-btn ui-shadow ui-corner-all ui-icon ui-icon-plus ui-btn-icon-notext ui-btn-inline' data-up-font></span><div class='ui-widget-content twitch-description' id='"+config.scamers[i]+"'><nav class='scroll'><div class='chatscroll'></div></nav></div><div class='twitch-embed'  id='twitch-embed"+(i+1)+"'></div></div>");
 		
 		  var options = {
 			width: "100%",
@@ -344,7 +344,7 @@ jQuery(document).ready(function(){
 	
 	jQuery("[data-reset-app]").on('click', function(){
 		deleteCookie('Scamers');
-		window.location.replace("/scam-is-real/");
+		window.location.replace("/multi-twitch/");
 	});
 	
 	var scamConf = loadScam();
@@ -389,7 +389,7 @@ jQuery(document).ready(function(){
 		if (c.data.length > 0) {
 			jQuery(".home .instructions").append("<h4>Suggestions</h4>");
 			jQuery(c.data).each(function(i, val){
-				jQuery(".home .instructions").append("<a class='suggest' href='/scam-is-real/?add="+val.user_login+"'>"+val.user_name+"</a>, ");
+				jQuery(".home .instructions").append("<a class='suggest' href='/multi-twitch/?add="+val.user_login+"'>"+val.user_name+"</a>, ");
 			});
 		  }
 	   },
@@ -624,14 +624,21 @@ jQuery(document).ready(function(){
 		let subscriber = "";
 		let subgifts = "";
 		let noaudio = "";
+		let partner = "";
+		let broadcaster = "";
+		let vip = "";
 		let flags = [];
 		
-		console.log();
+		console.log(tags);
 		if(tags.badges !== null) {
 			premium = tags.badges['premium'];
 			subscriber = tags.badges['subscriber'];	
 			subgifts = tags.badges['sub-gifter'];
 			noaudio = tags.badges['no_audio'];
+			novideo = tags.badges['no_video'];
+			partner = tags.badges['partner'];
+			broadcaster = tags.badges['broadcaster'];
+			vip = tags.badges['vip'];
 		}
 		if(tags.flags !== null) {
 			flags = tags.flags;
@@ -641,16 +648,22 @@ jQuery(document).ready(function(){
 			  "<div class='embed-message "+tags.id+"'>" +
 				"<span data-first-message='"+tags['first-msg']+"'>"+
 				"<div class='sender-message'>" +
+				  "<span title='Regarde sans le son' data-no-audio-"+noaudio+"></span>"+
+				  "<span title='Regarde sans image' data-no-video-"+novideo+"></span>"+
+				  "<span title='Sub depuis "+subscriber+" Mois' data-subscriber='"+tags['subscriber']+"'></span>"+
 				  "<span title='Prime' data-prime-"+premium+"></span>"+
 				  "<span title='Modo !' data-modo='"+tags['mod']+"'></span>"+
-				  "<span title='Sub depuis "+subscriber+" Mois' data-subscriber='"+tags['subscriber']+"'></span>"+
+				  "<span title='Partenaire' data-partner-"+partner+"></span>"+
+				  "<span title='VIP' data-vip-"+vip+"></span>"+
+				  "<span title='"+subgifts+" Subgifts' data-subgifts-"+subgifts+"></span>"+
+				  "<span title='Diffuseur' data-brodcaster-"+broadcaster+"></span>"+
 				  
 				  
 				  "<span title='Flags !' data-flags='"+tags['flags']+"'>FLAGS</span>"+
 				  "<span title='Turbo !' data-turbo='"+tags['turbo']+"'> TURBO </span>"+
 				  "<span style='color:"+tags['color']+"' class='scamer'>"+tags['display-name']+"</span>"+
 				"</div>" +
-				  "<span class='message'>: "+getMessage(message, tags)+"</span></span>"+
+				  "<span class='message'>"+getMessage(message, tags)+"</span></span>"+
 			  "</div>"
 			);
 			
@@ -674,21 +687,12 @@ jQuery(document).ready(function(){
 
 -----------------envoyer message
 ------------------qualité bloqué par background transparent
-
-pluie d'emotes
-icones flags + no audio + no video + prime + badges
-animation switch de stream 
-
-
-	
-	sub
-	vip
-	modo
-	prime
-	flags
-	
-	no_audio
-	no_video
+- pluie d'emotes
+- animation switch de stream 
+- prédictions
+- scam roulette 
+- badges + sub + flags
+- administration (moderation) stuffs ?
 
 
 */

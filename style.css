@@ -608,6 +608,7 @@ height: 50%;
 	background: none;
 	border: 0;
     font-size: 0.8rem;
+	line-height: 1rem;
 	top: 20px;
 	left: 20px;
 	overflow: hidden;
@@ -616,11 +617,12 @@ height: 50%;
 	transition: border-color 0.5s;
 }
 
-.ui-widget-content .ui-icon {
+/*.ui-widget-content .ui-icon {
     background-image: none !important;
 	z-index: initial !important;
-}
-.viewer:hover .twitch-description.ui-widget-content .ui-icon{
+}*/
+/*.viewer:hover .twitch-description.ui-widget-content */
+.ui-icon{
 	background-image: url("https://download.jqueryui.com/themeroller/images/ui-icons_ffffff_256x240.png") !important;
 }
 
@@ -659,12 +661,13 @@ height: 50%;
 	cursor: pointer;
 	padding: 3px;
 	word-break: break-word;
-	padding-right: 20px;
-	padding-left: 10px;
+	padding-right: 10px;
 }
 .twitch-description .sender-message{
     display: inline-block;
     vertical-align: top;
+	width: 35%;
+	text-align: right;
 }
 .twitch-description .embed-message:hover{
     background: #ffffffcc;
@@ -672,6 +675,10 @@ height: 50%;
 }
 
 .twitch-description .message{
+    display: inline-block;
+    vertical-align: top;	
+	width: 65%;
+	padding-left: 10px;
 }
 .twitch-description .message img {
 	vertical-align: top;
@@ -912,36 +919,57 @@ height: 50%;
     position: absolute;
     top: 5px;
     left: 5px;
-    z-index: 10;
+    z-index: 2;
 	cursor: pointer;
 }
 [data-up-font] {
 	left: 20px;
 }
 
-[data-flags=null] , [data-modo=false] , [data-turbo=false] , [data-subscriber=false], [data-prime-undefined], [data-prime-] {
+[data-flags=null] ,[data-subgifts-undefined] [data-no-video],[data-partner-undefined], [data-no-audio], [data-modo=false] , [data-turbo=false] , [data-subscriber=false], [data-prime-undefined], [data-prime-], [data-vip-undefined], [data-brodcaster-] {
 	display: none;
 }
 
-[data-modo=true], [data-subscriber=true], [data-prime-1] {
+[data-modo=true], [data-subscriber=true], [data-prime-1], [data-no-audio-1], [data-no-video-1], [data-partner-1], [data-vip-1], [data-brodcaster-1] {
 	display: inline-block;
 	width: 20px;
 	height: 20px;
-	background-image:url("img/modo.png");
+	background-image:url("https://static-cdn.jtvnw.net/badges/v1/3267646d-33f0-4b17-b3df-f923a41db1d0/1");
 	background-size: contain;
 	vertical-align: top;
+	margin: 0 1px;
+	float: left;
+}
+[data-subscriber=true]{
+	background-image:url("img/sub.png");
 }
 
-[data-subscriber=true] {
-	background-image:url("img/sub.png");
+[data-subgifts-350] {
+	background-image:url("https://static-cdn.jtvnw.net/badges/v1/6c4783cd-0aba-4e75-a7a4-f48a70b665b0/1");
 }
-[data-subscriber=true] {
-	background-image:url("img/sub.png");
+
+[data-subgifts-1000] {
+	background-image:url("https://static-cdn.jtvnw.net/badges/v1/bfb7399a-c632-42f7-8d5f-154610dede81/1");
+}
+
+[data-brodcaster-1] {
+	background-image:url("");
+}
+[data-partner-1] {
+	background-image:url("https://static-cdn.jtvnw.net/badges/v1/d12a2e27-16f6-41d0-ab77-b780518f00a3/1");
+}
+[data-no-audio-1] {
+	background-image: url("https://static-cdn.jtvnw.net/badges/v1/aef2cd08-f29b-45a1-8c12-d44d7fd5e6f0/1");
+}
+[data-no-video-1] {
+	background-image: url("https://static-cdn.jtvnw.net/badges/v1/aef2cd08-f29b-45a1-8c12-d44d7fd5e6f0/1");
 }
 [data-prime-1] {
-	background-image:url("favicon.png");
+	background-image:url("https://static-cdn.jtvnw.net/badges/v1/bbbe0db0-a598-423e-86d0-f9fb98ca1933/2");
 }
-
+[data-vip-1] {
+	background-image:url("https://static-cdn.jtvnw.net/badges/v1/b817aba4-fad8-49e2-b88a-7cc744dfa6ec/1");
+}
 [data-first-message=true] .message{
     font-weight: bold;
     border-bottom: 1px dotted #ffffff;

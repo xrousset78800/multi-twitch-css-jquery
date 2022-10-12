@@ -9,29 +9,29 @@
 	  
 	  <meta property="og:title" content="Multi twitch player">
 	  <meta property="og:type" content="website">
-	  <meta property="og:url" content="https://xouindaplace.fr/scam-is-real/">
+	  <meta property="og:url" content="https://xouindaplace.fr/multi-twitch/">
 	  <meta property="og:description" content="A simple jquery-css3 Multi twitch player">
-	  <meta property="og:image" content="/scam-is-real/favicon.png">
+	  <meta property="og:image" content="/multi-twitch/favicon.png">
 	  
 	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 	  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 	  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
 	  <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css"/>
 
-	  <script src="/scam-is-real/script.js"></script>
-	  <script src="/scam-is-real/tmi.min.js"></script>
+	  <script src="/multi-twitch/script.js"></script>
+	  <script src="/multi-twitch/tmi.min.js"></script>
 	  
 	  
 
-	  <link rel="icon" type="image/png" href="/scam-is-real/favicon.png" />
-	  <link href="/scam-is-real/style.css" rel="stylesheet" />
+	  <link rel="icon" type="image/png" href="/multi-twitch/favicon.png" />
+	  <link href="/multi-twitch/style.css" rel="stylesheet" />
 	  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Quicksand" />
 	</head>
 	<body class="vsc-initialized">
 		<div class="page wrapper">
 			<header class="blog-header home row">
 				<div class="cell cell-12">
-					<a href="/scam-is-real/"><h1 class="page-title"></h1></a>
+					<a href="/multi-twitch/"><h1 class="page-title"></h1></a>
 					<!--div class="postmessage">
 						<form action="" name="spam-area">
 						<select id="channel-to-feed" name="channel-to-feed">
@@ -48,13 +48,13 @@
 					<div class="status-text">
 						<form action="#" method="GET" class="channel-form">
 							<label for="add">Add a dude in list</label>
-							<input class="" tabIndex="1" type="text" name="add" placeholder="Just here" value="">
+							<input class="" tabIndex="1" type="text" name="add" placeholder="Streamer or url name" value="">
 							<div class="online-stream">
 							</div>
 							<div class="offline-stream">
 							</div>
 
-							<input type="submit" value="Go" />
+							<input type="submit" value="Go (+save)" />
 						</form>
 					</div>
 					<span class="reset" data-reset-app>reset app</span>
