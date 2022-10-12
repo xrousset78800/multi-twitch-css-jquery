@@ -1,14 +1,18 @@
 # multi-twitch-css-jquery
 
-live on : https://xouindaplace.fr/scam-is-real/
+Insert your token + client in script.js
+Replace '/multi-twitch' occurences
+Enjoy
 
+live on : https://xouindaplace.fr/multi-twitch
 TODO: 
-- send message 
-- Chat options (show, police)
-- resize chat 
-- stop autoscroll on chat hover
-- icones sub + modo + first + flags ++++
-- (Bouton soft reload)
-- A bit of documentation
+-----------------envoyer message
+------------------qualité bloqué par background transparent
+- pluie d'emotes
+- animation switch de stream 
+- prédictions
+- scam roulette 
+- badges + sub + flags
+- administration (moderation) stuffs ?
 
 (In case of app crash, delete 'Scamers' cookie)
