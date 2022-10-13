@@ -604,7 +604,6 @@ height: 50%;
     height: 50%;
 	border-radius: 8px;
 	border-style: inset;
-    color: #f1f1f1;
 	background: none;
 	border: 0;
     font-size: 0.8rem;
@@ -635,10 +634,13 @@ height: 50%;
 	transition: left 0.6s, top 0.6s;
 }
 
-.viewer:hover .twitch-description{
+.twitch-description:hover{
 	border: 1px solid #ffffff44;
 }
 
+.viewer:hover .player-options {
+	opacity: 1;
+}
 
 
 .twitch-description.hide .chatscroll{
@@ -655,9 +657,8 @@ height: 50%;
 }
 #embed_chat_position{
 	margin: 5px 0;
-}
+}  
 .twitch-description .embed-message{
-	background-color: #00000088;	
 	cursor: pointer;
 	padding: 3px;
 	word-break: break-word;
@@ -669,10 +670,64 @@ height: 50%;
 	width: 35%;
 	text-align: right;
 }
+
 .twitch-description .embed-message:hover{
     background: #ffffffcc;
 	color: #111111;
 }
+
+
+
+.player-options {
+	opacity: 0;
+	transition: opacity 0.8s
+}
+
+
+[data-theme=default] .twitch-description .embed-message{
+
+}
+
+[data-theme=detached] .twitch-description .embed-message{
+	margin: 20px 0;
+	border-radius: 8px;
+}
+[data-theme=detached] .twitch-description{
+	height: 80%;
+}
+
+
+[data-theme-color=default] .twitch-description .embed-message{
+	background-color: transparent;	
+	color: #f1f1f1;
+}
+[data-theme-color=default].twitch-description .embed-message:hover{
+    background: #ffffffcc;
+	color: #111111;
+}
+
+[data-theme-color=dark] .twitch-description .embed-message{
+	background-color: #00000088;
+	color: #f1f1f1;
+}
+[data-theme-color=dark] .twitch-description .embed-message:hover{
+    background: #ffffffcc;
+	color: #111111;
+}
+
+[data-theme-color=light] .twitch-description .embed-message {
+	background-color: #ffffffcc;
+	color: #000000;	
+}
+[data-theme-color=light] .twitch-description .embed-message:hover{
+    background: #000000cc;
+	color: #efefef;
+}
+
+
+
+
+
 
 .twitch-description .message{
     display: inline-block;
@@ -685,6 +740,7 @@ height: 50%;
 }
 .twitch-description .scamer{
 	font-weight: bold;
+	text-shadow: 0 1px 0 rgb(255, 255, 255, 0.9);
 }
 
 .specialgrid .viewer {
@@ -723,7 +779,6 @@ height: 50%;
     top: 0;
     left: 0;
 	width: 15%;
-	background: #000000;
 }
 
 
@@ -915,7 +970,7 @@ height: 50%;
 }
 
 
-[data-down-font], [data-up-font] {
+[data-down-font], [data-up-font], [data-form-theme-color], [data-form-theme] {
     position: absolute;
     top: 5px;
     left: 5px;
@@ -924,6 +979,21 @@ height: 50%;
 }
 [data-up-font] {
 	left: 20px;
+}
+[data-form-theme-color] {
+	left: 40px;
+    color: white;
+    background: transparent;
+    border: 0;	
+}
+[data-form-theme] {
+	left: 150px;
+    color: white;
+    background: transparent;
+    border: 0;	
+}
+[data-form-theme] option, [data-form-theme-color] option{
+	color: black;
 }
 
 [data-flags=null] ,[data-subgifts-undefined] [data-no-video],[data-partner-undefined], [data-no-audio], [data-modo=false] , [data-turbo=false] , [data-subscriber=false], [data-prime-undefined], [data-prime-], [data-vip-undefined], [data-brodcaster-] {

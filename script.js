@@ -4,6 +4,8 @@ let clientID = "";
 var scamersTotalList = [];
 var bufferMessageSize = 150;
 
+var themes = [ "default", "detached"];
+var themeColors = [ "default", "dark", "light"];
 
 function getCookie(name) {
   const value = document.cookie;
@@ -76,9 +78,9 @@ function StartThisShit(config) {
 	jQuery("body").addClass("viewer"+config.scamers.length+"video", );
 		var player = [];
 		for(var i=0; i< config.scamers.length; i++){
-		jQuery(".twitch-video").append("<div class='viewer'><span class='ui-btn ui-shadow ui-corner-all ui-icon ui-icon-minus ui-btn-icon-notext ui-btn-inline' data-down-font></span><span  class='ui-btn ui-shadow ui-corner-all ui-icon ui-icon-plus ui-btn-icon-notext ui-btn-inline' data-up-font></span><div class='ui-widget-content twitch-description' id='"+config.scamers[i]+"'><nav class='scroll'><div class='chatscroll'></div></nav></div><div class='twitch-embed'  id='twitch-embed"+(i+1)+"'></div></div>");
+		jQuery(".twitch-video").append("<div data-theme-color='default' data-theme='default' class='viewer'><div class='ui-widget-content twitch-description' id='"+config.scamers[i]+"'><nav class='scroll'><div class='chatscroll'></div></nav></div><div class='twitch-embed' id='twitch-embed"+(i+1)+"'></div></div>");
 		
-		  var options = {
+		var options = {
 			width: "100%",
 			height: "100%",
 			channel: config.scamers[i],
@@ -93,7 +95,28 @@ function StartThisShit(config) {
 		}
 		
 		//player[0].setVolume(0.5);
+		
+		jQuery(".twitch-video .viewer").append("<div class='player-options'><span class='ui-btn ui-shadow ui-corner-all ui-icon ui-icon-minus ui-btn-icon-notext ui-btn-inline' data-down-font></span><span class='ui-btn ui-shadow ui-corner-all ui-icon ui-icon-plus ui-btn-icon-notext ui-btn-inline' data-up-font></span><select data-form-theme-color name='theme-color'></select><select data-form-theme name='theme'></select></div>");
+		
+		
+		jQuery(themeColors).each(function(i, color){
+			jQuery("[data-form-theme-color]").append("<option value='"+color+"'>Texte: "+color+"</option>");
+		});
+		
+		jQuery(themes).each(function(i, color){
+			jQuery("[data-form-theme]").append("<option value='"+color+"'>Theme: "+color+"</option>");
+		});
+		
 		jQuery(".twitch-description").draggable({ containment: "parent" });
+		
+		jQuery("[data-form-theme-color]").on( "change", function(){
+			jQuery(this).parent().parent().eq(0).attr("data-theme-color", this.value);
+		});
+		
+		jQuery("[data-form-theme]").on( "change", function(){
+			jQuery(this).parent().parent().eq(0).attr("data-theme", this.value);
+		});
+		
 		
 		jQuery(".twitch-description").dblclick(function() {
 			jQuery(this).toggleClass("hide");
@@ -306,7 +329,10 @@ function deleteCookie(name) {
 }
 
 function scrollToBottom(channel) {
-	jQuery(channel.toLowerCase()+' nav.scroll').scrollTop(jQuery(channel.toLowerCase()+' nav.scroll > div.chatscroll').height());
+
+	jQuery(channel.toLowerCase()+' nav.scroll').animate({ scrollTop: jQuery(channel.toLowerCase()+' nav.scroll > div.chatscroll').height() }, 400);
+    return false;
+	
 }
 
 String.prototype.replaceAll = function(search, replacement) {
@@ -564,17 +590,17 @@ jQuery(document).ready(function(){
 	});
 	
 	jQuery("[data-down-font]").on('click', function() {
-		var lineHeight = jQuery(this).parent('.viewer').find('.twitch-description').css('line-height');
-		var fontSize = jQuery(this).parent('.viewer').find('.twitch-description').css('font-size');
+		var lineHeight = jQuery(this).parent().parent().find('.twitch-description').css('line-height');
+		var fontSize = jQuery(this).parent().parent().find('.twitch-description').css('font-size');
 		
 		jQuery(this).parent('.viewer').find('.twitch-description').css('line-height',parseInt(lineHeight, 10)-1+"px").css('font-size',parseInt(fontSize, 10)-1+"px");
 	});
 	
 	jQuery("[data-up-font]").on('click', function() {
-		var lineHeight = jQuery(this).parent('.viewer').find('.twitch-description').css('line-height');
-		var fontSize = jQuery(this).parent('.viewer').find('.twitch-description').css('font-size');
+		var lineHeight = jQuery(this).parent().parent().find('.twitch-description').css('line-height');
+		var fontSize = jQuery(this).parent().parent().find('.twitch-description').css('font-size');
 		
-		jQuery(this).parent('.viewer').find('.twitch-description').css('line-height',parseInt(lineHeight, 10)+1+"px").css('font-size',parseInt(fontSize, 10)+1+"px");
+		jQuery(this).parent().parent().find('.twitch-description').css('line-height',parseInt(lineHeight, 10)+1+"px").css('font-size',parseInt(fontSize, 10)+1+"px");
 	});
 
 	
@@ -624,12 +650,13 @@ jQuery(document).ready(function(){
 		let subscriber = "";
 		let subgifts = "";
 		let noaudio = "";
+		let novideo = "";
 		let partner = "";
 		let broadcaster = "";
 		let vip = "";
 		let flags = [];
 		
-		console.log(tags);
+		//console.log(tags);
 		if(tags.badges !== null) {
 			premium = tags.badges['premium'];
 			subscriber = tags.badges['subscriber'];	
@@ -685,15 +712,15 @@ jQuery(document).ready(function(){
 
 /*
 
------------------envoyer message
-------------------qualité bloqué par background transparent
-- pluie d'emotes
-- animation switch de stream 
-- prédictions
-- scam roulette 
-- badges + sub + flags
-- administration (moderation) stuffs ?
+pluie d'emotes
+animation switch de stream
+badges + sub + flags
+administration(/moderation) stuffs ?
 
+scam roulette
+
+??envoyer message + prédictions ??
+??qualité bloqué par background transparent??
 
 */
 
