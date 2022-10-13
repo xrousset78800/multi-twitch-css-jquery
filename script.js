@@ -593,7 +593,7 @@ jQuery(document).ready(function(){
 		var lineHeight = jQuery(this).parent().parent().find('.twitch-description').css('line-height');
 		var fontSize = jQuery(this).parent().parent().find('.twitch-description').css('font-size');
 		
-		jQuery(this).parent('.viewer').find('.twitch-description').css('line-height',parseInt(lineHeight, 10)-1+"px").css('font-size',parseInt(fontSize, 10)-1+"px");
+		jQuery(this).parent().parent().find('.twitch-description').css('line-height',parseInt(lineHeight, 10)-1+"px").css('font-size',parseInt(fontSize, 10)-1+"px");
 	});
 	
 	jQuery("[data-up-font]").on('click', function() {
