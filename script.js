@@ -100,11 +100,11 @@ function StartThisShit(config) {
 		
 		
 		jQuery(themeColors).each(function(i, color){
-			jQuery("[data-form-theme-color]").append("<option value='"+color+"'>Texte: "+color+"</option>");
+			jQuery("[data-form-theme-color]").append("<option value='"+color+"'>Theme: "+color+"</option>");
 		});
 		
 		jQuery(themes).each(function(i, color){
-			jQuery("[data-form-theme]").append("<option value='"+color+"'>Theme: "+color+"</option>");
+			jQuery("[data-form-theme]").append("<option value='"+color+"'>Disposition: "+color+"</option>");
 		});
 		
 		jQuery(".twitch-description").draggable({ containment: "parent" });
@@ -439,7 +439,7 @@ jQuery(document).ready(function(){
 			case 17:
 				//ctrl
 				jQuery("h1.toggleShit").toggleClass("hide");
-				jQuery(".status").toggle(300, "linear");
+				jQuery(".status").toggle(100, "linear");
 				break;
 
 			case 96: 
@@ -686,8 +686,8 @@ jQuery(document).ready(function(){
 				  "<span title='Diffuseur' data-brodcaster-"+broadcaster+"></span>"+
 				  
 				  
-				  "<span title='Flags !' data-flags='"+tags['flags']+"'>FLAGS</span>"+
-				  "<span title='Turbo !' data-turbo='"+tags['turbo']+"'> TURBO </span>"+
+				  "<span title='Flags "+tags['flags']+"' data-flags='"+tags['flags']+"'>FLAGS</span>"+
+				  "<span title='Turbo "+tags['turbo']+"' data-turbo='"+tags['turbo']+"'> TURBO </span>"+
 				  "<span style='color:"+tags['color']+"' class='scamer'>"+tags['display-name']+"</span>"+
 				"</div>" +
 				  "<span class='message'>"+getMessage(message, tags)+"</span></span>"+
@@ -713,9 +713,16 @@ jQuery(document).ready(function(){
 /*
 
 pluie d'emotes
+
 animation switch de stream
+
 badges + sub + flags
+
+data-flags="0-5:P.6" "Putain blabla"
+
 administration(/moderation) stuffs ?
+
+on resize replace chat
 
 scam roulette
 
