@@ -7,13 +7,6 @@ var bufferMessageSize = 150;
 var themes = [ "default", "detached"];
 var themeColors = [ "default", "dark", "light"];
 
-function getCookie(name) {
-  const value = document.cookie;
-  const parts = value.split(`; `+name+`=`);
-
-  if (parts.length === 2) return parts.pop().split(';').shift();
-}
-
 
 function loadScam() {
 
@@ -40,11 +33,11 @@ if(newScamer) {
 		//Mono
 		if(!scamersTotalList.includes(newScamer[i].toLowerCase()) && newScamer[i] !== '') {
 			scamersTotalList.push(newScamer[i].toLowerCase());
-			setCookie('Scamers', scamersTotalList, 60);
+			setCookie('Scamers', scamersTotalList, 6000);
 		} else {
 			if(newScamer[i].indexOf(',') != -1){
 				scamersTotalList.push(newScamer[i].split(','));
-				setCookie('Scamers', scamersTotalList, 60);
+				setCookie('Scamers', scamersTotalList, 6000);
 			}
 			console.log("already exist or empty -- skip");
 		}
@@ -68,11 +61,13 @@ function StartThisShit(config) {
 		jQuery(".page-title").append(config.scamers[0] + " player");
 		jQuery(document).prop('title', config.scamers[0] + " player");
 		jQuery("body").addClass(config.scamers[0]);
-		var muted = false;
 	} else {
-		jQuery(".page-title").append("Multi player");
-		jQuery(document).prop('title', "Multi player ("+ config.scamers.join(', ')+")");
-		var muted = true;
+		jQuery(".page-title").append("Multi twitch");
+		if(config.scamers.length == 0) {
+			jQuery(document).prop('title', "Multi twitch");
+		}else {
+			jQuery(document).prop('title', "Multi twitch ("+ config.scamers.join(', ')+")");
+		}
 	}
 
 	jQuery("body").addClass("viewer"+config.scamers.length+"video", );
@@ -85,16 +80,16 @@ function StartThisShit(config) {
 			height: "100%",
 			channel: config.scamers[i],
 			allowfullscreen: false,
+			muted: (config.scamers.length > 1)
 			// only needed if your site is also embedded on embed.example.com and othersite.example.com
 			//parent: ["embed.example.com"]
 		  };
 		  
+		  
 		  player[i] = new Twitch.Player("twitch-embed"+(i+1), options);
-		  player[i].setVolume(0.0);
+
 
 		}
-		
-		//player[0].setVolume(0.5);
 		
 		jQuery(".twitch-video .viewer").append("<div class='player-options'><span class='ui-btn ui-shadow ui-corner-all ui-icon ui-icon-minus ui-btn-icon-notext ui-btn-inline' data-down-font></span><span class='ui-btn ui-shadow ui-corner-all ui-icon ui-icon-plus ui-btn-icon-notext ui-btn-inline' data-up-font></span><select data-form-theme-color name='theme-color'></select><select data-form-theme name='theme'></select></div>");
 		
@@ -121,7 +116,14 @@ function StartThisShit(config) {
 		jQuery(".twitch-description").dblclick(function() {
 			jQuery(this).toggleClass("hide");
 		});
-
+		
+		jQuery(".twitch-embed").dblclick(function() {
+			if(IsFullScreenCurrently())
+					GoOutFullscreen();
+				else
+					GoInFullscreen(jQuery("#myScamPlayer").get(0));
+		});
+		
 		jQuery(".twitch-description").resizable({
 		  containment: 'parent',
 		  minWidth: 200,
@@ -203,11 +205,11 @@ function updateScammerStatus(online, scamer) {
 					"<img src='"+ thumbnail_resized+"'/>"+
 					"<div class='game'>"+scamer.title +"</div>"+
 				"</div>"+
-				"<div class='infos'>"+scamer.viewer_count+" Victimes</div>"+
+				"<div class='infos'>"+scamer.viewer_count+"</div>"+
 				"<div class='date'>"+duration+"</div>"+
 			"</div>"+
 			"<i class='online-icon'></i><label for='" + scamer.user_login + "' >" + scamer.user_name +"<small> ("+scamer.viewer_count+")</small></label>"+
-			"<small class='game'><i>"+game+"</i></small>"+
+			"<small class='game'>"+game+"</small>"+
 			"<div data-scamer='" + scamer.user_login + "' tabIndex='4' class='remove'>x</div>"+
 		"</div>"
 		);
@@ -231,7 +233,7 @@ function updateScammerStatus(online, scamer) {
 		if (index > -1) {
 		  scamersTotalList.splice(index, 1);
 		}
-		
+
 		setCookie('Scamers', scamersTotalList.join(","), 60);
 		return true;
 	});
@@ -275,9 +277,6 @@ jQuery.ajax(
 });
 }
 
-
-
-
 function GoInFullscreen(element) {
 	if(element.requestFullscreen)
 		element.requestFullscreen();
@@ -312,6 +311,13 @@ function IsFullScreenCurrently() {
 		return true;
 }
 
+function getCookie(name) {
+  const value = document.cookie;
+  const parts = value.split(`; `+name+`=`);
+
+  if (parts.length === 2) return parts.pop().split(';').shift();
+}
+
 function setCookie(name,value,days) {
     var expires = "";
     if (days) {
@@ -329,10 +335,8 @@ function deleteCookie(name) {
 }
 
 function scrollToBottom(channel) {
-
-	jQuery(channel.toLowerCase()+' nav.scroll').animate({ scrollTop: jQuery(channel.toLowerCase()+' nav.scroll > div.chatscroll').height() }, 400);
+	jQuery(channel.toLowerCase()+' nav.scroll').animate({ scrollTop: jQuery(channel.toLowerCase()+' nav.scroll > div.chatscroll').height() }, 200);
     return false;
-	
 }
 
 String.prototype.replaceAll = function(search, replacement) {
@@ -357,7 +361,7 @@ function getMessage(message, tags) {
 			var url = 'https://static-cdn.jtvnw.net/emoticons/v2/'+arrEmotes[i]+'/default/dark/1.0';
 			var length = extract[1] - extract[0] + 1;		
 			var substr = message.slice(extract[0],extract[1]+1).slice(0, length);
-			var newSubstr = "<img title='"+substr+"' width='20' height='20' src='"+url+"'>";
+			var newSubstr = "<img title='"+substr+"' src='"+url+"'>";
 			
 			msg = msg.replaceAll(substr, newSubstr);
 		}
@@ -380,7 +384,45 @@ jQuery(document).ready(function(){
 	   urlscammers = urlscammers + "user_login=" + scam + "&";
 	});	
 	
+	
+	function importFollowers(login) {
+		
+		jQuery.ajax(
+		{
+		   type: 'GET',
+		   url: 'https://api.twitch.tv/helix/users?login=' + login,
+		   headers: {
+			 'Client-ID': clientID,
+			 'Authorization': 'Bearer ' + authToken, 
+		   },
+		   success: function(c){
+			    var id = c.data[0].id;
+				jQuery.ajax(
+				{
+				   type: 'GET',
+				   url: 'https://api.twitch.tv/helix/users/follows?first=50&from_id=' + id,
+				   headers: {
+					 'Client-ID': clientID,
+					 'Authorization': 'Bearer ' + authToken, 
+				   },
+				   success: function(c){
+					  var follows = [];
+					  for(var i=0; i<c.data.length; i++) {
+						 follows[i]=c.data[i].to_login;
+					  }
+					  deleteCookie('Scamers');
+					  setCookie('Scamers', follows, 6000);
+					  window.location.replace("/multi-twitch/")
+				   },
+
+				});	
+		   },
+
+		});		
+	}
+	
 	function myPeriodicMethod() {
+		var scamConf = loadScam();
 		jQuery.ajax(
 		{
 		   type: 'GET',
@@ -393,7 +435,6 @@ jQuery(document).ready(function(){
 			  updateStatuses(c.data, scamConf["scamers"]);
 		   },
 		   complete: function() {
-			  // schedule the next request *only* when the current one is complete:
 			  setTimeout(myPeriodicMethod, 60000);
 			}
 		});	
@@ -412,14 +453,30 @@ jQuery(document).ready(function(){
 	   },
 	   success: function(c){
 		  //data array is empty when queried channel is offline
-		if (c.data.length > 0) {
-			jQuery(".home .instructions").append("<h4>Suggestions</h4>");
+		if (c.data.length > 0) {			
+			jQuery(".home .suggestion").append("<h4>Importez les chaines de votre twitch : </h4><input id='import' type='text' placeholder='Votre login twitch + enter'>");
+			jQuery(".home .suggestion").append("<h4>Ou parmis les chaines suivantes :</h4>");
 			jQuery(c.data).each(function(i, val){
-				jQuery(".home .instructions").append("<a class='suggest' href='/multi-twitch/?add="+val.user_login+"'>"+val.user_name+"</a>, ");
+				var thumbnail_resized = val.thumbnail_url.replace(/{width}|{height}/gi, 60);
+				
+				
+				jQuery(".home .suggestion").append("<div class='streams'><a title='"+val.title+"' class='suggest' href='/multi-twitch/?add="+val.user_login+"&show="+val.user_login+"'><img src='"+ thumbnail_resized+"'/>"+val.user_name+"<small> ("+val.viewer_count+")</small><br><small>"+val.game_name+"</small></a></div>");
+			});
+			
+			var input = document.getElementById("import");
+			input.addEventListener("keypress", function(event) {
+			  if (event.key === "Enter") {
+				event.preventDefault();
+				// Trigger the button element with a click
+				importFollowers(input.value);
+			  }
 			});
 		  }
 	   },
 	});
+	
+	
+	
 	
 	jQuery("h1.toggleShit").click(function(){
 		jQuery(this).toggleClass("hide");
@@ -431,10 +488,10 @@ jQuery(document).ready(function(){
 		switch (value) {
 			case 32:
 				//space
-				if(IsFullScreenCurrently())
+				/*if(IsFullScreenCurrently())
 					GoOutFullscreen();
 				else
-					GoInFullscreen(jQuery("#myScamPlayer").get(0));
+					GoInFullscreen(jQuery("#myScamPlayer").get(0));*/
 				break;
 			case 17:
 				//ctrl
@@ -529,16 +586,12 @@ jQuery(document).ready(function(){
 				}
 				jQuery('html').css({
 					cursor: ''
-				});
-
+				}); 
 			} else {
 				 jQuery('.viewer').css({
 					cursor: 'default'
 				});
-				jQuery('#go-button').css({
-					opacity: 1
-				});
-				jQuery('.toggleShit').css({
+				jQuery('.player-options, .toggleShit').css({
 					opacity: 1
 				});
 				jQuery('.twitch-description').css('border-color', '#aaaaaadd');
@@ -550,11 +603,8 @@ jQuery(document).ready(function(){
 			timer = setTimeout(function () {
 				 jQuery('.viewer').css({
 					cursor: 'none'
-				});
-				 jQuery('#go-button').css({
-					opacity: 0
-				});
-				jQuery('.toggleShit').css({
+				});		
+				jQuery('.toggleShit, .player-options').css({
 					opacity: 0
 				});
 				jQuery('.twitch-description').css('border-color', 'transparent');
@@ -567,13 +617,6 @@ jQuery(document).ready(function(){
 	});
 	
 	
-	jQuery(".tuto-enjoy").hover(function(){
-		jQuery('.omg').addClass('highlight');
-		}, 
-		function(){
-			jQuery('.omg').removeClass('highlight');	
-		}
-	);	
 	jQuery('[name=show]').removeAttr('checked');
 	
 	jQuery(scamConf["scamers"]).each(function(i, val){
@@ -581,13 +624,6 @@ jQuery(document).ready(function(){
 			jQuery("input[name=show]#"+val).prop('checked', 'checked');
 		}
 	});	
-	
-	jQuery("#go-button").on('click', function() {
-		if(IsFullScreenCurrently())
-			GoOutFullscreen();
-		else
-			GoInFullscreen(jQuery("#myScamPlayer").get(0));
-	});
 	
 	jQuery("[data-down-font]").on('click', function() {
 		var lineHeight = jQuery(this).parent().parent().find('.twitch-description').css('line-height');
@@ -717,12 +753,13 @@ pluie d'emotes
 animation switch de stream
 
 badges + sub + flags
-
 data-flags="0-5:P.6" "Putain blabla"
 
 administration(/moderation) stuffs ?
 
 on resize replace chat
+
+pimper la home (modale help globale ?)
 
 scam roulette
 

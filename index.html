@@ -35,6 +35,7 @@
 			<header class="blog-header home row">
 				<div class="cell cell-12">
 					<a href="/multi-twitch/"><h1 class="page-title"></h1></a>
+					<a href="#modal" name="help" role="button" class="button button__link">?</a>
 					<!--div class="postmessage">
 						<form action="" name="spam-area">
 						<select id="channel-to-feed" name="channel-to-feed">
@@ -50,39 +51,56 @@
 				<div class="status hide">
 					<div class="status-text">
 						<form action="#" method="GET" class="channel-form">
-							<label for="add">Add a dude in list</label>
-							<input class="" tabIndex="1" type="text" name="add" placeholder="Streamer or url name" value="">
+							<label for="add">- My list -</label>
+							<input class="" tabIndex="1" type="text" name="add" placeholder="zerator, Ponce, AntoineDaniel" value="">
 							<div class="online-stream">
 							</div>
 							<div class="offline-stream">
 							</div>
 
-							<input type="submit" value="Go (+save)" />
+							<input type="submit" value="Go" />
 						</form>
 					</div>
-					<span class="reset" data-reset-app>reset app</span>
+					
 				</div>
-				<h1 title="In full screen please" tabIndex="2" id="go-button">Full Screen</h1>
 				<h1 class="toggleShit" name="toggle">Menu</h1>
 				<div class="home">
 					<div class="instructions">
-						<h5>Raccourcis claviers</h5>
-						<ul>
-							<li><b><u>Ctrl</u></b> - menu</li>
-							<li><b><u>espace</u></b> - full screen</li>
-							<li><b><u>left-right</u></b> - suivant(premier) - précédent(dernier)</li>
-							<li><b><u>[1-N]</u></b> - basculer vers Nieme stream</li>
-							<li><b><u>0</u></b> - vue multigrille</li>
-							<li><b><u>.</u></b> - Vue secondaire</li>
-						</ul>
+						<div class="suggestion">
+						</div>
+						<span class="reset" data-reset-app>En cas de soucis : <u>reset app</u></span>
 					</div>
 				</div>
 				<div class="twitch-video">
 					<!-- Load the Twitch embed JavaScript file -->
 					<script src="https://embed.twitch.tv/embed/v1.js"></script>
-
 				</div>
 		  </main>
+		</div>
+		<!-- Modal -->
+		<div class="modal-wrapper" id="modal">
+		  <div class="modal-body card">
+			<div class="modal-header">
+			  <h2 class="heading">Raccourcis claviers</h2>
+			  <a href="#!" role="button" class="close" aria-label="Fermer">
+				<svg viewBox="0 0 24 24">
+				  <path d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z" />
+				</svg>
+			  </a>
+			</div>
+			<div class="shortkeys">
+				<ul>
+					<li><b><u>Ctrl</u></b> - menu</li>
+					<li><b><u>dbl click</u></b> - full screen</li>
+					<li><b><u>left-right</u></b> - suivant(premier) - précédent(dernier)</li>
+					<li><b><u>[1-N]</u></b> - basculer vers Nieme stream</li>
+					<li><b><u>0</u></b> - vue multigrille</li>
+					<li><b><u>.</u></b> - Vue secondaire</li>
+				</ul>
+				<span class="reset" data-reset-app>En cas de soucis : <u>reset app</u></span>
+			</div>
+		  </div>
+		  <a href="#!" class="outside-trigger"></a>
 		</div>
 		<script async src="https://www.googletagmanager.com/gtag/js?id=G-9FP44RMCTK"></script>
 		<script>

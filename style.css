@@ -346,9 +346,9 @@ animation: 60s ease-in 1s infinite both running slidein;
     margin-right: 0
 }
 .reset {
-	position: absolute;
+	position: relative;
     bottom: 0;
-    right: 0;
+    left: 0;
     font-size: 11px;
 	cursor: pointer;
 }
@@ -360,11 +360,11 @@ animation: 60s ease-in 1s infinite both running slidein;
 }
 .title {
     opacity: 0;
-    transition: opacity 0.8s;
+    /*transition: opacity 0.8s;*/
     position: absolute;
     border-radius: 5px;
-    right: 257px;
-    top: 0;
+	right: 280px;
+    top: 110px;
     width: 0;
     background: #000000ee;
     color: white;
@@ -381,17 +381,21 @@ animation: 60s ease-in 1s infinite both running slidein;
 }
 
 .status {
-  border: 3px solid black;
+  border: 3px solid #222222;
   border-radius: 5px;
   background: #000000cc;
   color: #eeeeee;
   z-index: 4;
   width: 260px;
     position: absolute;
-    top: 75px;
+    top: 45px;
     right: 10px;
     text-align: center;
-	   display: none;
+	display: none;
+	transition: opacity 0.8s;   
+	max-height: 80%;
+    overflow: hidden;
+	overflow-y: scroll;
 }
 
 .infos, .date {
@@ -421,6 +425,7 @@ line-height: 25px;
 opacity: 1;
 width: 400px;
 padding: 20px;
+position: fixed;
 }
 .channels:hover small {
 	color: black;
@@ -428,7 +433,8 @@ padding: 20px;
 small.game {
     display: block;
 	position: relative;
-	left: 44px;
+    left: 44px;
+    width: 84%;
 }
 .channels .title .game img {
 	display: inline-block;
@@ -438,7 +444,6 @@ small.game {
 .channels .title .game div{
 	display: inline-block;
 	width: 80%;
-	padding: 0 15px;
 }
 
 .page-content {
@@ -463,7 +468,7 @@ small.game {
     cursor: pointer;
     margin: 0;
     height: 30px;
-    top: 35px;
+    top: 15px;
 	transition: opacity 0.5s;
 }
 .toggleShit:before {    
@@ -569,6 +574,10 @@ small.game {
     position: relative;
     z-index: 0;
 	height: 100%;
+	
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
 }
 .twitch-embed iframe{
     display: block;
@@ -737,7 +746,7 @@ height: 50%;
 }
 
 [data-theme-color=dark] .twitch-description .embed-message{
-	background-color: #00000088;
+	background-color: #00000099;
 	color: #f1f1f1;
 }
 [data-theme-color=dark] .twitch-description .embed-message:hover{
@@ -746,11 +755,11 @@ height: 50%;
 }
 
 [data-theme-color=light] .twitch-description .embed-message {
-	background-color: #ffffff55;
+	background-color: #ffffff99;
 	color: #000000;	
 }
 [data-theme-color=light] .twitch-description .embed-message:hover{
-    background: #000000cc;
+    background: #00000099;
 	color: #efefef;
 }
 [data-theme-color=light] .twitch-description .scamer{
@@ -791,12 +800,19 @@ height: 50%;
     bottom: inherit;
     width: 100% !important;
     height: 88% !important;
-    left: inherit;
+    left: 0;
 	margin-right: 0 !important;
-	right: 0 !important;
+	right: inherit !important;
 	/*transition: width 0.1s, height 0.1s;*/
 	transition: none;
 }
+.specialgrid .viewer.mainViewer iframe{
+	
+}
+.specialgrid .viewer .twitch-embed {
+    width: 85%;
+}
+
 .specialgrid .viewer.mainViewer .tw{
 	padding-left: 15%;
 }
@@ -808,10 +824,12 @@ height: 50%;
 }
 .specialgrid .mainViewer .twitch-description {
 	display: inline-block;
+	position: relative;
 	height: 100%;
     top: 0;
     left: 0;
 	width: 15%;
+	float: right;
 }
 
 
@@ -956,7 +974,12 @@ height: 50%;
 .instructions {
 	display: none;
 }
-
+.shortkeys {
+	padding: 20px 0;
+}
+h4{
+	margin: 20px 0;
+}
 .viewer0video .instructions {
     display: inline-block;
     width: 90%;
@@ -964,7 +987,6 @@ height: 50%;
     position: absolute;
     left: 0;
     right: 0;
-    margin-top: 50px;
     color: white;
 	text-align: left;
 }
@@ -1029,7 +1051,7 @@ height: 50%;
 }
 
 [data-brodcaster-1] {
-	background-image:url("");
+	background-image:url("https://static-cdn.jtvnw.net/badges/v1/5527c58c-fb7d-422d-b71b-f309dcb85cc1/1");
 }
 [data-partner-1] {
 	background-image:url("https://static-cdn.jtvnw.net/badges/v1/d12a2e27-16f6-41d0-ab77-b780518f00a3/1");
@@ -1054,7 +1076,7 @@ height: 50%;
 
 
 /*Input */
-[name=new] {	
+[name=add], [id=import] {	
 	border: 0;
     background: transparent;
     padding: 0;
@@ -1098,7 +1120,7 @@ height: 50%;
   animation-iteration-count: infinite;
 }
 .background span:nth-child(1) {
-  color: #583C87;
+  color: #10002b;
   top: 38%;
   left: 70%;
   animation-duration: 13.3s;
@@ -1107,7 +1129,7 @@ height: 50%;
   box-shadow: 40vmin 0 6.2176887917vmin currentColor;
 }
 .background span:nth-child(2) {
-  color: #583C87;
+  color: #10002b;
   top: 48%;
   left: 53%;
   animation-duration: 11s;
@@ -1116,7 +1138,7 @@ height: 50%;
   box-shadow: -40vmin 0 13.3689383251vmin currentColor;
 }
 .background span:nth-child(3) {
-  color: #583C87;
+  color: #10002b;
   top: 29%;
   left: 79%;
   animation-duration: 15.1s;
@@ -1125,7 +1147,7 @@ height: 50%;
   box-shadow: -40vmin 0 12.1296249225vmin currentColor;
 }
 .background span:nth-child(4) {
-  color: #E45A84;
+  color: #1982c4;
   top: 34%;
   left: 97%;
   animation-duration: 13.6s;
@@ -1134,7 +1156,7 @@ height: 50%;
   box-shadow: 40vmin 0 8.0866540619vmin currentColor;
 }
 .background span:nth-child(5) {
-  color: #FFACAC;
+  color: #240046;
   top: 80%;
   left: 88%;
   animation-duration: 10.5s;
@@ -1143,7 +1165,7 @@ height: 50%;
   box-shadow: -40vmin 0 11.070214195vmin currentColor;
 }
 .background span:nth-child(6) {
-  color: #E45A84;
+  color: #1982c4;
   top: 55%;
   left: 71%;
   animation-duration: 11.9s;
@@ -1152,7 +1174,7 @@ height: 50%;
   box-shadow: -40vmin 0 12.6169159417vmin currentColor;
 }
 .background span:nth-child(7) {
-  color: #FFACAC;
+  color: #240046;
   top: 41%;
   left: 49%;
   animation-duration: 10.8s;
@@ -1161,7 +1183,7 @@ height: 50%;
   box-shadow: -40vmin 0 6.4250812211vmin currentColor;
 }
 .background span:nth-child(8) {
-  color: #FFACAC;
+  color: #240046;
   top: 29%;
   left: 7%;
   animation-duration: 11s;
@@ -1170,7 +1192,7 @@ height: 50%;
   box-shadow: 40vmin 0 12.3044631619vmin currentColor;
 }
 .background span:nth-child(9) {
-  color: #E45A84;
+  color: #1982c4;
   top: 80%;
   left: 13%;
   animation-duration: 13.3s;
@@ -1179,7 +1201,7 @@ height: 50%;
   box-shadow: 40vmin 0 11.4944045106vmin currentColor;
 }
 .background span:nth-child(10) {
-  color: #E45A84;
+  color: #1982c4;
   top: 3%;
   left: 49%;
   animation-duration: 14.4s;
@@ -1188,7 +1210,7 @@ height: 50%;
   box-shadow: -40vmin 0 11.0467862689vmin currentColor;
 }
 .background span:nth-child(11) {
-  color: #E45A84;
+  color: #1982c4;
   top: 23%;
   left: 15%;
   animation-duration: 13.3s;
@@ -1197,7 +1219,7 @@ height: 50%;
   box-shadow: 40vmin 0 5.3297659357vmin currentColor;
 }
 .background span:nth-child(12) {
-  color: #E45A84;
+  color: #1982c4;
   top: 11%;
   left: 57%;
   animation-duration: 11.7s;
@@ -1206,7 +1228,7 @@ height: 50%;
   box-shadow: 40vmin 0 10.2675337394vmin currentColor;
 }
 .background span:nth-child(13) {
-  color: #583C87;
+  color: #10002b;
   top: 8%;
   left: 70%;
   animation-duration: 13.9s;
@@ -1215,7 +1237,7 @@ height: 50%;
   box-shadow: -40vmin 0 10.885016245vmin currentColor;
 }
 .background span:nth-child(14) {
-  color: #FFACAC;
+  color: #240046;
   top: 48%;
   left: 32%;
   animation-duration: 11s;
@@ -1224,7 +1246,7 @@ height: 50%;
   box-shadow: -40vmin 0 9.7180976667vmin currentColor;
 }
 .background span:nth-child(15) {
-  color: #FFACAC;
+  color: #240046;
   top: 22%;
   left: 34%;
   animation-duration: 11s;
@@ -1233,7 +1255,7 @@ height: 50%;
   box-shadow: -40vmin 0 11.4723663498vmin currentColor;
 }
 .background span:nth-child(16) {
-  color: #FFACAC;
+  color: #240046;
   top: 88%;
   left: 34%;
   animation-duration: 11s;
@@ -1242,7 +1264,7 @@ height: 50%;
   box-shadow: -40vmin 0 10.6379409545vmin currentColor;
 }
 .background span:nth-child(17) {
-  color: #E45A84;
+  color: #1982c4;
   top: 32%;
   left: 84%;
   animation-duration: 12.8s;
@@ -1251,7 +1273,7 @@ height: 50%;
   box-shadow: -40vmin 0 12.1364239797vmin currentColor;
 }
 .background span:nth-child(18) {
-  color: #E45A84;
+  color: #1982c4;
   top: 84%;
   left: 82%;
   animation-duration: 10.4s;
@@ -1260,7 +1282,7 @@ height: 50%;
   box-shadow: -40vmin 0 12.5749546673vmin currentColor;
 }
 .background span:nth-child(19) {
-  color: #FFACAC;
+  color: #240046;
   top: 20%;
   left: 82%;
   animation-duration: 15s;
@@ -1269,7 +1291,7 @@ height: 50%;
   box-shadow: -40vmin 0 11.5345576346vmin currentColor;
 }
 .background span:nth-child(20) {
-  color: #E45A84;
+  color: #1982c4;
   top: 86%;
   left: 24%;
   animation-duration: 14.3s;
@@ -1282,4 +1304,121 @@ height: 50%;
   100% {
     transform: translate3d(0, 0, 1px) rotate(360deg);
   }
+}
+
+
+/* Modal Help*/
+
+.modal-header {
+  align-items: baseline;
+  display: flex;
+  justify-content: space-between;
+}
+
+.close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  height: 16px;
+  text-decoration: none;
+  width: 16px;
+}
+.close svg {
+  width: 16px;
+}
+
+.modal-wrapper {
+  align-items: center;
+  background: rgba(0, 0, 0, 0.7);
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+}
+
+#modal {
+  opacity: 0;
+  transition: opacity 0.25s ease-in-out;
+  visibility: hidden;
+}
+#modal:target {
+  opacity: 1;
+  visibility: visible;
+}
+#modal:target .modal-body {
+  opacity: 1;
+  transform: translateY(1);
+}
+#modal .modal-body {
+  max-width: 500px;
+  opacity: 0;
+  transform: translateY(-100px);
+  transition: opacity 0.25s ease-in-out;
+  width: 100%;
+  z-index: 1;
+}
+
+.outside-trigger {
+  bottom: 0;
+  cursor: default;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+}
+
+.button__link {
+  text-decoration: none;
+}
+.streams {
+    display: inline-block;
+    width: 20%;
+    height: 100px;
+    vertical-align: top;
+    padding: 5px;
+    line-height: 12px;
+}
+
+.suggest {
+	color: white;
+    word-break: break-word;
+    display: inline-block;
+    width: 100%;
+}
+
+.suggest img {
+	margin-right: 10px;
+}
+
+a[name=help]{
+    color: white;
+    border-radius: 15px;
+    border: 2px solid white;
+    padding: 2px 7px;
+    margin-left: 10px;
+    font-size: 12px;
+	transition: border-color 0.5s, color 0.5s, background 0.5s;
+}
+
+a[name=help]:hover{
+	border: 2px solid transparent;
+	color: #9146FF;
+	background: white;
+}
+.card {
+  background: #fff;
+  background-image: linear-gradient(48deg, #fff 0%, #e5efe9 100%);
+  border-top-right-radius: 16px;
+  border-bottom-left-radius: 16px;
+  box-shadow: -20px 20px 35px 1px rgba(10, 49, 86, 0.18);
+  display: flex;
+  flex-direction: column;
+  padding: 32px;
+  margin: 40px;
+  max-width: 400px;
+  width: 100%;
 }
