@@ -19,10 +19,6 @@ body {
     font-kerning: normal
 }
 
-h1,h2,h3,h4,h5,h6,p,blockquote,pre,ul,ol,dl,figure {
-    margin-bottom: 30px
-}
-
 img {
     max-width: 100%;
     height: auto;
@@ -376,8 +372,32 @@ animation: 60s ease-in 1s infinite both running slidein;
     position: absolute;
 
 }
-.status-text {
-
+.menu-scroll {
+	position: relative;
+    overflow-y: scroll;
+    max-height: 500px;
+	margin-right: -17px;
+}
+.fixed-go {
+	margin: 10px 0;
+	
+}
+.fixed-go input{
+    border: 1px solid white;
+    background: none;
+    color: white;
+    font-size: 20px;
+    vertical-align: bottom;
+    padding: 1px 30px;
+    cursor: pointer;
+	transition: border 1s, color 1s, background 1s; 
+	
+}
+.fixed-go input:hover{
+    border: 1px solid transparent;
+    background: white;
+    color: #000000;
+	
 }
 
 .status {
@@ -392,12 +412,11 @@ animation: 60s ease-in 1s infinite both running slidein;
     right: 10px;
     text-align: center;
 	display: none;
-	transition: opacity 0.8s;   
-	max-height: 80%;
-    overflow: hidden;
-	overflow-y: scroll;
+	transition: opacity 0.8s;
 }
-
+.status form {
+	overflow: hidden;
+}
 .infos, .date {
 font-style: italic;
     font-weight: bold;
@@ -408,7 +427,6 @@ font-style: italic;
 .channels {
  padding: 0 10px;
  text-align: left;
-line-height: 25px;
     position: relative;
 }
 .channels label {
@@ -493,7 +511,7 @@ small.game {
     width: 100%;
     padding: 4px;
     float:left;
-	overflow: hidden;
+	/*overflow: hidden;
     /*transition: width 0.3s ease-in-out, height 0.3s ease-in-out;*/
 	transition: none;
 }
@@ -636,6 +654,9 @@ height: 50%;
 	position:absolute;
 	left: 0;
 	top: 0;
+	  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
 }
 
 [data-down-font], [data-up-font], [data-form-theme-color], [data-form-theme] {
@@ -691,15 +712,23 @@ height: 50%;
 .twitch-description.hide .chatscroll{
 	display: none;
 }
-
-.twitch-video {
-
-}
-
-
 .postmessage {
 	display: inline-block;
 }
+
+.authbtn {
+	position: absolute;
+    top: 25px;
+    padding-left: 21px;
+    font-size: 7px;
+    color: white;
+	cursor: pointer;
+}
+
+[name=spam-area] {
+	display: none;
+}
+
 #embed_chat_position{
 	margin: 5px 0;
 }  
@@ -726,6 +755,8 @@ height: 50%;
 }
 [data-theme=detached] .twitch-description .sender-message {
 	width: 100%;
+	text-align: left;
+    padding-left: 10px;
 }
 [data-theme=detached] .twitch-description .embed-message{
 	margin: 15px 0;
@@ -734,7 +765,9 @@ height: 50%;
 [data-theme=detached] .twitch-description{
 	height: 80%;
 }
-
+[data-theme=detached] [data-modo=true], [data-theme=detached] [data-subscriber=true], [data-theme=detached] [data-prime-1], [data-theme=detached] [data-no-audio-1], [data-theme=detached] [data-no-video-1], [data-theme=detached] [data-partner-1], [data-theme=detached] [data-vip-1], [data-theme=detached] [data-brodcaster-1] {
+    float: right;
+}
 
 [data-theme-color=default] .twitch-description .embed-message{
 	background-color: transparent;	
@@ -746,20 +779,29 @@ height: 50%;
 }
 
 [data-theme-color=dark] .twitch-description .embed-message{
+	background-color: #000000;
+	color: #f1f1f1;
+}
+
+[data-theme-color=dark] .twitch-description .embed-message:hover{
+    background: #f1f1f1;
+	color: #111111;
+}
+[data-theme-color=dark-opacity] .twitch-description .embed-message{
 	background-color: #00000099;
 	color: #f1f1f1;
 }
-[data-theme-color=dark] .twitch-description .embed-message:hover{
-    background: #ffffffcc;
+[data-theme-color=dark-opacity] .twitch-description .embed-message:hover{
+    background: #f1f1f1;
 	color: #111111;
 }
 
 [data-theme-color=light] .twitch-description .embed-message {
-	background-color: #ffffff99;
+	background-color: #f1f1f1;
 	color: #000000;	
 }
 [data-theme-color=light] .twitch-description .embed-message:hover{
-    background: #00000099;
+    background: #000000;
 	color: #efefef;
 }
 [data-theme-color=light] .twitch-description .scamer{
@@ -767,7 +809,18 @@ height: 50%;
 	text-shadow: 0 1px 0 rgb(0, 0, 0, 0.9);
 }
 
-
+[data-theme-color=light-opacity] .twitch-description .embed-message {
+	background-color: #ffffff99;
+	color: #000000;	
+}
+[data-theme-color=light-opacity] .twitch-description .embed-message:hover{
+    background: #00000099;
+	color: #efefef;
+}
+[data-theme-color=light-opacity] .twitch-description .scamer{
+	font-weight: bold;
+	text-shadow: 0 1px 0 rgb(0, 0, 0, 0.9);
+}
 
 
 
@@ -806,6 +859,7 @@ height: 50%;
 	/*transition: width 0.1s, height 0.1s;*/
 	transition: none;
 }
+
 .specialgrid .viewer.mainViewer iframe{
 	
 }
@@ -824,11 +878,11 @@ height: 50%;
 }
 .specialgrid .mainViewer .twitch-description {
 	display: inline-block;
-	position: relative;
-	height: 100%;
-    top: 0;
-    left: 0;
-	width: 15%;
+	position: relative !important;
+	height: 100% !important;
+    top: 55px !important;
+    left: 0 !important;
+	width: 15% !important;
 	float: right;
 }
 
@@ -971,25 +1025,24 @@ height: 50%;
     margin: 20px 0;
 }
 
-.instructions {
+.instructions, .intro {
 	display: none;
 }
+
 .shortkeys {
 	padding: 20px 0;
 }
 h4{
 	margin: 20px 0;
 }
-.viewer0video .instructions {
+.viewer0video .instructions, .viewer0video .intro {
     display: inline-block;
     width: 90%;
     margin: 0 auto;
-    position: absolute;
-    left: 0;
-    right: 0;
     color: white;
 	text-align: left;
 }
+
 .viewer0video .status {
     display: inline-block;
 }
@@ -1021,9 +1074,22 @@ h4{
 }
 
 .channels:hover{
+	background: #ffffffcc;
+}
+.channels.selected{
 	background: #ffffffee;
+	color: black;
 }
 
+.channels.selected label{
+	color: black;
+}
+.channels.selected .game{
+	color: black;
+}
+.channels.selected small{
+	color: black;
+}
 [data-flags=null] ,[data-subgifts-undefined] [data-no-video],[data-partner-undefined], [data-no-audio], [data-modo=false] , [data-turbo=false] , [data-subscriber=false], [data-prime-undefined], [data-prime-], [data-vip-undefined], [data-brodcaster-] {
 	display: none;
 }
@@ -1336,6 +1402,7 @@ h4{
   justify-content: center;
   left: 0;
   position: fixed;
+  z-index: 100;
   right: 0;
   top: 0;
 }
@@ -1377,7 +1444,7 @@ h4{
 .streams {
     display: inline-block;
     width: 20%;
-    height: 100px;
+    height: 80px;
     vertical-align: top;
     padding: 5px;
     line-height: 12px;

@@ -1,11 +1,12 @@
 let authToken = "";
 let clientID = "";
 
+
 var scamersTotalList = [];
 var bufferMessageSize = 150;
 
-var themes = [ "default", "detached"];
-var themeColors = [ "default", "dark", "light"];
+var themes = [ "default", "detached" ];
+var themeColors = [ "default", "dark", "dark-opacity", "light", "light-opacity"];
 
 
 function loadScam() {
@@ -30,22 +31,15 @@ if(getCookie("Scamers") === undefined) {
 
 if(newScamer) {
 	for(var i=0; i<newScamer.length; i++) {	
-		//Mono
+		var key = newScamer[i].toLowerCase();
+		
 		if(!scamersTotalList.includes(newScamer[i].toLowerCase()) && newScamer[i] !== '') {
 			scamersTotalList.push(newScamer[i].toLowerCase());
 			setCookie('Scamers', scamersTotalList, 6000);
 		} else {
-			if(newScamer[i].indexOf(',') != -1){
-				scamersTotalList.push(newScamer[i].split(','));
-				setCookie('Scamers', scamersTotalList, 6000);
-			}
 			console.log("already exist or empty -- skip");
 		}
 	}
-}
-	
-for(var i=0; i<scamGet.length; i++) {
-	jQuery("#channel-to-feed").append("<option value='"+scamGet[i]+"'>"+scamGet[i]+"</option>");
 }
 
 var result = {
@@ -70,15 +64,16 @@ function StartThisShit(config) {
 		}
 	}
 
+
 	jQuery("body").addClass("viewer"+config.scamers.length+"video", );
 		var player = [];
 		for(var i=0; i< config.scamers.length; i++){
-		jQuery(".twitch-video").append("<div data-theme-color='default' data-theme='default' class='viewer'><div class='ui-widget-content twitch-description' id='"+config.scamers[i]+"'><nav class='scroll'><div class='chatscroll'></div></nav></div><div class='twitch-embed' id='twitch-embed"+(i+1)+"'></div></div>");
+		jQuery(".twitch-video").append("<div data-theme-color='default' data-theme='default' class='viewer'><div class='ui-widget-content twitch-description' id='"+config.scamers[i].substr(1)+"'><nav class='scroll'><div class='chatscroll'></div></nav></div><div class='twitch-embed' id='twitch-embed"+(i+1)+"'></div></div>");
 		
 		var options = {
 			width: "100%",
 			height: "100%",
-			channel: config.scamers[i],
+			channel: config.scamers[i].substr(1),
 			allowfullscreen: false,
 			muted: (config.scamers.length > 1)
 			// only needed if your site is also embedded on embed.example.com and othersite.example.com
@@ -93,6 +88,9 @@ function StartThisShit(config) {
 		
 		jQuery(".twitch-video .viewer").append("<div class='player-options'><span class='ui-btn ui-shadow ui-corner-all ui-icon ui-icon-minus ui-btn-icon-notext ui-btn-inline' data-down-font></span><span class='ui-btn ui-shadow ui-corner-all ui-icon ui-icon-plus ui-btn-icon-notext ui-btn-inline' data-up-font></span><select data-form-theme-color name='theme-color'></select><select data-form-theme name='theme'></select></div>");
 		
+		for(var i=0; i<config.scamers.length; i++) {
+			jQuery("#channel-to-feed").append("<option value='"+config.scamers[i].substr(1)+"'>"+config.scamers[i].substr(1)+"</option>");
+		}
 		
 		jQuery(themeColors).each(function(i, color){
 			jQuery("[data-form-theme-color]").append("<option value='"+color+"'>Theme: "+color+"</option>");
@@ -102,7 +100,7 @@ function StartThisShit(config) {
 			jQuery("[data-form-theme]").append("<option value='"+color+"'>Disposition: "+color+"</option>");
 		});
 		
-		jQuery(".twitch-description").draggable({ containment: "parent" });
+		jQuery(".twitch-description").draggable({ containment: "document" });
 		
 		jQuery("[data-form-theme-color]").on( "change", function(){
 			jQuery(this).parent().parent().eq(0).attr("data-theme-color", this.value);
@@ -125,10 +123,9 @@ function StartThisShit(config) {
 		});
 		
 		jQuery(".twitch-description").resizable({
-		  containment: 'parent',
+		  containment: 'document',
 		  minWidth: 200,
 		  minHeight: 80,
-		  //maxWidth: 800,
 		  classes: {
 		  },
 		  
@@ -201,9 +198,9 @@ function updateScammerStatus(online, scamer) {
 		"<div class='channels'>"+
 			"<input type='checkbox' id='"+scamer.user_login+"' tabIndex='3' name='show' value='"+scamer.user_login+"'/>"+
 			"<div class='title'>"+
-				"<div class='game'>"+
+				"<div class='gamehover'>"+
 					"<img src='"+ thumbnail_resized+"'/>"+
-					"<div class='game'>"+scamer.title +"</div>"+
+					"<div class='gametitle'>"+scamer.title +"</div>"+
 				"</div>"+
 				"<div class='infos'>"+scamer.viewer_count+"</div>"+
 				"<div class='date'>"+duration+"</div>"+
@@ -223,6 +220,15 @@ function updateScammerStatus(online, scamer) {
 			"</div>"
 		);
 	}
+	
+	jQuery('.channels input').on('change', function(e){
+		if(jQuery(this).is(':checked')) {
+			jQuery(this).parent('.channels').addClass("selected");
+		} else {
+			jQuery(this).parent('.channels').removeClass("selected");
+		}
+		e.preventDefault();
+	});
 	
 	jQuery('.channels .remove').on('click', function() {		
 		var scamer = jQuery(this).data("scamer");
@@ -276,6 +282,160 @@ jQuery.ajax(
    }
 });
 }
+
+function removeToken(){
+	deleteCookie("tokenMultiTwitch");
+	window.location.reload();
+}
+
+function loadClient(config){
+	
+	var url = window.location.href;
+	var size = url.indexOf('#')
+	var params = url.substring(size + 1);
+	var urlParams = new URLSearchParams(params);
+	var access_token = urlParams.get('access_token');
+	// checkstate >>> 
+	
+	var name = "";
+	
+	if (access_token) {
+		setCookie('tokenMultiTwitch', access_token, 2);
+	} else {
+		access_token = getCookie('tokenMultiTwitch');
+	}
+
+	jQuery.ajax(
+	{
+	   type: 'GET',
+	   url: 'https://id.twitch.tv/oauth2/validate',
+	   async: false,
+	   headers: {
+		 'Authorization': 'Bearer '+ access_token, 
+	   },
+	   success: function(c){
+			console.log(c);
+			
+			console.log(config["scamers"]);
+			name = c["login"];
+				const option = {
+				  connection: {
+					cluster: "aws",
+					reconnect: true
+				  },
+				  identity: {
+					username: name,
+					password: 'oauth:'+access_token,
+					},
+				  channels: config["scamers"]
+				};
+				
+				client = new tmi.client(option);		
+				client.connect();
+				const formScam = jQuery('form[name="spam-area"]');
+				jQuery('[name=spam-area]').css("display", "inherit");
+				
+				formScam.on("submit", function(e) {
+					e.preventDefault();
+					client.say(jQuery('#channel-to-feed').val(), jQuery('#spam-content').val())
+
+					.then(data => {
+						jQuery('#spam-content').val('');
+					})
+					.catch(err => {
+						console.log('[ERR]', err);
+					});
+				});
+				
+				jQuery('.postmessage').append("<a class='authbtn' onclick='removeToken();'><h2>Logout</h2></a>");					
+	   },
+	   error: function(event){
+			name = null;
+			console.log("nope");
+			const option = {
+			  channels: config["scamers"]
+			};
+			client = new tmi.client(option);
+			client.connect();
+			jQuery('.postmessage').append("<a class='authbtn' href='https://id.twitch.tv/oauth2/authorize?response_type=token&force_verify=true&client_id="+clientID+"&redirect_uri=https://xouindaplace.fr/multi-twitch/&scope=chat%3Aread+chat%3Aedit&state=random'><h2>Login</h2></a>");
+	   },
+	   complete: function(e){
+			console.log(client);
+			
+			var pauseScroll = false;
+			jQuery(".twitch-description").hover(function(){
+				pauseScroll = true;
+				
+			},function(){
+				pauseScroll = false;
+			});
+			
+			client.on('message', (channel, tags, message, self) => {
+				let premium = "";
+				let subscriber = "";
+				let subgifts = "";
+				let noaudio = "";
+				let novideo = "";
+				let partner = "";
+				let broadcaster = "";
+				let vip = "";
+				
+				//console.log(tags);
+				if(tags.badges !== null ) {
+					premium = tags.badges['premium'];
+					subscriber = tags.badges['subscriber'];	
+					subgifts = tags.badges['sub-gifter'];
+					noaudio = tags.badges['no_audio'];
+					novideo = tags.badges['no_video'];
+					partner = tags.badges['partner'];
+					broadcaster = tags.badges['broadcaster'];
+					vip = tags.badges['vip'];
+				}
+
+				jQuery('.twitch-description'+channel.toLowerCase()+' > .scroll > div')
+				  .append(""+
+					  "<div class='embed-message "+tags.id+"'>" +
+						"<span data-first-message='"+tags['first-msg']+"'>"+
+						"<div class='sender-message'>" +
+						  "<span title='Regarde sans le son' data-no-audio-"+noaudio+"></span>"+
+						  "<span title='Regarde sans image' data-no-video-"+novideo+"></span>"+
+						  "<span title='Sub depuis "+subscriber+" Mois' data-subscriber='"+tags['subscriber']+"'></span>"+
+						  "<span title='Prime' data-prime-"+premium+"></span>"+
+						  "<span title='Modo !' data-modo='"+tags['mod']+"'></span>"+
+						  "<span title='Partenaire' data-partner-"+partner+"></span>"+
+						  "<span title='VIP' data-vip-"+vip+"></span>"+
+						  "<span title='"+subgifts+" Subgifts' data-subgifts-"+subgifts+"></span>"+
+						  "<span title='Diffuseur' data-brodcaster-"+broadcaster+"></span>"+
+						  
+						  "<span title='Turbo "+tags['turbo']+"' data-turbo='"+tags['turbo']+"'> TURBO </span>"+
+						  "<span style='color:"+tags['color']+"' class='scamer'>"+tags['display-name']+"</span>"+
+						"</div>" +
+						  "<span class='message'>"+getMessage(message, tags)+"</span></span>"+
+					  "</div>"
+					);
+					
+					if(pauseScroll == false)
+						scrollToBottom(channel);
+					
+					/* Keep 150 messages */
+					if(jQuery(channel.toLowerCase()+' nav.scroll > .chatscroll > div').length == bufferMessageSize) {
+						jQuery(channel.toLowerCase()+' nav.scroll > .chatscroll > div').eq(0).remove();
+					}
+			});
+			
+			jQuery('[name=show]').removeAttr('checked');
+	
+			jQuery(config["scamers"]).each(function(i, val){
+				if(val.length !== 0){
+					jQuery("input[name=show]"+val).prop('checked', 'checked');
+				}
+				jQuery("input[name=show]"+val).parent('.channels').addClass('selected');
+			});	
+			
+		}
+	});
+}
+
 
 function GoInFullscreen(element) {
 	if(element.requestFullscreen)
@@ -335,7 +495,7 @@ function deleteCookie(name) {
 }
 
 function scrollToBottom(channel) {
-	jQuery(channel.toLowerCase()+' nav.scroll').animate({ scrollTop: jQuery(channel.toLowerCase()+' nav.scroll > div.chatscroll').height() }, 200);
+	jQuery(channel.toLowerCase()+' nav.scroll').animate({ scrollTop: jQuery(channel.toLowerCase()+' nav.scroll > div.chatscroll').height() }, 50);
     return false;
 }
 
@@ -366,18 +526,25 @@ function getMessage(message, tags) {
 			msg = msg.replaceAll(substr, newSubstr);
 		}
 	}
+	if(tags['flags'] !== null && tags['flags'] !== undefined){
+		console.log(tags['flags']);
+		var flag = tags['flags'].split(':');
+		var extract = flag[0].split('-');
+		var length = extract[1] - extract[0] + 1;
+		var substr = message.slice(extract[0],extract[1]+1).slice(0, length);
+		var newSubstr = "<u title='"+flag[1]+"'>"+substr+"</u>";
+		
+		msg = msg.replaceAll(substr, newSubstr);
+	}	
+	
 	return msg;
 }
 
 
-jQuery(document).ready(function(){
-	
-	jQuery("[data-reset-app]").on('click', function(){
-		deleteCookie('Scamers');
-		window.location.replace("/multi-twitch/");
-	});
-	
+jQuery(document).ready(function(){	
 	var scamConf = loadScam();
+	loadClient(scamConf);
+	
 	var urlscammers = "";
 
 	scamersTotalList.forEach(function(scam) {
@@ -400,7 +567,7 @@ jQuery(document).ready(function(){
 				jQuery.ajax(
 				{
 				   type: 'GET',
-				   url: 'https://api.twitch.tv/helix/users/follows?first=50&from_id=' + id,
+				   url: 'https://api.twitch.tv/helix/users/follows?first=100&from_id=' + id,
 				   headers: {
 					 'Client-ID': clientID,
 					 'Authorization': 'Bearer ' + authToken, 
@@ -422,7 +589,8 @@ jQuery(document).ready(function(){
 	}
 	
 	function myPeriodicMethod() {
-		var scamConf = loadScam();
+		var scamConf = loadScam();	
+		console.log(scamConf);
 		jQuery.ajax(
 		{
 		   type: 'GET',
@@ -435,9 +603,9 @@ jQuery(document).ready(function(){
 			  updateStatuses(c.data, scamConf["scamers"]);
 		   },
 		   complete: function() {
-			  setTimeout(myPeriodicMethod, 60000);
+			  setTimeout(myPeriodicMethod, 120000);
 			}
-		});	
+		});
 	}
 	
 	myPeriodicMethod();
@@ -475,9 +643,6 @@ jQuery(document).ready(function(){
 	   },
 	});
 	
-	
-	
-	
 	jQuery("h1.toggleShit").click(function(){
 		jQuery(this).toggleClass("hide");
 		jQuery(".status").toggle(300, "linear");
@@ -486,13 +651,6 @@ jQuery(document).ready(function(){
 	jQuery(document).keydown(function(e) {
 	    var value = e.which;	
 		switch (value) {
-			case 32:
-				//space
-				/*if(IsFullScreenCurrently())
-					GoOutFullscreen();
-				else
-					GoInFullscreen(jQuery("#myScamPlayer").get(0));*/
-				break;
 			case 17:
 				//ctrl
 				jQuery("h1.toggleShit").toggleClass("hide");
@@ -501,10 +659,20 @@ jQuery(document).ready(function(){
 
 			case 96: 
 				// 0 
-				if(scamConf["scamers"].length != 1){
-					jQuery('.viewer').removeClass('mainViewer');
-					jQuery(".viewer").css("right", "0");
-				}
+				    if(jQuery('body').attr('data-layout') == 'studio') {
+						jQuery('body').removeClass('specialgrid');
+					}
+					jQuery('body').attr('data-layout', 'grid');				
+					var current = jQuery('.viewer.mainViewer').index();
+					if(current == -1){
+						jQuery('.viewer').eq(0).addClass('mainViewer');
+					} else {
+						if(scamConf["scamers"].length != 1){
+							jQuery('.viewer').removeClass('mainViewer');
+							jQuery(".viewer").css("right", "0");
+						}
+					}
+
 					break;
 				
 			case 37:
@@ -520,22 +688,27 @@ jQuery(document).ready(function(){
 				
 				break;
 			case 110:
-				var current = jQuery('.viewer.mainViewer').index();
-				/*if(current == -1) {
-					break;				
-				}*/
-				
-				jQuery(scamConf["scamers"]).each(function(i, val){
-					jQuery(".viewer").eq(i).css("right", 11.11111*(i)+"%");
+				//Point 
+				if(jQuery('body').attr('data-layout') !== 'studio'){
+					jQuery('body').attr('data-layout', 'studio');
 					
-					/*if(jQuery(".viewer").eq(i).hasClass("mainViewer")) {
-						console.log("insert");
-						jQuery(".viewer").eq(i).insertBefore("<div class='viewer'></div>");
+					var current = jQuery('.viewer.mainViewer').index();
+					/*if(current == -1) {
+						break;				
 					}*/
-				});
+					
+					jQuery(".mainViewer .twitch-description").css("left", "initial");
+					jQuery(scamConf["scamers"]).each(function(i, val){
+						jQuery(".viewer").eq(i).css("right", 11.11111*(i)+"%");
+						
+						/*if(jQuery(".viewer").eq(i).hasClass("mainViewer")) {
+							console.log("insert");
+							jQuery(".viewer").eq(i).insertBefore("<div class='viewer'></div>");
+						}*/
+					});
 
-				jQuery('body').toggleClass('specialgrid');
-				
+					jQuery('body').toggleClass('specialgrid');
+				}
 				
 				break;
 			case 39:
@@ -566,14 +739,6 @@ jQuery(document).ready(function(){
 		}
 		
 	});
-	var pauseScroll = false;
-	jQuery(".scroll").hover(function(){
-		pauseScroll = true;
-		
-	},function(){
-		pauseScroll = false;
-	});	
-	
 	
 	jQuery(function () {
 		var timer;
@@ -589,7 +754,7 @@ jQuery(document).ready(function(){
 				}); 
 			} else {
 				 jQuery('.viewer').css({
-					cursor: 'default'
+					cursor: 'pointer'
 				});
 				jQuery('.player-options, .toggleShit').css({
 					opacity: 1
@@ -612,18 +777,14 @@ jQuery(document).ready(function(){
 			}, 1500)
 		});
 		jQuery('.viewer').css({
-			cursor: 'default'
+			cursor: 'pointer'
 		});
 	});
 	
-	
-	jQuery('[name=show]').removeAttr('checked');
-	
-	jQuery(scamConf["scamers"]).each(function(i, val){
-		if(val.length !== 0){
-			jQuery("input[name=show]#"+val).prop('checked', 'checked');
-		}
-	});	
+	jQuery("[data-reset-app]").on('click', function(){
+		deleteCookie('Scamers');
+		window.location.replace("/multi-twitch/");
+	});
 	
 	jQuery("[data-down-font]").on('click', function() {
 		var lineHeight = jQuery(this).parent().parent().find('.twitch-description').css('line-height');
@@ -638,132 +799,29 @@ jQuery(document).ready(function(){
 		
 		jQuery(this).parent().parent().find('.twitch-description').css('line-height',parseInt(lineHeight, 10)+1+"px").css('font-size',parseInt(fontSize, 10)+1+"px");
 	});
-
-	
-	const client = new tmi.Client({
-		channels: scamConf['scamers']
-	});
-	client.connect();
-/*	
-	
-	const option = {
-	  options: {
-		debug: true
-	  },
-	  connection: {
-		cluster: "aws",
-		reconnect: true
-	  },
-	  identity: {
-		username: 'Xou____',
-		password: 'oauth:'
-		},
-	  channels: ["xou____"]
-	};
-	const client2 = new tmi.client(option);
-	
-	
-	client2.connect().catch((err) => {console.log('Connection error!', err)});
-
-	const formScam = jQuery('form[name="spam-area"]');
-	formScam.on("submit", function(e) {
-		e.preventDefault();
-		client2.action(jQuery('#channel-to-feed').val(), jQuery('#spam-content').val())
-
-		.then(data => {
-			console.log(`Sent "${data[1]}" to`, jQuery('#channel-to-feed').val());
-		})
-		.catch(err => {
-			console.log('[ERR]', err);
-		});
-	});
-
-*/
-
-
-	client.on('message', (channel, tags, message, self) => {	
-		let premium = "";
-		let subscriber = "";
-		let subgifts = "";
-		let noaudio = "";
-		let novideo = "";
-		let partner = "";
-		let broadcaster = "";
-		let vip = "";
-		let flags = [];
-		
-		//console.log(tags);
-		if(tags.badges !== null) {
-			premium = tags.badges['premium'];
-			subscriber = tags.badges['subscriber'];	
-			subgifts = tags.badges['sub-gifter'];
-			noaudio = tags.badges['no_audio'];
-			novideo = tags.badges['no_video'];
-			partner = tags.badges['partner'];
-			broadcaster = tags.badges['broadcaster'];
-			vip = tags.badges['vip'];
-		}
-		if(tags.flags !== null) {
-			flags = tags.flags;
-		}	
-		jQuery('.twitch-description'+channel.toLowerCase()+' > .scroll > div')
-		  .append(""+
-			  "<div class='embed-message "+tags.id+"'>" +
-				"<span data-first-message='"+tags['first-msg']+"'>"+
-				"<div class='sender-message'>" +
-				  "<span title='Regarde sans le son' data-no-audio-"+noaudio+"></span>"+
-				  "<span title='Regarde sans image' data-no-video-"+novideo+"></span>"+
-				  "<span title='Sub depuis "+subscriber+" Mois' data-subscriber='"+tags['subscriber']+"'></span>"+
-				  "<span title='Prime' data-prime-"+premium+"></span>"+
-				  "<span title='Modo !' data-modo='"+tags['mod']+"'></span>"+
-				  "<span title='Partenaire' data-partner-"+partner+"></span>"+
-				  "<span title='VIP' data-vip-"+vip+"></span>"+
-				  "<span title='"+subgifts+" Subgifts' data-subgifts-"+subgifts+"></span>"+
-				  "<span title='Diffuseur' data-brodcaster-"+broadcaster+"></span>"+
-				  
-				  
-				  "<span title='Flags "+tags['flags']+"' data-flags='"+tags['flags']+"'>FLAGS</span>"+
-				  "<span title='Turbo "+tags['turbo']+"' data-turbo='"+tags['turbo']+"'> TURBO </span>"+
-				  "<span style='color:"+tags['color']+"' class='scamer'>"+tags['display-name']+"</span>"+
-				"</div>" +
-				  "<span class='message'>"+getMessage(message, tags)+"</span></span>"+
-			  "</div>"
-			);
-			
-			if(pauseScroll == false)
-				scrollToBottom(channel);
-			
-			/* Keep 150 messages */
-			if(jQuery(channel.toLowerCase()+' nav.scroll > .chatscroll > div').length == bufferMessageSize) {
-				jQuery(channel.toLowerCase()+' nav.scroll > .chatscroll > div').eq(0).remove();
-			}
-	});
-	
-	client.on("connected", function (address, port) {
-
-	});
-	
 });
 
 
 /*
 
+sauvegarder options par chaine dans le cookie
+
 pluie d'emotes
 
 animation switch de stream
 
-badges + sub + flags
-data-flags="0-5:P.6" "Putain blabla"
-
-administration(/moderation) stuffs ?
+badges + TURBO 
 
 on resize replace chat
 
-pimper la home (modale help globale ?)
+améliorer la home globalement
 
-scam roulette
+??administration(/moderation) stuffs ?
 
-??envoyer message + prédictions ??
+??scam roulette??
+https://dev.to/codesphere/how-to-create-a-twitch-chat-game-with-javascript-deg
+
+??prédictions ??
 ??qualité bloqué par background transparent??
 
 */

@@ -36,35 +36,43 @@
 				<div class="cell cell-12">
 					<a href="/multi-twitch/"><h1 class="page-title"></h1></a>
 					<a href="#modal" name="help" role="button" class="button button__link">?</a>
-					<!--div class="postmessage">
+					<div class="postmessage">
 						<form action="" name="spam-area">
 						<select id="channel-to-feed" name="channel-to-feed">
-							<option value="" selected disabled hidden>--Chaine--</option>
+							<option value="" selected disabled hidden>--wip--</option>
 						</select>
-						<input type="text" id="spam-content" value="" placeholder="Envoyer un message"/>
-						<input type="submit" value="Go"/>
+						<input autocomplete="off" type="text" id="spam-content" value="" placeholder="Envoyer un message"/>
+						<input name="send" type="submit" value="Go"/>
 						</form>
-					</div-->
+					</div>
 				</div>
 			</header>
 			<main id="myScamPlayer" class="page-content">
 				<div class="status hide">
-					<div class="status-text">
-						<form action="#" method="GET" class="channel-form">
-							<label for="add">- My list -</label>
-							<input class="" tabIndex="1" type="text" name="add" placeholder="zerator, Ponce, AntoineDaniel" value="">
+					<form action="#" method="GET" class="channel-form">
+						<label for="add">- My list -</label>
+						<input class="" tabIndex="1" type="text" name="add" placeholder="Ajoutez une chaine" value="">
+						<div class="menu-scroll">
 							<div class="online-stream">
 							</div>
 							<div class="offline-stream">
 							</div>
-
+						</div>
+						<div class="fixed-go">
 							<input type="submit" value="Go" />
-						</form>
-					</div>
-					
+						</div>
+					</form>
 				</div>
 				<h1 class="toggleShit" name="toggle">Menu</h1>
 				<div class="home">
+				    <div class="intro">
+					<b>3 options :</b>
+					<ul>
+						<li>Ajout d'une chaine via le menu (à droite)</li>
+						<li>Ajout de votre liste twitch avec votre identifiant twitch (çi dessous)</li>
+						<li>Cliquer sur une des propositions de chaines pour l'ajouter + voir</li>
+					</ul>
+					</div>
 					<div class="instructions">
 						<div class="suggestion">
 						</div>
