@@ -1,12 +1,15 @@
 let authToken = "";
 let clientID = "";
+var basePath = ""
 
 
 var scamersTotalList = [];
 var bufferMessageSize = 150;
+var tickRefreshMs = 120000;
 
 var themes = [ "default", "detached" ];
 var themeColors = [ "default", "dark", "dark-opacity", "light", "light-opacity"];
+
 
 
 function loadScam() {
@@ -80,17 +83,10 @@ function StartThisShit(config) {
 			//parent: ["embed.example.com"]
 		  };
 		  
-		  
 		  player[i] = new Twitch.Player("twitch-embed"+(i+1), options);
-
-
 		}
 		
 		jQuery(".twitch-video .viewer").append("<div class='player-options'><span class='ui-btn ui-shadow ui-corner-all ui-icon ui-icon-minus ui-btn-icon-notext ui-btn-inline' data-down-font></span><span class='ui-btn ui-shadow ui-corner-all ui-icon ui-icon-plus ui-btn-icon-notext ui-btn-inline' data-up-font></span><select data-form-theme-color name='theme-color'></select><select data-form-theme name='theme'></select></div>");
-		
-		for(var i=0; i<config.scamers.length; i++) {
-			jQuery("#channel-to-feed").append("<option value='"+config.scamers[i].substr(1)+"'>"+config.scamers[i].substr(1)+"</option>");
-		}
 		
 		jQuery(themeColors).each(function(i, color){
 			jQuery("[data-form-theme-color]").append("<option value='"+color+"'>Theme: "+color+"</option>");
@@ -121,11 +117,12 @@ function StartThisShit(config) {
 				else
 					GoInFullscreen(jQuery("#myScamPlayer").get(0));
 		});
+
 		
 		jQuery(".twitch-description").resizable({
 		  containment: 'document',
 		  minWidth: 200,
-		  minHeight: 80,
+		  minHeight: 21,
 		  classes: {
 		  },
 		  
@@ -179,8 +176,10 @@ function updateStatuses(response, scamersToShowList) {
 	for(var i = 0; i<scamersToShowList.length;i++) {
 		if(scamersToShowList[i].indexOf("#") != -1) {
 			jQuery('input'+scamersToShowList[i]).prop("checked", true);
+			jQuery('input#'+scamersToShowList[i]).parent('.channels').addClass('selected');
 		} else {
 			jQuery('input#'+scamersToShowList[i]).prop("checked", true);
+			jQuery('input#'+scamersToShowList[i]).parent('.channels').addClass('selected');
 		}
 	}
 	
@@ -314,9 +313,8 @@ function loadClient(config){
 		 'Authorization': 'Bearer '+ access_token, 
 	   },
 	   success: function(c){
-			console.log(c);
-			
-			console.log(config["scamers"]);
+			console.log("log ok");
+			//console.log(c);
 			name = c["login"];
 				const option = {
 				  connection: {
@@ -332,18 +330,28 @@ function loadClient(config){
 				
 				client = new tmi.client(option);		
 				client.connect();
-				const formScam = jQuery('form[name="spam-area"]');
-				jQuery('[name=spam-area]').css("display", "inherit");
 				
-				formScam.on("submit", function(e) {
-					e.preventDefault();
-					client.say(jQuery('#channel-to-feed').val(), jQuery('#spam-content').val())
+				client.on('connected', function(){
+					for(var i=0; i<config["scamers"].length; i++) {
+						jQuery('.twitch-description'+config['scamers'][i]).append(""+
+							"<form action='' name='spam-area'>"+
+								"<input autocomplete='off' type='text' name='"+config["scamers"][i].substr(1)+"' id='spam-content' value='' placeholder='Envoyer un message' />"+
+								"<input name='send' type='submit' value='Go' />"+
+							"</form>");
+					}
+					
+					const formScam = jQuery('form[name=spam-area]');
+					formScam.on("submit", function(e) {
+						e.preventDefault();
+						
+						client.say(jQuery(this).find('input[type=text]').attr('name'), jQuery(this).find('input[type=text]').val())
 
-					.then(data => {
-						jQuery('#spam-content').val('');
-					})
-					.catch(err => {
-						console.log('[ERR]', err);
+						.then(data => {
+							jQuery(this).find('input[type=text]').val('');
+						})
+						.catch(err => {
+							console.log('[ERR]', err);
+						});
 					});
 				});
 				
@@ -351,16 +359,16 @@ function loadClient(config){
 	   },
 	   error: function(event){
 			name = null;
-			console.log("nope");
+			console.log("log nok");
 			const option = {
 			  channels: config["scamers"]
 			};
 			client = new tmi.client(option);
 			client.connect();
-			jQuery('.postmessage').append("<a class='authbtn' href='https://id.twitch.tv/oauth2/authorize?response_type=token&force_verify=true&client_id="+clientID+"&redirect_uri=https://xouindaplace.fr/multi-twitch/&scope=chat%3Aread+chat%3Aedit&state=random'><h2>Login</h2></a>");
+			jQuery('.postmessage').append("<a class='authbtn' href='https://id.twitch.tv/oauth2/authorize?response_type=token&force_verify=true&client_id="+clientID+"&redirect_uri=https://xouindaplace.fr/multi-twitch/&scope=chat%3Aread+chat%3Aedit&state=random'><h2>Login</h2><span>(active le chat sur les streams)</span></a>");
 	   },
 	   complete: function(e){
-			console.log(client);
+			//console.log(client);
 			
 			var pauseScroll = false;
 			jQuery(".twitch-description").hover(function(){
@@ -421,17 +429,7 @@ function loadClient(config){
 					if(jQuery(channel.toLowerCase()+' nav.scroll > .chatscroll > div').length == bufferMessageSize) {
 						jQuery(channel.toLowerCase()+' nav.scroll > .chatscroll > div').eq(0).remove();
 					}
-			});
-			
-			jQuery('[name=show]').removeAttr('checked');
-	
-			jQuery(config["scamers"]).each(function(i, val){
-				if(val.length !== 0){
-					jQuery("input[name=show]"+val).prop('checked', 'checked');
-				}
-				jQuery("input[name=show]"+val).parent('.channels').addClass('selected');
-			});	
-			
+			});			
 		}
 	});
 }
@@ -527,7 +525,6 @@ function getMessage(message, tags) {
 		}
 	}
 	if(tags['flags'] !== null && tags['flags'] !== undefined){
-		console.log(tags['flags']);
 		var flag = tags['flags'].split(':');
 		var extract = flag[0].split('-');
 		var length = extract[1] - extract[0] + 1;
@@ -579,7 +576,7 @@ jQuery(document).ready(function(){
 					  }
 					  deleteCookie('Scamers');
 					  setCookie('Scamers', follows, 6000);
-					  window.location.replace("/multi-twitch/")
+					  window.location.replace(basePath)
 				   },
 
 				});	
@@ -603,7 +600,7 @@ jQuery(document).ready(function(){
 			  updateStatuses(c.data, scamConf["scamers"]);
 		   },
 		   complete: function() {
-			  setTimeout(myPeriodicMethod, 120000);
+			  setTimeout(myPeriodicMethod, tickRefreshMs);
 			}
 		});
 	}
@@ -622,13 +619,11 @@ jQuery(document).ready(function(){
 	   success: function(c){
 		  //data array is empty when queried channel is offline
 		if (c.data.length > 0) {			
-			jQuery(".home .suggestion").append("<h4>Importez les chaines de votre twitch : </h4><input id='import' type='text' placeholder='Votre login twitch + enter'>");
-			jQuery(".home .suggestion").append("<h4>Ou parmis les chaines suivantes :</h4>");
+			jQuery(".hometext .suggestion").append("<h4>Importez les chaines de votre twitch : </h4><input id='import' type='text' placeholder='Votre login twitch + enter'>");
+			jQuery(".hometext .suggestion").append("<h4>Ou parmis les chaines suivantes :</h4>");
 			jQuery(c.data).each(function(i, val){
-				var thumbnail_resized = val.thumbnail_url.replace(/{width}|{height}/gi, 60);
-				
-				
-				jQuery(".home .suggestion").append("<div class='streams'><a title='"+val.title+"' class='suggest' href='/multi-twitch/?add="+val.user_login+"&show="+val.user_login+"'><img src='"+ thumbnail_resized+"'/>"+val.user_name+"<small> ("+val.viewer_count+")</small><br><small>"+val.game_name+"</small></a></div>");
+				//var thumbnail_resized = val.thumbnail_url.replace(/{width}|{height}/gi, 60);
+				jQuery(".hometext .suggestion").append("<div class='streams'><a title='"+val.title+"' class='suggest' href='"+basePath+"?add="+val.user_login+"'>"+val.user_name+"<small> ("+val.viewer_count+")</small><br><small>"+val.game_name+"</small></a></div>");
 			});
 			
 			var input = document.getElementById("import");
@@ -783,7 +778,7 @@ jQuery(document).ready(function(){
 	
 	jQuery("[data-reset-app]").on('click', function(){
 		deleteCookie('Scamers');
-		window.location.replace("/multi-twitch/");
+		window.location.replace(basePath);
 	});
 	
 	jQuery("[data-down-font]").on('click', function() {
@@ -806,9 +801,9 @@ jQuery(document).ready(function(){
 
 sauvegarder options par chaine dans le cookie
 
-pluie d'emotes
+pluie d'emotes + option
 
-animation switch de stream
+animation switch de stream 
 
 badges + TURBO 
 
@@ -816,12 +811,13 @@ on resize replace chat
 
 améliorer la home globalement
 
-??administration(/moderation) stuffs ?
+prédictions
 
+
+
+??administration(/moderation) stuffs ?
 ??scam roulette??
 https://dev.to/codesphere/how-to-create-a-twitch-chat-game-with-javascript-deg
-
-??prédictions ??
 ??qualité bloqué par background transparent??
 
 */

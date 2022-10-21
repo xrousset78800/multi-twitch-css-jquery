@@ -108,7 +108,7 @@ blockquote>:last-child {
 
 small {
     font-size: 11.75px;
-    color: #dddddd;
+    color: #aaaaaa;
     font-style: italic;
     line-height: 12px;
 }
@@ -342,11 +342,11 @@ animation: 60s ease-in 1s infinite both running slidein;
     margin-right: 0
 }
 .reset {
-	position: relative;
-    bottom: 0;
-    left: 0;
+	position: absolute;
+    bottom: 20px;
+    left: 20px;
     font-size: 11px;
-	cursor: pointer;
+    cursor: pointer;
 }
 .suggest {
 	color: white;
@@ -474,6 +474,7 @@ small.game {
 }
 .twitch-video {
 	height: 100%;
+	position: relative;
 }
 
 .toggleShit {
@@ -565,26 +566,6 @@ small.game {
 }
 .viewer7video .viewer:nth-of-type(4), .viewer7video .viewer:nth-of-type(5), .viewer7video .viewer:nth-of-type(6), .viewer7video .viewer:nth-of-type(7){
 	width: 50%;
-}
-
-@media (max-width: 800px) { 
-.viewer2video .viewer{
-	width: 100%;
-     height: 50%;
-}
-
-.viewer3video .viewer{
-	width: 100%;
-     height: 33.33333%;
-}
-.viewer4video .viewer{
-	width: 100%;
-     height: 25%;
-}
-.viewer6video .viewer{
-	width: 50%;
-     height: 33.33333%;
-}
 }
 
 .twitch-embed{
@@ -724,11 +705,25 @@ height: 50%;
     color: white;
 	cursor: pointer;
 }
-
-[name=spam-area] {
-	display: none;
+.authbtn h2 {
+	display: initial;
 }
 
+[name=spam-area] {
+	position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+[name=spam-area] input[type=text]{
+    max-width: 100%;
+    width: 100%;
+}
+[name=spam-area] input[type=submit]{
+    position: absolute;
+	right: 0;
+	bottom: 0;
+}
 #embed_chat_position{
 	margin: 5px 0;
 }  
@@ -870,9 +865,7 @@ height: 50%;
 .specialgrid .viewer.mainViewer .tw{
 	padding-left: 15%;
 }
-.specialgrid .page-content {
-	padding: 0;
-}
+
 .specialgrid .viewer .twitch-description {
 	display: none;
 }
@@ -880,7 +873,7 @@ height: 50%;
 	display: inline-block;
 	position: relative !important;
 	height: 100% !important;
-    top: 55px !important;
+    top: 0 !important;
     left: 0 !important;
 	width: 15% !important;
 	float: right;
@@ -1042,11 +1035,11 @@ h4{
     color: white;
 	text-align: left;
 }
-
+/*
 .viewer0video .status {
     display: inline-block;
 }
-
+*/
 .instructions li {
 	text-align: left;
 }
@@ -1444,7 +1437,6 @@ h4{
 .streams {
     display: inline-block;
     width: 20%;
-    height: 80px;
     vertical-align: top;
     padding: 5px;
     line-height: 12px;
@@ -1456,6 +1448,16 @@ h4{
     display: inline-block;
     width: 100%;
 }
+.viewer0video .hometext {
+    padding: 10px 40px;
+    height: 100%;
+	display: block;
+}
+
+.hometext {
+    display: none;
+}
+
 
 .suggest img {
 	margin-right: 10px;
@@ -1488,4 +1490,26 @@ a[name=help]:hover{
   margin: 40px;
   max-width: 400px;
   width: 100%;
+}
+
+
+
+@media (max-width: 800px) {
+.viewer2video .viewer{
+	width: 100%;
+     height: 50%;
+}
+
+.viewer3video .viewer{
+	width: 100%;
+     height: 33.33333%;
+}
+.viewer4video .viewer{
+	width: 100%;
+     height: 25%;
+}
+.viewer6video .viewer{
+	width: 50%;
+     height: 33.33333%;
+}
 }
