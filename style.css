@@ -512,9 +512,8 @@ small.game {
     width: 100%;
     padding: 4px;
     float:left;
-	/*overflow: hidden;
-    /*transition: width 0.3s ease-in-out, height 0.3s ease-in-out;*/
-	transition: none;
+	/*overflow: hidden;*/
+    transition: width 0.3s ease-in-out, height 0.3s ease-in-out;
 }
 .viewer.mainViewer {
     width: 100% !important;
@@ -616,10 +615,10 @@ height: 50%;
 	border: 0;
     font-size: 0.8rem;
 	line-height: 1rem;
-	top: 20px;
+	top: 40px;
 	left: 20px;
 	overflow: hidden;
-	cursor: pointer;
+	cursor: grab;
 	z-index: 2;
 	transition: border-color 0.5s;
 }
@@ -675,7 +674,7 @@ height: 50%;
 .twitch-description.hide{
     width: 40px !important;
     height: 40px !important;
-    top: 20px !important;
+    top: 40px !important;
     /*right: 20px !important;*/
     left: 20px !important;
 	transition: left 0.6s, top 0.6s;
@@ -714,6 +713,9 @@ height: 50%;
     bottom: 0;
     width: 100%;
 }
+.hide [name=spam-area] {
+	display: none;
+}
 
 [name=spam-area] input[type=text]{
     max-width: 100%;
@@ -728,7 +730,6 @@ height: 50%;
 	margin: 5px 0;
 }  
 .twitch-description .embed-message{
-	cursor: pointer;
 	padding: 3px;
 	word-break: break-word;
 	padding-right: 10px;
@@ -869,6 +870,10 @@ height: 50%;
 .specialgrid .viewer .twitch-description {
 	display: none;
 }
+.specialgrid .viewer .player-options {
+	display: none;
+}
+
 .specialgrid .mainViewer .twitch-description {
 	display: inline-block;
 	position: relative !important;
@@ -968,6 +973,7 @@ height: 50%;
   position: absolute;
   top: 0;
   left: 0;
+  padding-bottom: 20px;
 }
 
 
@@ -1083,11 +1089,11 @@ h4{
 .channels.selected small{
 	color: black;
 }
-[data-flags=null] ,[data-subgifts-undefined] [data-no-video],[data-partner-undefined], [data-no-audio], [data-modo=false] , [data-turbo=false] , [data-subscriber=false], [data-prime-undefined], [data-prime-], [data-vip-undefined], [data-brodcaster-] {
+[data-flags=null] ,[data-subgifts-undefined] [data-no-video],[data-partner-undefined], [data-no-audio], [data-modo=false] , [data-turbo-undefined] , [data-subscriber=false], [data-prime-undefined], [data-prime-], [data-vip-undefined], [data-brodcaster-] {
 	display: none;
 }
 
-[data-modo=true], [data-subscriber=true], [data-prime-1], [data-no-audio-1], [data-no-video-1], [data-partner-1], [data-vip-1], [data-brodcaster-1] {
+[data-modo=true], [data-subscriber=true], [data-prime-1], [data-no-audio-1], [data-no-video-1], [data-partner-1], [data-vip-1], [data-brodcaster-1], [data-turbo-1] {
 	display: inline-block;
 	width: 20px;
 	height: 20px;
@@ -1123,6 +1129,9 @@ h4{
 }
 [data-prime-1] {
 	background-image:url("https://static-cdn.jtvnw.net/badges/v1/bbbe0db0-a598-423e-86d0-f9fb98ca1933/2");
+}
+[data-turbo-1] {
+	background-image:url("https://static-cdn.jtvnw.net/badges/v1/bd444ec6-8f34-4bf9-91f4-af1e3428d80f/1");
 }
 [data-vip-1] {
 	background-image:url("https://static-cdn.jtvnw.net/badges/v1/b817aba4-fad8-49e2-b88a-7cc744dfa6ec/1");
