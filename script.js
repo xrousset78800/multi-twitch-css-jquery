@@ -3,7 +3,7 @@ let clientID = "";
 var basePath = "/multi-twitch/"
 
 
-var scamersTotalList = [];
+var totalList = [];
 var configObject = [];
 var bufferMessageSize = 150;
 var tickRefreshMs = 120000;
@@ -25,7 +25,6 @@ function loadScam() {
 		configObject = getCookie("JsonTwitchConfig");
 	}
 
-	//NEW
 	if(newScamer) {
 		var toObject = [];
 		var jsonString = [];
@@ -41,10 +40,10 @@ function loadScam() {
 					'theme': parse[l].theme,
 				}
 				
-				scamersTotalList.push(oldChannel);
+				totalList.push(oldChannel);
 				toObject.push(oldChannel);
 				jsonString.push(oldChannel);
-				console.log("OLD channel"+ parse[l].name);
+				//console.log("OLD channel"+ parse[l].name);
 			}
 		}
 
@@ -59,14 +58,14 @@ function loadScam() {
 			if(!alreadyExist && newScamer[i].toLowerCase() != ""){
 				var newChannel = { 
 					'name': newScamer[i].toLowerCase(),
-					'size': 12,
+					'size': 15,
 					'color': 'default',
 					'theme': 'default',
 				}
 				
-				scamersTotalList.push(newChannel);
+				totalList.push(newChannel);
 				toObject.push(newChannel);
-				console.log("JSON add "+ newScamer[i]);			
+				//console.log("JSON add "+ newScamer[i]);			
 			}
 		}		
 		
@@ -92,11 +91,16 @@ function StartThisShit(config) {
 		}
 	}
 
-
 	jQuery("body").addClass("viewer"+config.scamers.length+"video", );
-		var player = [];
-		for(var i=0; i< config.scamers.length; i++){
-		jQuery(".twitch-video").append("<div data-theme-color='default' data-theme='default' class='viewer'><div class='ui-widget-content twitch-description' id='"+config.scamers[i].substr(1)+"'><nav class='scroll'><div class='chatscroll'></div></nav></div><div class='twitch-embed' id='twitch-embed"+(i+1)+"'></div></div>");
+	
+	var player = [];
+	
+	for(var i=0; i< config.scamers.length; i++){
+		
+		var key = config.scamers[i];
+		let matchConf = totalList.find(o => o.name === key.substr(1));
+		
+		jQuery(".twitch-video").append("<div id='player-"+config.scamers[i].substr(1)+"' data-font-size='"+matchConf.size+"' data-theme-color='"+matchConf.color+"' data-theme='"+matchConf.theme+"' class='viewer'><div class='ui-widget-content twitch-description' id='"+config.scamers[i].substr(1)+"'><nav class='scroll'><div class='chatscroll'></div></nav></div><div class='twitch-embed' id='twitch-embed"+(i+1)+"'></div></div>");
 		
 		var options = {
 			width: "100%",
@@ -106,62 +110,66 @@ function StartThisShit(config) {
 			muted: (config.scamers.length > 1)
 			// only needed if your site is also embedded on embed.example.com and othersite.example.com
 			//parent: ["embed.example.com"]
-		  };
+		};
 		  
-		  player[i] = new Twitch.Player("twitch-embed"+(i+1), options);
-		}
-		
-		jQuery(".twitch-video .viewer").append("<div class='player-options'><span class='ui-btn ui-shadow ui-corner-all ui-icon ui-icon-minus ui-btn-icon-notext ui-btn-inline' data-down-font></span><span class='ui-btn ui-shadow ui-corner-all ui-icon ui-icon-plus ui-btn-icon-notext ui-btn-inline' data-up-font></span><select data-form-theme-color name='theme-color'></select><select data-form-theme name='theme'></select></div>");
-		
-		jQuery(themeColors).each(function(i, color){
-			jQuery("[data-form-theme-color]").append("<option value='"+color+"'>Theme: "+color+"</option>");
-		});
-		
-		jQuery(themes).each(function(i, color){
-			jQuery("[data-form-theme]").append("<option value='"+color+"'>Disposition: "+color+"</option>");
-		});
-		
-		jQuery(".twitch-description").draggable({ containment: "document" });
-		
-		jQuery("[data-form-theme-color]").on( "change", function(){
-			jQuery(this).parent().parent().eq(0).attr("data-theme-color", this.value);
-		});
-		
-		jQuery("[data-form-theme]").on( "change", function(){
-			jQuery(this).parent().parent().eq(0).attr("data-theme", this.value);
-		});
-		
-		
-		jQuery(".twitch-description").dblclick(function() {
-			jQuery(this).toggleClass("hide");
-		});
-		
-		jQuery(".twitch-embed").dblclick(function() {
-			if(IsFullScreenCurrently())
-					GoOutFullscreen();
-				else
-					GoInFullscreen(jQuery("#myScamPlayer").get(0));
-		});
-		
-		jQuery(".twitch-description").resizable({
-		  containment: 'document',
-		  minWidth: 200,
-		  minHeight: 21,
-		  classes: {
-		  },
+		player[i] = new Twitch.Player("twitch-embed"+(i+1), options);
 		  
-		  handles: "n, e, s, w, ne, se, sw, nw",
-		  start: function( event, ui ) {
-			  jQuery(this).parent().css("pointer-events", "none");
-		  },
-		  stop: function( event, ui ) {
-			  jQuery(this).parent().css("pointer-events", "initial");
-		  }
-		});	
-
-		jQuery(".viewer > div").each(function(viewer){
-			jQuery(viewer).addClass(viewer);
-		});		
+		jQuery('#player-'+config.scamers[i].substr(1)).append("<div class='player-options'><span class='ui-btn ui-shadow ui-corner-all ui-icon ui-icon-minus ui-btn-icon-notext ui-btn-inline' data-down-font></span><span class='ui-btn ui-shadow ui-corner-all ui-icon ui-icon-plus ui-btn-icon-notext ui-btn-inline' data-up-font></span><select data-form-theme-color name='theme-color'></select><select data-form-theme name='theme'></select></div>");
+		
+		jQuery(themeColors).each(function(v, color){
+			var selected = "";
+			
+			if(color == matchConf.color) {
+				selected = "selected='selected' ";
+			}
+			
+			jQuery('#player-'+config.scamers[i].substr(1)+" [data-form-theme-color]").append("<option "+selected+"value='"+color+"'>Theme: "+color+"</option>");
+		});
+	
+		jQuery(themes).each(function(v, theme){
+			var selected = "";
+			
+			if(theme == matchConf.theme) {
+				selected = "selected='selected' ";
+			}			
+			jQuery('#player-'+config.scamers[i].substr(1)+" [data-form-theme]").append("<option "+selected+"value='"+theme+"'>Disposition: "+theme+"</option>");
+		});
+		
+		jQuery(config.scamers[i]+'.twitch-description').css('line-height',parseInt(matchConf.size+3, 10)-1+"px").css('font-size',parseInt(matchConf.size, 10)-1+"px");
+	}
+	
+	jQuery(".twitch-description").draggable({ containment: "document" });
+		
+	jQuery(".twitch-description").dblclick(function() {
+		jQuery(this).toggleClass("hide");
+	});
+	
+	jQuery(".twitch-embed").dblclick(function() {
+		if(IsFullScreenCurrently())
+				GoOutFullscreen();
+			else
+				GoInFullscreen(jQuery("#myScamPlayer").get(0));
+	});
+	
+	jQuery(".twitch-description").resizable({
+	  containment: 'document',
+	  minWidth: 200,
+	  minHeight: 21,
+	  classes: {
+	  },
+	  
+	  handles: "n, e, s, w, ne, se, sw, nw",
+	  start: function( event, ui ) {
+		  jQuery(this).parent().css("pointer-events", "none");
+	  },
+	  stop: function( event, ui ) {
+		  jQuery(this).parent().css("pointer-events", "initial");
+	  }
+	});	
+			
+	jQuery(".viewer > div").each(function(viewer){
+		jQuery(viewer).addClass(viewer);
+	});		
 		
 	return true;
 }
@@ -176,7 +184,7 @@ function updateStatuses(response, scamersToShowList) {
 	});
 	jQuery(".channels").remove();
 	
-	jQuery(scamersTotalList).each(function(scam, value){
+	jQuery(totalList).each(function(scam, value){
             var scamer = value.name;
 		let flag = false;
 		
@@ -197,21 +205,15 @@ function updateStatuses(response, scamersToShowList) {
 	}
 
 	for(var i = 0; i<scamersToShowList.length;i++) {
-		if(scamersToShowList[i].indexOf("#") != -1) {
-			jQuery('input'+scamersToShowList[i]).prop("checked", true);
-			jQuery('input#'+scamersToShowList[i]).parent('.channels').addClass('selected');
-		} else {
-			jQuery('input#'+scamersToShowList[i]).prop("checked", true);
-			jQuery('input#'+scamersToShowList[i]).parent('.channels').addClass('selected');
-		}
+		jQuery('input'+scamersToShowList[i]).prop("checked", true);
+		jQuery('input'+scamersToShowList[i]).parent('.channels').addClass('selected');
 	}
 	
 	return true;
 }
 
 function updateScammerStatus(online, scamer) {
-	
-	console.log(scamer);
+
 	//User is an online object
 	if(typeof scamer === 'object' && !Array.isArray(scamer) && scamer !== null){
 		var duration = timeDiffCalc(new Date(scamer.started_at), new Date());
@@ -254,34 +256,25 @@ function updateScammerStatus(online, scamer) {
 		e.preventDefault();
 	});
 	
-	jQuery('.channels .remove').on('click', function() {		
-		
+	jQuery('.channels .remove').on('click', function(e) {		
+		e.preventDefault();
 		var scamer = jQuery(this).data("scamer");
 		jQuery(this).parent(".channels").remove();
 		
+		var configObject = JSON.parse(getCookie("JsonTwitchConfig"));
 		
-		/*
-		var scamersTotalList = getCookie("Scamers").split(',');
-		const index = scamersTotalList.indexOf(scamer);
-		if (index > -1) {
-		  scamersTotalList.splice(index, 1);
-		}
-		setCookie('Scamers', scamersTotalList.join(","), 60);
-		*/	
+		configObject = configObject.filter(function( obj ) {
+			return obj.name !== scamer;
+		});
 		
+		setCookie('JsonTwitchConfig', JSON.stringify(configObject), 60);
+		e.stopPropagation();
 		
-		var configObject = JSON.parse(getCookie("JsonTwitchConfig")).split(',');
-		console.log(configObject);
-		const index2 = configObject.indexOf(scamer);
-		if (index2 > -1) {
-		  configObject.splice(index2, 1);
-		}
-		setCookie('JsonTwitchConfig', configObject.join(","), 60);
-
-		return true;
 	});
 	
-		return true;
+	
+	
+	return true;
 }
 
 function loadClient(config){
@@ -515,7 +508,7 @@ jQuery(document).ready(function(){
 	
 	var urlscammers = "";
 	
-	scamersTotalList.forEach(function(scam) {
+	totalList.forEach(function(scam) {
 	   urlscammers = urlscammers + "user_login=" + scam.name + "&";
 	});	
 	
@@ -579,7 +572,7 @@ jQuery(document).ready(function(){
 	
 	
 	console.log(scamConf);
-	console.log(scamersTotalList);
+	console.log(totalList);
 	
 	myPeriodicMethod(scamConf);
 	//loadEmotes(scamConf["scamers"]);
@@ -767,11 +760,19 @@ jQuery(document).ready(function(){
 		window.location.replace(basePath);
 	});
 	
+	
+	
+	
+	
 	jQuery("[data-down-font]").on('click', function() {
 		var lineHeight = jQuery(this).parent().parent().find('.twitch-description').css('line-height');
 		var fontSize = jQuery(this).parent().parent().find('.twitch-description').css('font-size');
 		
 		jQuery(this).parent().parent().find('.twitch-description').css('line-height',parseInt(lineHeight, 10)-1+"px").css('font-size',parseInt(fontSize, 10)-1+"px");
+		
+		var id = jQuery(this).parent().parent().find('.twitch-description').attr('id');
+		
+		updateJsonCookievalueByname("JsonTwitchConfig", id, 'size', fontSize);
 	});
 	
 	jQuery("[data-up-font]").on('click', function() {
@@ -779,21 +780,39 @@ jQuery(document).ready(function(){
 		var fontSize = jQuery(this).parent().parent().find('.twitch-description').css('font-size');
 		
 		jQuery(this).parent().parent().find('.twitch-description').css('line-height',parseInt(lineHeight, 10)+1+"px").css('font-size',parseInt(fontSize, 10)+1+"px");
+		
+		var id = jQuery(this).parent().parent().find('.twitch-description').attr('id');
+		
+		updateJsonCookievalueByname("JsonTwitchConfig", id, 'size', fontSize);
 	});
+	
+	jQuery("[data-form-theme-color]").on( "change", function(){
+		jQuery(this).parent().parent().eq(0).attr("data-theme-color", this.value);
+		var id = jQuery(this).parent().parent().find('.twitch-description').attr('id');
+
+		updateJsonCookievalueByname("JsonTwitchConfig", id, 'color', this.value);
+		
+	});
+	
+	jQuery("[data-form-theme]").on( "change", function(){
+		jQuery(this).parent().parent().eq(0).attr("data-theme", this.value);
+		var id = jQuery(this).parent().parent().find('.twitch-description').attr('id');
+
+		updateJsonCookievalueByname("JsonTwitchConfig", id, 'theme', this.value);
+	});
+	
+	
+	
 });
 
 
 /*
 
-sauvegarder options par chaine dans le cookie
-
 pluie d'emotes + option
-
-animation switch de stream 
 
 badges 
 
-on resize replace chat
+on resize replace chat (draggable fullscreen issue)
 
 améliorer la home globalement
 

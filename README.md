@@ -7,12 +7,8 @@ Enjoy
 live on : https://xouindaplace.fr/multi-twitch
 TODO: 
 
-sauvegarder options par chaine dans le cookie
 pluie d'emotes + option
-animation switch de stream 
-badges + TURBO 
-on resize replace chat
+badges 
+on resize replace chat (draggable fullscreen issue)
 améliorer la home globalement
 prédictions
-
-(In case of app crash, delete 'Scamers' cookie)

@@ -55,6 +55,8 @@ function IsFullScreenCurrently() {
 		return true;
 }
 
+
+
 function getCookie(name) {
   const value = document.cookie;
   const parts = value.split(`; `+name+`=`);
@@ -70,6 +72,19 @@ function setCookie(name,value,days) {
         expires = "; expires=" + date.toUTCString();
     }
     document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+}
+
+function updateJsonCookievalueByname(cookieName, nameId, prop, propNewVal) {
+	var configObject = JSON.parse(getCookie(cookieName));
+	
+	configObject = configObject.filter(function( obj ) {
+		if(obj.name == nameId){
+			obj[prop] = propNewVal;
+		}
+		return obj;
+	});
+	
+	setCookie(cookieName, JSON.stringify(configObject), 60);
 }
 
 function deleteCookie(name) {
