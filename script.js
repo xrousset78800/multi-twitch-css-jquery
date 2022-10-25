@@ -1,6 +1,6 @@
 let authToken = "";
 let clientID = "";
-var basePath = "/multi-twitch/"
+var basePath = "https://xouindaplace.fr/multi-twitch/"
 
 
 var totalList = [];
@@ -138,7 +138,12 @@ function StartThisShit(config) {
 		jQuery(config.scamers[i]+'.twitch-description').css('line-height',parseInt(matchConf.size+3, 10)-1+"px").css('font-size',parseInt(matchConf.size, 10)-1+"px");
 	}
 	
-	jQuery(".twitch-description").draggable({ containment: "document" });
+	jQuery(".twitch-description").draggable({ containment: "document", 
+		  stop: function( event, ui ) {
+		   jQuery(this).css("left",parseInt($(this).css("left")) / (jQuery(this).parent().width() / 100)+"%");
+		   jQuery(this).css("top",parseInt($(this).css("top")) / (jQuery(this).parent().height() / 100)+"%");
+		  }
+	});
 		
 	jQuery(".twitch-description").dblclick(function() {
 		jQuery(this).toggleClass("hide");
@@ -344,7 +349,7 @@ function loadClient(config){
 					});
 				});
 				
-				jQuery('.postmessage').append("<a class='authbtn' onclick='removeToken();'><h2>Logout</h2></a>");					
+				jQuery('.postmessage').append("<a class='authbtn' onclick='removeToken();'><p>Logged as "+name+"</p><h2>Logout</h2></a>");					
 	   },
 	   error: function(event){
 			name = null;
@@ -354,71 +359,11 @@ function loadClient(config){
 			};
 			client = new tmi.client(option);
 			client.connect();
-			jQuery('.postmessage').append("<a class='authbtn' href='https://id.twitch.tv/oauth2/authorize?response_type=token&force_verify=true&client_id="+clientID+"&redirect_uri="+basePath+"&scope=chat%3Aread+chat%3Aedit&state=random'><h2>Login</h2><span>(active le chat sur les streams)</span></a>");
+			jQuery('.postmessage').append("<a class='authbtn' href='https://id.twitch.tv/oauth2/authorize?response_type=token&force_verify=true&client_id="+clientID+"&redirect_uri="+basePath+"&scope=chat%3Aread+chat%3Aedit&state=random'><h2 title='Active le chat sur les streams'>Login Twitch</h2></a>");
 	   },
 	   complete: function(e){
 			//console.log(client);
-			
-			var pauseScroll = false;
-			jQuery(".twitch-description").hover(function(){
-				pauseScroll = true;
 				
-			},function(){
-				pauseScroll = false;
-			});
-			
-			client.on('message', (channel, tags, message, self) => {
-				let premium = "";
-				let subscriber = "";
-				let subgifts = "";
-				let noaudio = "";
-				let novideo = "";
-				let partner = "";
-				let broadcaster = "";
-				let vip = "";
-				
-				//console.log(tags);
-				if(tags.badges !== null ) {
-					premium = tags.badges['premium'];
-					subscriber = tags.badges['subscriber'];	
-					subgifts = tags.badges['sub-gifter'];
-					noaudio = tags.badges['no_audio'];
-					novideo = tags.badges['no_video'];
-					partner = tags.badges['partner'];
-					broadcaster = tags.badges['broadcaster'];
-					vip = tags.badges['vip'];
-				}
-
-				jQuery('.twitch-description'+channel.toLowerCase()+' > .scroll > div')
-				  .append(""+
-					  "<div class='embed-message "+tags.id+"'>" +
-						"<span data-first-message='"+tags['first-msg']+"'>"+
-						"<div class='sender-message'>" +
-						  "<span title='Turbo' data-turbo-"+tags['turbo']+"></span>"+						
-						  "<span title='Regarde sans le son' data-no-audio-"+noaudio+"></span>"+
-						  "<span title='Regarde sans image' data-no-video-"+novideo+"></span>"+
-						  "<span title='Sub depuis "+subscriber+" Mois' data-subscriber='"+tags['subscriber']+"'></span>"+
-						  "<span title='Prime' data-prime-"+premium+"></span>"+
-						  "<span title='Modo !' data-modo='"+tags['mod']+"'></span>"+
-						  "<span title='Partenaire' data-partner-"+partner+"></span>"+
-						  "<span title='VIP' data-vip-"+vip+"></span>"+
-						  "<span title='"+subgifts+" Subgifts' data-subgifts-"+subgifts+"></span>"+
-						  "<span title='Diffuseur' data-brodcaster-"+broadcaster+"></span>"+
-						  
-						  "<span style='color:"+tags['color']+"' class='scamer'>"+tags['display-name']+"</span>"+
-						"</div>" +
-						  "<span class='message'>"+getMessage(message, tags)+"</span></span>"+
-					  "</div>"
-					);
-					
-					if(pauseScroll == false)
-						scrollToBottom(channel);
-					
-					/* Keep 150 messages */
-					if(jQuery(channel.toLowerCase()+' nav.scroll > .chatscroll > div').length == bufferMessageSize) {
-						jQuery(channel.toLowerCase()+' nav.scroll > .chatscroll > div').eq(0).remove();
-					}
-			});			
 		}
 	});
 }
@@ -713,8 +658,10 @@ jQuery(document).ready(function(){
 		}
 		
 	});
-	
-	jQuery(function () {
+	/*$( "#target" ).focus(function() {
+	  jQuery.off(timer);
+	});*/
+	jQuery(function timer() {
 		var timer;
 		var fadeInBuffer = false;
 		jQuery(document).mousemove(function () {
@@ -730,7 +677,7 @@ jQuery(document).ready(function(){
 				 jQuery('.viewer').css({
 					cursor: 'pointer'
 				});
-				jQuery('.player-options, .toggleShit').css({
+				jQuery('.player-options, .toggleShit, [name=spam-area]').css({
 					opacity: 1
 				});
 				jQuery('.twitch-description').css('border-color', '#aaaaaadd');
@@ -743,7 +690,7 @@ jQuery(document).ready(function(){
 				 jQuery('.viewer').css({
 					cursor: 'none'
 				});		
-				jQuery('.toggleShit, .player-options').css({
+				jQuery('.toggleShit, .player-options, [name=spam-area]').css({
 					opacity: 0
 				});
 				jQuery('.twitch-description').css('border-color', 'transparent');
@@ -802,23 +749,81 @@ jQuery(document).ready(function(){
 	});
 	
 	
+	var pauseScroll = false;
+	jQuery(".twitch-description").hover(function(){
+		pauseScroll = true;
+		
+	},function(){
+		pauseScroll = false;
+	});
+	
+	client.on('message', (channel, tags, message, self) => {
+		let premium = "";
+		let subscriber = "";
+		let subgifts = "";
+		let noaudio = "";
+		let novideo = "";
+		let partner = "";
+		let broadcaster = "";
+		let vip = "";
+		
+		//console.log(tags);
+		if(tags.badges !== null ) {
+			premium = tags.badges['premium'];
+			subscriber = tags.badges['subscriber'];	
+			subgifts = tags.badges['sub-gifter'];
+			noaudio = tags.badges['no_audio'];
+			novideo = tags.badges['no_video'];
+			partner = tags.badges['partner'];
+			broadcaster = tags.badges['broadcaster'];
+			vip = tags.badges['vip'];
+		}
+
+		jQuery('.twitch-description'+channel.toLowerCase()+' > .scroll > div')
+		  .append(""+
+			  "<div class='embed-message "+tags.id+"'>" +
+				"<span data-first-message='"+tags['first-msg']+"'>"+
+				"<div class='sender-message'>" +
+				  "<span title='Turbo' data-turbo-"+tags['turbo']+"></span>"+						
+				  "<span title='Regarde sans le son' data-no-audio-"+noaudio+"></span>"+
+				  "<span title='Regarde sans image' data-no-video-"+novideo+"></span>"+
+				  "<span title='Sub depuis "+subscriber+" Mois' data-subscriber='"+tags['subscriber']+"'></span>"+
+				  "<span title='Prime' data-prime-"+premium+"></span>"+
+				  "<span title='Modo !' data-modo='"+tags['mod']+"'></span>"+
+				  "<span title='Partenaire' data-partner-"+partner+"></span>"+
+				  "<span title='VIP' data-vip-"+vip+"></span>"+
+				  "<span title='"+subgifts+" Subgifts' data-subgifts-"+subgifts+"></span>"+
+				  "<span title='Diffuseur' data-brodcaster-"+broadcaster+"></span>"+
+				  
+				  "<span style='color:"+tags['color']+"' class='scamer'>"+tags['display-name']+"</span>"+
+				"</div>" +
+				  "<span class='message'>"+getMessage(message, tags)+"</span></span>"+
+			  "</div>"
+			);
+			
+			if(pauseScroll == false)
+				scrollToBottom(channel);
+			
+			/* Keep 150 messages */
+			if(jQuery(channel.toLowerCase()+' nav.scroll > .chatscroll > div').length == bufferMessageSize) {
+				jQuery(channel.toLowerCase()+' nav.scroll > .chatscroll > div').eq(0).remove();
+			}
+	});		
 	
 });
 
 
 /*
+list users on each chat
+
 
 pluie d'emotes + option
 
 badges 
 
-on resize replace chat (draggable fullscreen issue)
-
 améliorer la home globalement
 
 prédictions
-
-
 
 ??administration(/moderation) stuffs ?
 ??scam roulette??

@@ -700,9 +700,13 @@ height: 50%;
 	position: absolute;
     top: 25px;
     padding-left: 21px;
-    font-size: 7px;
+    font-size: 9px;
     color: white;
 	cursor: pointer;
+	width: 250px;
+}
+.authbtn:hover h2{
+	color: #bbbbbb;
 }
 .authbtn h2 {
 	display: initial;
@@ -712,6 +716,7 @@ height: 50%;
 	position: absolute;
     bottom: 0;
     width: 100%;
+	opacity:0;
 }
 .hide [name=spam-area] {
 	display: none;
@@ -720,11 +725,18 @@ height: 50%;
 [name=spam-area] input[type=text]{
     max-width: 100%;
     width: 100%;
+	padding: 8px 5px;
+	background: transparent;
+	color: white;
 }
 [name=spam-area] input[type=submit]{
     position: absolute;
 	right: 0;
 	bottom: 0;
+	padding: 8px 5px;
+    background: transparent;
+    color: white;
+    border: 0;
 }
 #embed_chat_position{
 	margin: 5px 0;
@@ -739,6 +751,7 @@ height: 50%;
     vertical-align: top;
 	width: 35%;
 	text-align: right;
+	max-width: 150px;
 }
 
 .twitch-description .embed-message:hover{
@@ -783,6 +796,16 @@ height: 50%;
     background: #f1f1f1;
 	color: #111111;
 }
+[data-theme-color=dark] [name=spam-area] input[type=text]{
+    background: #000000;
+	color: #f1f1f1;
+	border: 1px solid #ffffff;
+}
+[data-theme-color=dark] [name=spam-area] input[type=submit]{
+    background: #000000;
+	color: #efefef;
+}
+
 [data-theme-color=dark-opacity] .twitch-description .embed-message{
 	background-color: #00000099;
 	color: #f1f1f1;
@@ -790,6 +813,15 @@ height: 50%;
 [data-theme-color=dark-opacity] .twitch-description .embed-message:hover{
     background: #f1f1f1;
 	color: #111111;
+}
+[data-theme-color=dark-opacity] [name=spam-area] input[type=text]{
+	background-color: #00000099;
+	color: #f1f1f1;
+	border: 1px solid #000000;
+}
+[data-theme-color=dark-opacity] [name=spam-area] input[type=submit]{
+	background-color: #00000099;
+	color: #f1f1f1;
 }
 
 [data-theme-color=light] .twitch-description .embed-message {
@@ -804,6 +836,16 @@ height: 50%;
 	font-weight: bold;
 	text-shadow: 0 1px 0 rgb(0, 0, 0, 0.9);
 }
+[data-theme-color=light] [name=spam-area] input[type=text]{
+    background-color: #f1f1f1;
+	color: #000000;
+	border: 1px solid #ffffff;
+}
+
+[data-theme-color=light] [name=spam-area] input[type=submit]{
+    background-color: #f1f1f1;
+	color: #000000;
+}
 
 [data-theme-color=light-opacity] .twitch-description .embed-message {
 	background-color: #ffffff99;
@@ -817,7 +859,16 @@ height: 50%;
 	font-weight: bold;
 	text-shadow: 0 1px 0 rgb(0, 0, 0, 0.9);
 }
+[data-theme-color=light-opacity] [name=spam-area] input[type=text]{
+	background-color: #ffffff99;
+	color: #000000;	
+	border: 1px solid #ffffff;
+}
 
+[data-theme-color=light-opacity] [name=spam-area] input[type=submit]{
+	background-color: #ffffff99;
+	color: #000000;	
+}
 
 
 .twitch-description .message{
@@ -860,7 +911,7 @@ height: 50%;
 	
 }
 .specialgrid .viewer .twitch-embed {
-    width: 85%;
+    width: 75%;
 }
 
 .specialgrid .viewer.mainViewer .tw{
@@ -873,14 +924,16 @@ height: 50%;
 .specialgrid .viewer .player-options {
 	display: none;
 }
-
+.specialgrid .viewer.mainViewer .player-options {
+	display: block;
+}
 .specialgrid .mainViewer .twitch-description {
 	display: inline-block;
 	position: relative !important;
 	height: 100% !important;
     top: 0 !important;
     left: 0 !important;
-	width: 15% !important;
+	width: 25% !important;
 	float: right;
 }
 
@@ -973,7 +1026,7 @@ height: 50%;
   position: absolute;
   top: 0;
   left: 0;
-  padding-bottom: 20px;
+  padding-bottom: 35px;
 }
 
 
