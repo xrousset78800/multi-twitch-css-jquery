@@ -87,6 +87,19 @@ function updateJsonCookievalueByname(cookieName, nameId, prop, propNewVal) {
 	setCookie(cookieName, JSON.stringify(configObject), 60);
 }
 
+function updateJsonCookieremoveByname(cookieName, nameId) {
+	var configObject = JSON.parse(getCookie(cookieName));
+	
+	configObject = configObject.filter(function( obj ) {
+		if(obj.name == nameId){
+			return false;
+		}
+		return obj;
+	});
+	
+	setCookie(cookieName, JSON.stringify(configObject), 60);
+}
+
 function deleteCookie(name) {
   setCookie(name, "", {
     'max-age': -1

@@ -1,5 +1,5 @@
-let authToken = "";
-let clientID = "";
+let authToken = "ebio7i23n0oa5qfwfrteza6xfj90w9";
+let clientID = "vn9avm6d14fgwfyq0hc655klhwdcv8";
 var basePath = "https://xouindaplace.fr/multi-twitch/"
 
 
@@ -263,22 +263,12 @@ function updateScammerStatus(online, scamer) {
 	
 	jQuery('.channels .remove').on('click', function(e) {		
 		e.preventDefault();
-		var scamer = jQuery(this).data("scamer");
+		var scamer = jQuery(this).data("scamer");		
 		jQuery(this).parent(".channels").remove();
 		
-		var configObject = JSON.parse(getCookie("JsonTwitchConfig"));
-		
-		configObject = configObject.filter(function( obj ) {
-			return obj.name !== scamer;
-		});
-		
-		setCookie('JsonTwitchConfig', JSON.stringify(configObject), 60);
-		e.stopPropagation();
-		
+		updateJsonCookieremoveByname("JsonTwitchConfig", scamer);
 	});
-	
-	
-	
+
 	return true;
 }
 
@@ -295,8 +285,10 @@ function loadClient(config){
 	
 	if (access_token) {
 		setCookie('tokenMultiTwitch', access_token, 2);
+		window.location.replace(getCookie('urlRedirect'));
 	} else {
 		access_token = getCookie('tokenMultiTwitch');
+		setCookie('urlRedirect', url, 2);
 	}
 
 	jQuery.ajax(
@@ -413,39 +405,45 @@ function getEmotesByBroadcasterId(bId) {
 	jQuery.ajax(
 		{
 		   type: 'GET',
-		   url: 'https://api.twitch.tv/chat/badges?broadcaster_id=' +bId ,
+		   url: 'https://api.twitch.tv/chat/emotes?broadcaster_id=' +bId ,
+		   dataType: 'jsonp',
 		   headers: {
 			 'Client-ID': clientID,
 			 'Authorization': 'Bearer ' + authToken, 
 		   },
 		   success: function(c){
 			  console.log("emotes");
+			  console.log(c);
 		   },
 		}
 	);
 			
-}*/
-/*
+}
+
 function loadEmotes(streams) {
 	
 	var url = "";
+	
 	streams.forEach(function(scam) {
 	   url = url + "user_login=" + scam.substr(1) + "&";
 	});
-	
+
 	jQuery.ajax(
 	{
 	   type: 'GET',
-	   url: 'https://api.twitch.tv/helix/streams?' + url,
+	   url: 'https://api.twitch.tv/helix/streams?' + url.slice(0, -1),
 	   headers: {
 		 'Client-ID': clientID,
 		 'Authorization': 'Bearer ' + authToken, 
 	   },
 	   success: function(c){
-		   getEmotesByBroadcasterId(c.data[0]['id']);
+	   console.log(c.data);
+		getEmotesByBroadcasterId(c.data[0]['id']);
 	   },
 	});
 }*/
+
+
 
 jQuery(document).ready(function(){	
 	var scamConf = loadScam();
@@ -512,15 +510,14 @@ jQuery(document).ready(function(){
 			  setTimeout(myPeriodicMethod, tickRefreshMs);
 			}
 		});
-	}
-	
-	
-	
-	console.log(scamConf);
-	console.log(totalList);
+	}	
+	//console.log(scamConf);
+	//console.log(totalList);
 	
 	myPeriodicMethod(scamConf);
+	
 	//loadEmotes(scamConf["scamers"]);
+	
 	StartThisShit(scamConf);
 	
 	
@@ -536,7 +533,7 @@ jQuery(document).ready(function(){
 	   success: function(c){
 		  //data array is empty when queried channel is offline
 		if (c.data.length > 0) {			
-			jQuery(".hometext .suggestion").append("<h4>Importez les chaines de votre twitch : </h4><input id='import' type='text' placeholder='Votre login twitch + enter'>");
+			jQuery(".hometext .suggestion").append("<h4>Importez les chaines de votre twitch ici ou une via une dans le menu : </h4><input id='import' type='text' placeholder='Votre login twitch + enter'>");
 			jQuery(".hometext .suggestion").append("<h4>Ou parmis les chaines suivantes :</h4>");
 			jQuery(c.data).each(function(i, val){
 				//var thumbnail_resized = val.thumbnail_url.replace(/{width}|{height}/gi, 60);
@@ -558,7 +555,7 @@ jQuery(document).ready(function(){
 	jQuery("h1.toggleShit").click(function(){
 		jQuery(this).toggleClass("hide");
 		jQuery(".status").toggle(300, "linear");
-	});		
+	});
 	
 	jQuery(document).keydown(function(e) {
 		
@@ -578,20 +575,7 @@ jQuery(document).ready(function(){
 
 			case 96: 
 				// 0 
-				    if(jQuery('body').attr('data-layout') == 'studio') {
-						jQuery('body').removeClass('specialgrid');
-					}
-					jQuery('body').attr('data-layout', 'grid');				
-					var current = jQuery('.viewer.mainViewer').index();
-					if(current == -1){
-						jQuery('.viewer').eq(0).addClass('mainViewer');
-					} else {
-						if(scamConf["scamers"].length != 1){
-							jQuery('.viewer').removeClass('mainViewer');
-							jQuery(".viewer").css("right", "0");
-						}
-					}
-
+					switchToGrid();
 					break;
 				
 			case 37:
@@ -608,27 +592,7 @@ jQuery(document).ready(function(){
 				break;
 			case 110:
 				//Point 
-				if(jQuery('body').attr('data-layout') !== 'studio'){
-					jQuery('body').attr('data-layout', 'studio');
-					
-					var current = jQuery('.viewer.mainViewer').index();
-					/*if(current == -1) {
-						break;				
-					}*/
-					
-					jQuery(".mainViewer .twitch-description").css("left", "initial");
-					jQuery(scamConf["scamers"]).each(function(i, val){
-						jQuery(".viewer").eq(i).css("right", 11.11111*(i)+"%");
-						
-						/*if(jQuery(".viewer").eq(i).hasClass("mainViewer")) {
-							console.log("insert");
-							jQuery(".viewer").eq(i).insertBefore("<div class='viewer'></div>");
-						}*/
-					});
-
-					jQuery('body').toggleClass('specialgrid');
-				}
-				
+				switchToStudio();
 				break;
 			case 39:
 				//right
@@ -664,7 +628,15 @@ jQuery(document).ready(function(){
 	jQuery(function timer() {
 		var timer;
 		var fadeInBuffer = false;
-		jQuery(document).mousemove(function () {
+		jQuery(document).mousemove(function (e) {
+			
+			
+			var target = e.target.localName;
+			if(target == 'input'){
+				return true;
+			}
+		
+			//check for target
 			if (!fadeInBuffer) {
 				if (timer) {
 					clearTimeout(timer);
@@ -682,6 +654,8 @@ jQuery(document).ready(function(){
 				});
 				jQuery('.twitch-description').css('border-color', '#aaaaaadd');
 				
+				jQuery('.specialgrid .viewer').css('height', '12%');
+				
 				fadeInBuffer = false;
 			}
 
@@ -694,6 +668,7 @@ jQuery(document).ready(function(){
 					opacity: 0
 				});
 				jQuery('.twitch-description').css('border-color', 'transparent');
+				jQuery('.specialgrid .viewer').css('height', '0%');
 				fadeInBuffer = true;
 			}, 1500)
 		});
@@ -705,11 +680,55 @@ jQuery(document).ready(function(){
 	jQuery("[data-reset-app]").on('click', function(){
 		deleteCookie('JsonTwitchConfig');
 		window.location.replace(basePath);
+	});	
+	
+	function switchToGrid() {
+		if(jQuery('body').attr('data-layout') != 'grid') {
+			jQuery('body').removeClass('specialgrid');
+		}
+		jQuery('body').attr('data-layout', 'grid');
+		$(".viewer").removeAttr("style");
+		var current = jQuery('.viewer.mainViewer').index();
+		if(current == -1){
+			jQuery('.viewer').eq(0).addClass('mainViewer');
+		} else {
+			if(scamConf["scamers"].length != 1){
+				jQuery('.viewer').removeClass('mainViewer');
+				jQuery(".viewer").css("right", "0");
+			}
+		}
+	}
+		
+	function switchToStudio() {
+		if(jQuery('body').attr('data-layout') !== 'studio'){
+			jQuery('body').attr('data-layout', 'studio');
+			
+			var current = jQuery('.viewer.mainViewer').index();
+			/*if(current == -1) {
+				break;				
+			}*/
+			
+			jQuery(".mainViewer .twitch-description").css("left", "initial");
+			jQuery(scamConf["scamers"]).each(function(i, val){
+				jQuery(".viewer").eq(i).css("right", 11.11111*(i)+"%");
+				
+				/*if(jQuery(".viewer").eq(i).hasClass("mainViewer")) {
+					console.log("insert");
+					jQuery(".viewer").eq(i).insertBefore("<div class='viewer'></div>");
+				}*/
+			});
+
+			jQuery('body').toggleClass('specialgrid');
+		}		
+	}
+	
+	jQuery("[data-studio-switch]").on('click', function() {
+		switchToStudio();
 	});
 	
-	
-	
-	
+	jQuery("[data-grid-switch]").on('click', function() {
+		switchToGrid();
+	});
 	
 	jQuery("[data-down-font]").on('click', function() {
 		var lineHeight = jQuery(this).parent().parent().find('.twitch-description').css('line-height');
@@ -814,9 +833,7 @@ jQuery(document).ready(function(){
 
 
 /*
-list users on each chat
-
-
+grille - stud - embed
 pluie d'emotes + option
 
 badges 

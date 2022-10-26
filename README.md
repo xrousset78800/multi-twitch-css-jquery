@@ -9,6 +9,8 @@ TODO:
 
 pluie d'emotes + option
 badges 
-on resize replace chat (draggable fullscreen issue)
+
+list users on each chat
+
 améliorer la home globalement
 prédictions
