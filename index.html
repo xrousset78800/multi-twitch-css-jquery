@@ -28,22 +28,25 @@
 	  <link href="/multi-twitch/style.css" rel="stylesheet" />
 	  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Quicksand" />
 	</head>
-	<body class="vsc-initialized">
+	<body class="vsc-initialized" data-layout="grid">
 		<div class="background">
 		  <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
 		</div>
-		<div class="page wrapper">
+		<div class="page wrapper">		
 			<header class="blog-header home row">
 				<div class="cell cell-12">
 					<a href="/multi-twitch/"><h1 class="page-title">Multi twitch</h1></a>
 					<a href="#modal" name="help" role="button" class="button button__link">?</a>
 					<div class="postmessage">
-						<span data-grid-switch>Grid</span>
-						<span data-studio-switch>Studio</span>
+
 					</div>
 				</div>
 			</header>
 			<main id="myScamPlayer" class="page-content">
+				<div class="switchers">
+					<span class="switcher" data-grid-switch>Grid</span>
+					<span class="switcher" data-studio-switch>Studio</span>
+				</div>			
 				<div class="status hide">
 					<form action="#" method="GET" class="channel-form">
 						<label for="add">- My list -</label>
@@ -80,7 +83,7 @@
 		  <div class="modal-body card">
 			<div class="modal-header">
 			  <h2 class="heading">Raccourcis claviers</h2>
-			  <a href="#!" role="button" class="close" aria-label="Fermer">
+			  <a href="#" role="button" class="close" aria-label="Fermer">
 				<svg viewBox="0 0 24 24">
 				  <path d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z" />
 				</svg>

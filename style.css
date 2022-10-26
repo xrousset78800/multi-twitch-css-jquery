@@ -514,6 +514,7 @@ small.game {
     float:left;
 	/*overflow: hidden;*/
     transition: width 0.3s ease-in-out, height 0.3s ease-in-out;
+	cursor: pointer;
 }
 .viewer.mainViewer {
     width: 100% !important;
@@ -594,7 +595,12 @@ small.game {
 	height: 80%;
     position: absolute;
 }
-
+.specialgrid .mainViewer .twitch-embed:before {
+	height: 80%;
+}
+.specialgrid .twitch-embed:before {
+	height: 100%;
+}
 
 .viewer3video .viewer{
 	width: 50%;
@@ -697,13 +703,11 @@ height: 50%;
 }
 
 .authbtn {
-	position: absolute;
-    top: 25px;
-    padding-left: 21px;
+	padding-left: 21px;
     font-size: 9px;
     color: white;
-	cursor: pointer;
-	width: 250px;
+    cursor: pointer;
+    display: inline-block;
 }
 .authbtn:hover h2{
 	color: #bbbbbb;
@@ -916,11 +920,34 @@ height: 50%;
 	z-index: 1;
 	background: transparent;
 }
-
+.switchers {
+	position: absolute;
+	left: 0;
+	right:0;
+	top: 0;
+	margin: 0 auto;
+	width: 140px;
+    text-align: center;
+    height: 60px;
+    line-height: 60px;
+	font-size: 16px;
+	z-index: 10;
+	opacity: 1;
+	transition: opacity 0.5s;
+}
+.switcher {
+	cursor: pointer;
+	margin: 0 10px;
+	color: white;
+}
+.switcher:hover {
+	color: #cccccc;
+}
 .specialgrid .viewer.mainViewer iframe{
 	
 }
-.specialgrid .viewer .twitch-embed {
+
+.specialgrid .mainViewer .twitch-embed {
     width: 80%;
 }
 
@@ -937,6 +964,13 @@ height: 50%;
 .specialgrid .viewer.mainViewer .player-options {
 	display: block;
 }
+
+[data-layout=grid] [data-grid-switch] {
+	border-bottom:1px solid white;
+}
+[data-layout=studio] [data-studio-switch] {
+	border-bottom:1px solid white;
+}
 .specialgrid .mainViewer .twitch-description {
 	display: inline-block;
 	position: relative !important;
@@ -946,7 +980,9 @@ height: 50%;
 	width: 20% !important;
 	float: right;
 }
-
+.specialgrid .fullscreen .mainViewer .twitch-description {
+	top: 50px !important;
+}
 
 .online-icon {
   animation-duration: 1s;
@@ -1107,6 +1143,10 @@ h4{
 
 .viewer0video .status {
     display: inline-block;
+}
+
+.viewer0video .switchers {
+    display: none;
 }
 
 .instructions li {

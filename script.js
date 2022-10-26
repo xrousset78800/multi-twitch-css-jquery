@@ -145,8 +145,10 @@ function StartThisShit(config) {
 		  }
 	});
 		
-	jQuery(".twitch-description").dblclick(function() {
+	jQuery(".twitch-description").dblclick(function(e) {
 		jQuery(this).toggleClass("hide");
+		e.preventDefault();
+		e.stopPropagation();
 	});
 	
 	jQuery(".twitch-embed").dblclick(function() {
@@ -169,6 +171,8 @@ function StartThisShit(config) {
 	  },
 	  stop: function( event, ui ) {
 		  jQuery(this).parent().css("pointer-events", "initial");
+		  event.preventDefault();
+		  event.stopPropagation();
 	  }
 	});	
 			
@@ -341,7 +345,7 @@ function loadClient(config){
 					});
 				});
 				
-				jQuery('.postmessage').append("<a class='authbtn' onclick='removeToken();'><p>Logged as "+name+"</p><h2>Logout</h2></a>");					
+				jQuery('.postmessage').prepend("<a class='authbtn' onclick='removeToken();'><p>Logged as "+name+"</p><h2>Logout</h2></a>");					
 	   },
 	   error: function(event){
 			name = null;
@@ -351,7 +355,7 @@ function loadClient(config){
 			};
 			client = new tmi.client(option);
 			client.connect();
-			jQuery('.postmessage').append("<a class='authbtn' href='https://id.twitch.tv/oauth2/authorize?response_type=token&force_verify=true&client_id="+clientID+"&redirect_uri="+basePath+"&scope=chat%3Aread+chat%3Aedit&state=random'><h2 title='Active le chat sur les streams'>Login Twitch</h2></a>");
+			jQuery('.postmessage').prepend("<a class='authbtn' href='https://id.twitch.tv/oauth2/authorize?response_type=token&force_verify=true&client_id="+clientID+"&redirect_uri="+basePath+"&scope=chat%3Aread+chat%3Aedit&state=random'><h2 title='Active le chat sur les streams'>Login Twitch</h2></a>");
 	   },
 	   complete: function(e){
 			//console.log(client);
@@ -533,7 +537,7 @@ jQuery(document).ready(function(){
 	   success: function(c){
 		  //data array is empty when queried channel is offline
 		if (c.data.length > 0) {			
-			jQuery(".hometext .suggestion").append("<h4>Importez les chaines de votre twitch ici ou une via une dans le menu : </h4><input id='import' type='text' placeholder='Votre login twitch + enter'>");
+			jQuery(".hometext .suggestion").append("<h4>Importez toutes les chaines de votre twitch ici ou une seule via le menu : </h4><input id='import' type='text' placeholder='Votre login twitch + enter'>");
 			jQuery(".hometext .suggestion").append("<h4>Ou parmis les chaines suivantes :</h4>");
 			jQuery(c.data).each(function(i, val){
 				//var thumbnail_resized = val.thumbnail_url.replace(/{width}|{height}/gi, 60);
@@ -649,7 +653,7 @@ jQuery(document).ready(function(){
 				 jQuery('.viewer').css({
 					cursor: 'pointer'
 				});
-				jQuery('.player-options, .toggleShit, [name=spam-area]').css({
+				jQuery('.player-options, .toggleShit, [name=spam-area], .switchers').css({
 					opacity: 1
 				});
 				jQuery('.twitch-description').css('border-color', '#aaaaaadd');
@@ -664,16 +668,13 @@ jQuery(document).ready(function(){
 				 jQuery('.viewer').css({
 					cursor: 'none'
 				});		
-				jQuery('.toggleShit, .player-options, [name=spam-area]').css({
+				jQuery('.toggleShit, .player-options, [name=spam-area], .switchers').css({
 					opacity: 0
 				});
 				jQuery('.twitch-description').css('border-color', 'transparent');
 				jQuery('.specialgrid .viewer').css('height', '0%');
 				fadeInBuffer = true;
 			}, 1500)
-		});
-		jQuery('.viewer').css({
-			cursor: 'pointer'
 		});
 	});
 	
@@ -768,6 +769,23 @@ jQuery(document).ready(function(){
 	});
 	
 	
+	jQuery(".viewer").on('click',function(e){
+		
+		var isChat = jQuery(e.target).hasClass('twitch-description');
+		var isOptions = jQuery(e.target).parent().hasClass('player-options');
+		if(isOptions || isChat){
+			e.preventDefault();
+			e.stopPropagation();
+			return true;
+		}
+		
+		if(jQuery(this).hasClass("mainViewer")) {
+			return false;
+		}
+		jQuery('.viewer').removeClass('mainViewer');
+		jQuery(this).addClass('mainViewer');
+	});
+	
 	var pauseScroll = false;
 	jQuery(".twitch-description").hover(function(){
 		pauseScroll = true;
@@ -833,7 +851,11 @@ jQuery(document).ready(function(){
 
 
 /*
-grille - stud - embed
+Boutons >> grille - stud
+
+reply to 
+
+
 pluie d'emotes + option
 
 badges 
