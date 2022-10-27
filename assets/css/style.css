@@ -120,56 +120,6 @@ body {
 
 body {
     padding: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);
-    background: url('img/sheep.jpg');
-animation: 60s ease-in 1s infinite both running slidein;
-}
-
-@keyframes slidein {
-  0% {
-    background-position-x:0%;	
-    background-position-y:0%;	
-  }
-
-  20% {
-    background-position-y:0%;
-  }
-  21% {
-    background-position-y:-10%;
-  }
-  22% {
-    background-position-y:0%;
-  }
-  40% {
-    background-position-y:0%;
-  }
-  41% {
-    background-position-y:-10%;
-  }
-  42% {
-    background-position-y:0%;
-  }
-  60% {
-    background-position-y:0%;
-  }
-  61% {
-    background-position-y:-10%;
-  }
-  62% {
-    background-position-y:0%;
-  }
-  80% {
-    background-position-y:0%;
-  }
-  81% {
-    background-position-y:-10%;
-  }
-  82% {
-    background-position-y:0%;
-  }
-  100% {
-    background-position-x:100%;
-    background-position-y:0%;
-  }
 }
 
 .page {
