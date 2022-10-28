@@ -4,6 +4,7 @@ var basePath = "https://xouindaplace.fr/multi-twitch/"
 
 
 var totalList = [];
+var totalListInfos = [];
 var configObject = [];
 var bufferMessageSize = 150;
 var tickRefreshMs = 120000;
@@ -183,9 +184,10 @@ function StartThisShit(config) {
 	return true;
 }
 
-function updateStatuses(response, scamersToShowList) {
+function updateStatuses(response, scamersToShowList, firstIteration) {
 	/* Save user checked channels */
 	var old = [];
+	
 	jQuery(".channels input").each(function(){
 		if(jQuery(this).is(':checked')){
 			old.push(jQuery(this).attr("id"));
@@ -195,40 +197,54 @@ function updateStatuses(response, scamersToShowList) {
 	
 	jQuery(totalList).each(function(scam, value){
             var scamer = value.name;
-		let flag = false;
+		let flag = false;	
+		let matchConfInfos = totalListInfos.find(o => o.login === scamer);
 		
 		jQuery(response).each(function(val, user){
 		      if(user.user_login.toLowerCase() == scamer.toLowerCase() || user.user_name.toLowerCase() == scamer.toLowerCase()){
 				//getBroadcast(user.user_id);
-                  updateScammerStatus(true, user); 
+                  updateScammerStatus(true, user, matchConfInfos); 
 			      flag = true;
-			}	
+			}
 		});
 		if(flag === false) {
-			updateScammerStatus(false, scamer);
+			updateScammerStatus(false, scamer, matchConfInfos);
 		}
 	});
+	
 
-	if(old.length > 0) {
-		scamersToShowList = old;
-	}
-
-	for(var i = 0; i<scamersToShowList.length;i++) {
-		jQuery('input'+scamersToShowList[i]).prop("checked", true);
-		jQuery('input'+scamersToShowList[i]).parent('.channels').addClass('selected');
+	if(firstIteration){
+		for(var i = 0; i<scamersToShowList.length;i++) {
+			jQuery('input'+scamersToShowList[i]).prop("checked", true);
+			jQuery('input'+scamersToShowList[i]).parent('.channels').addClass('selected');
+		}	
+	} else {	
+		for(var i = 0; i<old.length;i++) {
+			jQuery('input#'+old[i]).prop("checked", true);
+			jQuery('input#'+old[i]).parent('.channels').addClass('selected');
+		}	
 	}
 	
+	for(var i = 0; i<scamersToShowList.length;i++) {
+		jQuery('input'+scamersToShowList[i]).parent('.channels').addClass('active');
+	}	
 	return true;
 }
 
-function updateScammerStatus(online, scamer) {
+function updateScammerStatus(online, scamer, userInfos) {
+
+	if (userInfos && userInfos.profile_image_url != "") {
+		var icon_channel = userInfos.profile_image_url;
+	} else {
+		var icon_channel = "assets/img/modo.png";
+	}
 
 	//User is an online object
 	if(typeof scamer === 'object' && !Array.isArray(scamer) && scamer !== null){
 		var duration = timeDiffCalc(new Date(scamer.started_at), new Date());
 		var thumbnail_resized = scamer.thumbnail_url.replace(/{width}|{height}/gi, 60);
 		var game = scamer.game_name;
-
+		
 		jQuery(".channel-form .online-stream").prepend(""+
 		"<div class='channels'>"+
 			"<input type='checkbox' id='"+scamer.user_login+"' tabIndex='3' name='show' value='"+scamer.user_login+"'/>"+
@@ -240,22 +256,28 @@ function updateScammerStatus(online, scamer) {
 				"<div class='infos'>"+scamer.viewer_count+"</div>"+
 				"<div class='date'>"+duration+"</div>"+
 			"</div>"+
+			"<img width='30' height='30' class='channel-icon' src='"+ icon_channel+"'/>"+
 			"<i class='online-icon'></i><label for='" + scamer.user_login + "' >" + scamer.user_name +"<small> ("+scamer.viewer_count+")</small></label>"+
 			"<small class='game'>"+game+"</small>"+
 			"<div data-scamer='" + scamer.user_login + "' tabIndex='4' class='remove'>x</div>"+
 		"</div>"
 		);
 	}else{
+		//console.log(userInfos);
 		jQuery(".channel-form .offline-stream").prepend(""+
 			"<div class='channels'>"+
 				"<input type='checkbox' id='"+scamer+"' tabIndex='3' name='show' value='"+scamer+"'/>"+
+				"<img width='30' height='30' class='channel-icon' src='"+ icon_channel +"'/>"+
 				"<i class='offline-icon'></i>"+
 				"<label for='" + scamer + "'>" + scamer + "</label>"+
 				"<div data-scamer='" + scamer + "' tabIndex='4' class='remove'>x</div>"+
 			"</div>"
 		);
 	}
-	
+
+
+
+
 	jQuery('.channels input').on('change', function(e){
 		if(jQuery(this).is(':checked')) {
 			jQuery(this).parent('.channels').addClass("selected");
@@ -263,9 +285,9 @@ function updateScammerStatus(online, scamer) {
 			jQuery(this).parent('.channels').removeClass("selected");
 		}
 		e.preventDefault();
-	});
+	});	
 	
-	jQuery('.channels .remove').on('click', function(e) {		
+	jQuery('.channels .remove').on('click', function(e) {
 		e.preventDefault();
 		var scamer = jQuery(this).data("scamer");		
 		jQuery(this).parent(".channels").remove();
@@ -453,11 +475,29 @@ jQuery(document).ready(function(){
 	var scamConf = loadScam();
 	loadClient(scamConf);
 	
-	var urlscammers = "";
+	var urlStreams = "";
+	var urlUsers = "";
 	
 	totalList.forEach(function(scam) {
-	   urlscammers = urlscammers + "user_login=" + scam.name + "&";
+	   urlStreams = urlStreams + "user_login=" + scam.name + "&";
+	   urlUsers = urlUsers + "login=" + scam.name + "&";
 	});	
+	
+	function getUsersData() {
+		jQuery.ajax(
+		{
+		   type: 'GET',
+		   url: 'https://api.twitch.tv/helix/users?' + urlUsers,
+		   headers: {
+			 'Client-ID': clientID,
+			 'Authorization': 'Bearer ' + authToken, 
+		   },
+		   success: function(c){
+			  totalListInfos = c.data;
+			  myPeriodicMethod(scamConf, true);
+		   }
+		});
+	}	
 	
 	
 	function importFollowers(login) {
@@ -497,28 +537,25 @@ jQuery(document).ready(function(){
 		});		
 	}
 	
-	function myPeriodicMethod(scamConf) {
-
+	function myPeriodicMethod(scamConf, firstIteration) {
 		jQuery.ajax(
 		{
 		   type: 'GET',
-		   url: 'https://api.twitch.tv/helix/streams?' + urlscammers,
+		   url: 'https://api.twitch.tv/helix/streams?' + urlStreams,
 		   headers: {
 			 'Client-ID': clientID,
 			 'Authorization': 'Bearer ' + authToken, 
 		   },
 		   success: function(c){
-			  updateStatuses(c.data, scamConf["scamers"]);
+			  updateStatuses(c.data, scamConf["scamers"], firstIteration);
 		   },
-		   complete: function() {
-			  setTimeout(myPeriodicMethod, tickRefreshMs);
+		   complete: function(c) {
+			  setTimeout(myPeriodicMethod, tickRefreshMs, scamConf, false);
 			}
 		});
 	}	
-	//console.log(scamConf);
-	//console.log(totalList);
 	
-	myPeriodicMethod(scamConf);
+	getUsersData();
 	
 	//loadEmotes(scamConf["scamers"]);
 	
@@ -768,8 +805,13 @@ jQuery(document).ready(function(){
 		updateJsonCookievalueByname("JsonTwitchConfig", id, 'theme', this.value);
 	});
 	
-	
 	jQuery(".viewer").on('click',function(e){
+		
+		if((jQuery("body").attr('data-layout') == 'grid') && (jQuery(".mainViewer").length == 0)) {
+			e.preventDefault();
+			e.stopPropagation();
+			return false;
+		}
 		
 		var isChat = jQuery(e.target).hasClass('twitch-description');
 		var isOptions = jQuery(e.target).parent().hasClass('player-options');

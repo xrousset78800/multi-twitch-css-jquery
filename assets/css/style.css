@@ -327,6 +327,7 @@ body {
     overflow-y: scroll;
     max-height: 500px;
 	margin-right: -17px;
+	padding: 10px 0;
 }
 .fixed-go {
 	margin: 10px 0;
@@ -381,6 +382,7 @@ font-style: italic;
 }
 .channels label {
 	text-transform: capitalize;
+	padding-left: 12px;
 }
 .channels:hover {
 	cursor: pointer;
@@ -401,8 +403,9 @@ position: fixed;
 small.game {
     display: block;
 	position: relative;
-    left: 44px;
+    padding-left: 43px;
     width: 84%;
+	top: -5px;
 }
 .channels .title .game img {
 	display: inline-block;
@@ -930,6 +933,7 @@ height: 50%;
 	width: 20% !important;
 	float: right;
 }
+
 .specialgrid .fullscreen .mainViewer .twitch-description {
 	top: 50px !important;
 }
@@ -949,12 +953,13 @@ height: 50%;
   border-radius: 9px;
   border: 2px solid transparent;
   box-sizing: border-box;
-  position: relative;
+  position: absolute;
   cursor: pointer;
+  top: -7px;
+  left: 26px;
   border-color: #238823;
   border-width: 2px;
-    top: 5px;
-    vertical-align: top;
+  vertical-align: top;
 }
 .online-icon:before {
   content: '';
@@ -971,16 +976,17 @@ height: 50%;
 
 .channels input {
     vertical-align: middle;
+	display: none;
 }
 .offline-icon {
   display: inline-block;
   margin: 0 4px;
   width: 18px;
   height: 18px;
-
-  position: relative;
+  position: absolute;
   cursor: pointer;
-  top: 3px;
+  top: -7px;
+  left: 26px;
 }
 
 .offline-icon:before {
@@ -1132,9 +1138,12 @@ h4{
 	background: #ffffffee;
 	color: black;
 }
-
 .channels.selected label{
 	color: black;
+}
+.channels.active label{
+	font-weight: bold;
+	color: #9146FF;
 }
 .channels.selected .game{
 	color: black;
@@ -1157,7 +1166,7 @@ h4{
 	float: left;
 }
 [data-subscriber=true]{
-	background-image:url("img/sub.png");
+	background-image:url("../img/sub.png");
 }
 
 [data-subgifts-350] {
