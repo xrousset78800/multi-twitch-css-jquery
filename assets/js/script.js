@@ -179,8 +179,8 @@ function StartThisShit(config) {
 			
 	jQuery(".viewer > div").each(function(viewer){
 		jQuery(viewer).addClass(viewer);
-	});		
-		
+	});
+	
 	return true;
 }
 
@@ -218,6 +218,8 @@ function updateStatuses(response, scamersToShowList, firstIteration) {
 			jQuery('input'+scamersToShowList[i]).prop("checked", true);
 			jQuery('input'+scamersToShowList[i]).parent('.channels').addClass('selected');
 		}	
+		jQuery(".channel-form [data-counter]").val("Voir "+jQuery(".channels.selected").length);
+
 	} else {	
 		for(var i = 0; i<old.length;i++) {
 			jQuery('input#'+old[i]).prop("checked", true);
@@ -249,12 +251,14 @@ function updateScammerStatus(online, scamer, userInfos) {
 		"<div class='channels'>"+
 			"<input type='checkbox' id='"+scamer.user_login+"' tabIndex='3' name='show' value='"+scamer.user_login+"'/>"+
 			"<div class='title'>"+
-				"<div class='gamehover'>"+
+				"<div>"+
 					"<img src='"+ thumbnail_resized+"'/>"+
-					"<div class='gametitle'>"+scamer.title +"</div>"+
+					"<div class='gamehover'>"+
+						"<div class='gametitle'>"+scamer.title +"</div>"+
+						"<div class='infos'>"+scamer.viewer_count+"</div>"+
+						"<div class='date'>"+duration+"</div>"+	
+					"</div>"+
 				"</div>"+
-				"<div class='infos'>"+scamer.viewer_count+"</div>"+
-				"<div class='date'>"+duration+"</div>"+
 			"</div>"+
 			"<img width='30' height='30' class='channel-icon' src='"+ icon_channel+"'/>"+
 			"<i class='online-icon'></i><label for='" + scamer.user_login + "' >" + scamer.user_name +"<small> ("+scamer.viewer_count+")</small></label>"+
@@ -275,17 +279,22 @@ function updateScammerStatus(online, scamer, userInfos) {
 		);
 	}
 
-
-
-
 	jQuery('.channels input').on('change', function(e){
+		
 		if(jQuery(this).is(':checked')) {
+			if(jQuery(".channels.selected").length == 9) {
+				return false;
+			}
 			jQuery(this).parent('.channels').addClass("selected");
+			
 		} else {
 			jQuery(this).parent('.channels').removeClass("selected");
 		}
+		jQuery(".channel-form [data-counter]").val("Voir "+jQuery(".channels.selected").length);
+		
 		e.preventDefault();
 	});	
+	
 	
 	jQuery('.channels .remove').on('click', function(e) {
 		e.preventDefault();
@@ -469,6 +478,12 @@ function loadEmotes(streams) {
 	});
 }*/
 
+function stopPropagation(id, event) {
+    jQuery(id).on(event, function(e) {
+        e.stopPropagation();
+        return false;
+    });
+}
 
 
 jQuery(document).ready(function(){	
@@ -559,9 +574,7 @@ jQuery(document).ready(function(){
 	
 	//loadEmotes(scamConf["scamers"]);
 	
-	StartThisShit(scamConf);
-	
-	
+	StartThisShit(scamConf);	
 	
 	jQuery.ajax(
 	{
@@ -598,6 +611,42 @@ jQuery(document).ready(function(){
 		jQuery(".status").toggle(300, "linear");
 	});
 	
+	jQuery(document).mouseup(function(e){
+    switch(e.which)
+    {
+        case 2:
+			if(jQuery('body[data-layout=studio]').length)
+				jQuery('.viewer').removeClass('mainViewer');
+			else
+				switchToGrid();
+			
+			break;		
+        case 3:
+			jQuery("h1.toggleShit").toggleClass("hide");
+			jQuery(".status").toggle(300, "linear");
+			
+			break;
+        case 4:
+			previousStream();
+			e.preventDefault();
+			e.stopImmediatePropagation();
+			e.stopPropagation();
+			return false;
+			break;
+        case 5:
+			nextStream();	
+			e.preventDefault();
+			e.stopImmediatePropagation();
+			e.stopPropagation();
+			return false;		
+			break;
+    }
+
+    return true;
+});
+	
+	
+	
 	jQuery(document).keydown(function(e) {
 		
 		var target = e.target.localName;
@@ -608,27 +657,14 @@ jQuery(document).ready(function(){
 		
 	    var value = e.which;	
 		switch (value) {
-			case 17:
-				//ctrl
-				jQuery("h1.toggleShit").toggleClass("hide");
-				jQuery(".status").toggle(100, "linear");
-				break;
-
 			case 96: 
 				// 0 
-					switchToGrid();
-					break;
+				switchToGrid();
+				break;
 				
 			case 37:
 				//left
-				var current = jQuery('.viewer.mainViewer').index();
-				
-				if(current == -1) current = scamConf["scamers"].length + 1;
-				
-				var newId = ((current-1) % scamConf["scamers"].length-1);
-				
-				jQuery('.viewer').removeClass('mainViewer');
-				jQuery('.viewer').eq(newId).addClass('mainViewer');
+				previousStream();
 				
 				break;
 			case 110:
@@ -637,14 +673,7 @@ jQuery(document).ready(function(){
 				break;
 			case 39:
 				//right
-				var current = jQuery('.viewer.mainViewer').index();	
-
-				if(current == -1) current = scamConf["scamers"].length;				
-				
-				var newId = ((current+1) % scamConf["scamers"].length-1);
-				
-				jQuery('.viewer').removeClass('mainViewer');
-				jQuery('.viewer').eq(newId).addClass('mainViewer');
+				nextStream();
 				break;
 				
 			default:
@@ -715,6 +744,10 @@ jQuery(document).ready(function(){
 		});
 	});
 	
+	jQuery(document).bind("contextmenu",function(e){
+		return false;
+    });
+	
 	jQuery("[data-reset-app]").on('click', function(){
 		deleteCookie('JsonTwitchConfig');
 		window.location.replace(basePath);
@@ -760,6 +793,29 @@ jQuery(document).ready(function(){
 		}		
 	}
 	
+	
+	function nextStream() {
+		var current = jQuery('.viewer.mainViewer').index();	
+
+		if(current == -1) current = scamConf["scamers"].length;				
+		
+		var newId = ((current+1) % scamConf["scamers"].length-1);
+		
+		jQuery('.viewer').removeClass('mainViewer');
+		jQuery('.viewer').eq(newId).addClass('mainViewer');		
+	}
+	
+	function previousStream(){
+		var current = jQuery('.viewer.mainViewer').index();
+		
+		if(current == -1) current = scamConf["scamers"].length + 1;
+		
+		var newId = ((current-1) % scamConf["scamers"].length-1);
+		
+		jQuery('.viewer').removeClass('mainViewer');
+		jQuery('.viewer').eq(newId).addClass('mainViewer');		
+	}
+	
 	jQuery("[data-studio-switch]").on('click', function() {
 		switchToStudio();
 	});
@@ -767,6 +823,14 @@ jQuery(document).ready(function(){
 	jQuery("[data-grid-switch]").on('click', function() {
 		switchToGrid();
 	});
+	
+	jQuery("[data-stream-prev]").on('click', function() {
+		previousStream();
+	});
+
+	jQuery("[data-stream-next]").on('click', function() {
+		nextStream();
+	});	
 	
 	jQuery("[data-down-font]").on('click', function() {
 		var lineHeight = jQuery(this).parent().parent().find('.twitch-description').css('line-height');
@@ -897,14 +961,18 @@ Boutons >> grille - stud
 
 reply to 
 
-
 pluie d'emotes + option
 
 badges 
 
-améliorer la home globalement
+vérifier si le stream existe avant ajout 
 
 prédictions
+
+améliorer la home globalement (évenements esports/tendances ?)
+
+
+
 
 ??administration(/moderation) stuffs ?
 ??scam roulette??

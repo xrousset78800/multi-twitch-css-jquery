@@ -34,7 +34,7 @@
 			<header class="blog-header home row">
 				<div class="cell cell-12">
 					<a href="/multi-twitch/"><h1 class="page-title">Multi twitch</h1></a>
-					<a href="#modal" name="help" role="button" class="button button__link">?</a>
+					<a href="#modal" name="help" role="button" class="button__link">?</a>
 					<div class="postmessage">
 
 					</div>
@@ -42,8 +42,10 @@
 			</header>
 			<main id="myScamPlayer" class="page-content">
 				<div class="switchers">
-					<span class="switcher" data-grid-switch>Grid</span>
-					<span class="switcher" data-studio-switch>Studio</span>
+					<span class="switcher button button--sacnite" data-grid-switch>Grid</span>
+					<span class="switcher button button--sacnite" data-studio-switch>Stud</span>
+					<button class="button button--sacnite" data-stream-prev><i class="button__icon icon icon-user"><<</i></button>
+					<button class="button button--sacnite" data-stream-next><i class="button__icon icon icon-bookmark">>></i></button>
 				</div>			
 				<div class="status hide">
 					<form action="#" method="GET" class="channel-form">
@@ -56,7 +58,7 @@
 							</div>
 						</div>
 						<div class="fixed-go">
-							<input type="submit" value="Go" />
+							<input type="submit" data-counter value="Go" />
 						</div>
 					</form>
 				</div>
@@ -67,7 +69,7 @@
 					<div class="instructions">
 						<div class="suggestion">
 						</div>
-						<h4>Selectionnez les chaines à charger dans le menu + Go</h4>
+						<h4>Selectionnez 1 à 9 chaines dans le menu + Go</h4>
 						<span class="reset" data-reset-app>En cas de soucis : <u>reset app</u></span>
 					</div>
 				</div>
@@ -81,7 +83,7 @@
 		<div class="modal-wrapper" id="modal">
 		  <div class="modal-body card">
 			<div class="modal-header">
-			  <h2 class="heading">Raccourcis claviers</h2>
+			  <h2 class="heading">Voyagez</h2>
 			  <a href="#" role="button" class="close" aria-label="Fermer">
 				<svg viewBox="0 0 24 24">
 				  <path d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z" />
@@ -89,10 +91,16 @@
 			  </a>
 			</div>
 			<div class="shortkeys">
+				<h4>- Tout à la Souris -</h4>
 				<ul>
-					<li><b><u>Ctrl</u></b> - menu</li>
-					<li><b><u>dbl click</u></b> - full screen</li>
-					<li><b><u>left-right</u></b> - suivant(premier) - précédent(dernier)</li>
+					<li><b><u>clic gauche</u></b> - menu</li>
+					<li><b><u>clic droit</u></b> - full screen</li>
+					<li><b><u>scroll click</u></b> - Revenir à la vue globale</li>
+					<li><b><u>4-5 clic</u></b> - précédent/suivant</li>
+				</ul>
+				<h4>- Et/ou tout au Clavier -</h4>
+				<ul>
+					<li><b><u>gauche-droite</u></b> - suivant(premier) - précédent(dernier)</li>
 					<li><b><u>[1-N]</u></b> - basculer vers Nieme stream</li>
 					<li><b><u>0</u></b> - vue multigrille</li>
 					<li><b><u>.</u></b> - Vue secondaire</li>

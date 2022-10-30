@@ -7,10 +7,16 @@ Enjoy
 live on : https://xouindaplace.fr/multi-twitch
 TODO: 
 
+Boutons >> grille - stud
+
+reply to 
+
 pluie d'emotes + option
+
 badges 
 
-list users on each chat
+vérifier si le stream existe avant ajout 
 
-améliorer la home globalement
 prédictions
+
+améliorer la home globalement (évenements esports/tendances ?)
