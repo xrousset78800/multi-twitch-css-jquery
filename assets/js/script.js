@@ -1,6 +1,6 @@
 let authToken = "";
 let clientID = "";
-var basePath = "https://xouindaplace.fr/multi-twitch/"
+var basePath = "https://mytwitchplayer.fr/"
 
 
 var totalList = [];
@@ -51,26 +51,40 @@ function loadScam() {
 		for(var i=0; i<newScamer.length; i++) {
 			var alreadyExist = false;
 			for(l=0;l<jsonString.length;l++) {
-				if(jsonString[l].name == newScamer[i]){
-					console.log('exist');
+				if(jsonString[l].name == newScamer[i].toLowerCase()){
+					console.log('dejà dans la liste');
 					alreadyExist = true;
 				}
 			}
-			if(!alreadyExist && newScamer[i].toLowerCase() != ""){
-				var newChannel = { 
-					'name': newScamer[i].toLowerCase(),
-					'size': 15,
-					'color': 'default',
-					'theme': 'default',
-				}
-				
-				totalList.push(newChannel);
-				toObject.push(newChannel);
+			if(alreadyExist === false && newScamer[i].toLowerCase() != ""){
+				jQuery.ajax(
+				{
+				   type: 'GET',
+				   url: 'https://api.twitch.tv/helix/users?login=' + newScamer[i],
+				   headers: {
+					 'Client-ID': clientID,
+					 'Authorization': 'Bearer ' + authToken, 
+				   },
+				   success: function(c){
+					   console.log(c.data[0].login);
+						var newChannel = { 
+							'name': c.data[0].login,
+							'size': 15,
+							'color': 'default',
+							'theme': 'default',
+						}
+						
+						totalList.push(newChannel);
+						toObject.push(newChannel);
+						setCookie('JsonTwitchConfig', JSON.stringify(toObject), 6000);
+				   },
+				   error: function(c) {
+						//console.log("l'utilisateur n'existe pas sur twitch");
+				   }
+				});				
 				//console.log("JSON add "+ newScamer[i]);			
 			}
-		}		
-		
-		setCookie('JsonTwitchConfig', JSON.stringify(toObject), 6000);
+		}
 	}
 
 	var result = {
@@ -82,7 +96,7 @@ function loadScam() {
 
 function StartThisShit(config) {
 	if(config.scamers.length == 1) {
-		jQuery(document).prop('title', config.scamers[0] + " player");
+		jQuery(document).prop('title', 'Simple twitch (' + config.scamers[0].substr(1)+")");
 		jQuery("body").addClass(config.scamers[0]);
 	} else {
 		if(config.scamers.length == 0) {
@@ -115,7 +129,7 @@ function StartThisShit(config) {
 		  
 		player[i] = new Twitch.Player("twitch-embed"+(i+1), options);
 		  
-		jQuery('#player-'+config.scamers[i].substr(1)).append("<div class='player-options'><span class='ui-btn ui-shadow ui-corner-all ui-icon ui-icon-minus ui-btn-icon-notext ui-btn-inline' data-down-font></span><span class='ui-btn ui-shadow ui-corner-all ui-icon ui-icon-plus ui-btn-icon-notext ui-btn-inline' data-up-font></span><select data-form-theme-color name='theme-color'></select><select data-form-theme name='theme'></select></div>");
+		jQuery('#player-'+config.scamers[i].substr(1)).append("<div class='player-options'><span data-down-font>-</span><span  data-up-font>+</span><select data-form-theme-color name='theme-color'></select><select data-form-theme name='theme'></select></div>");
 		
 		jQuery(themeColors).each(function(v, color){
 			var selected = "";
@@ -588,7 +602,7 @@ jQuery(document).ready(function(){
 		  //data array is empty when queried channel is offline
 		if (c.data.length > 0) {			
 			jQuery(".hometext .suggestion").append("<h4>Importez toutes les chaines de votre twitch ici ou une seule via le menu : </h4><input id='import' type='text' placeholder='Votre login twitch + enter'>");
-			jQuery(".hometext .suggestion").append("<h4>Ou parmis les chaines suivantes :</h4>");
+			jQuery(".hometext .suggestion").append("<h4>Ou ajoutez parmis les chaines suivantes :</h4>");
 			jQuery(c.data).each(function(i, val){
 				//var thumbnail_resized = val.thumbnail_url.replace(/{width}|{height}/gi, 60);
 				jQuery(".hometext .suggestion").append("<div class='streams'><a title='"+val.title+"' class='suggest' href='"+basePath+"?add="+val.user_login+"'>"+val.user_name+"<small> ("+val.viewer_count+")</small><br><small>"+val.game_name+"</small></a></div>");
@@ -692,9 +706,7 @@ jQuery(document).ready(function(){
 		}
 		
 	});
-	/*$( "#target" ).focus(function() {
-	  jQuery.off(timer);
-	});*/
+	
 	jQuery(function timer() {
 		var timer;
 		var fadeInBuffer = false;
@@ -909,8 +921,9 @@ jQuery(document).ready(function(){
 		let partner = "";
 		let broadcaster = "";
 		let vip = "";
+		let reply = "";
 		
-		//console.log(tags);
+		
 		if(tags.badges !== null ) {
 			premium = tags.badges['premium'];
 			subscriber = tags.badges['subscriber'];	
@@ -922,10 +935,24 @@ jQuery(document).ready(function(){
 			vip = tags.badges['vip'];
 		}
 
+		if(tags["reply-parent-msg-id"] !== undefined) {
+			//console.log(tags);
+			reply = "<div class='embed-message'><i>" +
+						"<div class='sender-message reply-author-message'>" +
+							"@"+tags["reply-parent-display-name"] +
+						"</div>" +
+						"<span title='"+tags["reply-parent-msg-body"]+"' class='message author-message'>" +
+							tags["reply-parent-msg-body"] +
+						"</span>" +
+					"</i></div>";
+			//console.log(reply);
+		}
+
 		jQuery('.twitch-description'+channel.toLowerCase()+' > .scroll > div')
 		  .append(""+
 			  "<div class='embed-message "+tags.id+"'>" +
 				"<span data-first-message='"+tags['first-msg']+"'>"+
+				reply +
 				"<div class='sender-message'>" +
 				  "<span title='Turbo' data-turbo-"+tags['turbo']+"></span>"+						
 				  "<span title='Regarde sans le son' data-no-audio-"+noaudio+"></span>"+
@@ -957,20 +984,17 @@ jQuery(document).ready(function(){
 
 
 /*
+
+
+
+
 Boutons >> grille - stud
-
-reply to 
-
+reply to hover
 pluie d'emotes + option
-
 badges 
-
-vérifier si le stream existe avant ajout 
-
 prédictions
-
 améliorer la home globalement (évenements esports/tendances ?)
-
+traduction ?
 
 
 

@@ -1,21 +1,20 @@
 # multi-twitch-css-jquery
 
 Insert your token + client in script.js
-Replace '/multi-twitch' by your own path
+Replace uri with your own path
 Enjoy
 
-live on : https://xouindaplace.fr/multi-twitch
+live on : https://mytwitchplayer.fr/
+
 TODO: 
 
 Boutons >> grille - stud
 
-reply to 
+reply to hover
 
 pluie d'emotes + option
 
 badges 
-
-vérifier si le stream existe avant ajout 
 
 prédictions
 

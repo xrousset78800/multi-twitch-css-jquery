@@ -628,7 +628,11 @@ height: 50%;
     z-index: 2;
 	cursor: pointer;
 }
-[data-up-font] {
+[data-up-font], [data-down-font] {
+	font-size: 18px;
+    color: white;
+    font-weight: bold;
+	margin: 0 4px;
 }
 [data-form-theme-color] {
     color: white;
@@ -641,9 +645,11 @@ height: 50%;
     border: 0;	
 }
 [data-form-theme] option, [data-form-theme-color] option{
-	color: black;
+	color: white;
+	background: #000000; 
 }
 
+/*.ui-widget-content .ui-icon {
 /*.ui-widget-content .ui-icon {
     background-image: none !important;
 	z-index: initial !important;
@@ -674,6 +680,10 @@ height: 50%;
 .twitch-description.hide .chatscroll{
 	display: none;
 }
+.specialgrid .twitch-description.hide .chatscroll{
+	display: inline-block;
+}
+
 .postmessage {
 	display: inline-block;
 }
@@ -1113,6 +1123,18 @@ height: 50%;
 
 .instructions, .intro {
 	display: none;
+}
+.author-message {
+	font-size: 12px;
+	line-height: 20px;
+	max-height: 40px;
+	text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.reply-author-message {
+	font-size: 12px;
+	text-decoration: underline;
 }
 
 .shortkeys {
