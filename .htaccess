@@ -1,4 +1,10 @@
 ## contrôle du cache navigateur - Expire headers
+
+RewriteEngine On
+
+RewriteCond %{HTTPS} off
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L,NE,QSA]
+
 <IfModule mod_expires.c>
 	ExpiresActive On
 	ExpiresDefault "access plus 7200 seconds"

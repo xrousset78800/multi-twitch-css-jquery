@@ -583,10 +583,9 @@ height: 50%;
     position: absolute;
     width: 25%;
     height: 50%;
-	border-radius: 8px;
+	border-radius: 5px;
 	border-style: inset;
 	background: none;
-	border: 0;
     font-size: 0.8rem;
 	line-height: 1rem;
 	top: 40px;
@@ -704,9 +703,9 @@ height: 50%;
 
 [name=spam-area] {
 	position: absolute;
+	padding-right: 10px;
     bottom: 0;
     width: 100%;
-	opacity:0;
 }
 .hide [name=spam-area] {
 	display: none;
@@ -718,10 +717,11 @@ height: 50%;
 	padding: 8px 5px;
 	background: transparent;
 	color: white;
+	border-radius: 0 0 5px 5px;
 }
 [name=spam-area] input[type=submit]{
     position: absolute;
-	right: 0;
+	right: 10px;
 	bottom: 0;
 	padding: 8px 5px;
     background: transparent;
@@ -747,6 +747,26 @@ height: 50%;
 .twitch-description .embed-message:hover{
     background: #ffffffcc;
 	color: #111111;
+}
+
+[data-theme=border] .twitch-description .message{
+	width: 100%;
+}
+[data-theme=border] .twitch-description .sender-message {
+	width: 100%;
+	text-align: left;
+    padding-left: 10px;
+	max-width: 100%;
+}
+[data-theme=border] .twitch-description .embed-message{
+	margin: 2px 0;
+	border-radius: 8px;
+}
+[data-theme=border] .twitch-description{
+	height: 80%;
+}
+[data-theme=border] [data-modo=true], [data-theme=border] [data-subscriber=true], [data-theme=border] [data-prime-1], [data-theme=border] [data-no-audio-1], [data-theme=border] [data-no-video-1], [data-theme=border] [data-partner-1], [data-theme=border] [data-vip-1], [data-theme=border] [data-brodcaster-1] {
+    float: right;
 }
 
 [data-theme=detached] .twitch-description .message{
@@ -793,7 +813,6 @@ height: 50%;
 	border: 1px solid #ffffff;
 }
 [data-theme-color=dark] [name=spam-area] input[type=submit]{
-    background: #000000;
 	color: #efefef;
 }
 
@@ -811,7 +830,6 @@ height: 50%;
 	border: 1px solid #000000;
 }
 [data-theme-color=dark-opacity] [name=spam-area] input[type=submit]{
-	background-color: #00000099;
 	color: #f1f1f1;
 }
 
@@ -834,7 +852,6 @@ height: 50%;
 }
 
 [data-theme-color=light] [name=spam-area] input[type=submit]{
-    background-color: #f1f1f1;
 	color: #000000;
 }
 
@@ -857,7 +874,6 @@ height: 50%;
 }
 
 [data-theme-color=light-opacity] [name=spam-area] input[type=submit]{
-	background-color: #ffffff99;
 	color: #000000;	
 }
 
@@ -972,6 +988,7 @@ height: 50%;
 
 .specialgrid .fullscreen .mainViewer .twitch-description {
 	top: 50px !important;
+	height: 92% !important;
 }
 
 .online-icon {
@@ -1125,7 +1142,7 @@ height: 50%;
 	display: none;
 }
 .author-message {
-	font-size: 12px;
+	font-size: 0.8em;
 	line-height: 20px;
 	max-height: 40px;
 	text-overflow: ellipsis;
@@ -1133,7 +1150,7 @@ height: 50%;
 }
 
 .reply-author-message {
-	font-size: 12px;
+	font-size: 0.8em;
 	text-decoration: underline;
 }
 

@@ -1,6 +1,6 @@
 let authToken = "";
 let clientID = "";
-var basePath = "https://mytwitchplayer.fr/"
+var basePath = "https://mytwitchplayer.fr/";
 
 
 var totalList = [];
@@ -8,8 +8,8 @@ var totalListInfos = [];
 var configObject = [];
 var bufferMessageSize = 150;
 var tickRefreshMs = 120000;
-
-var themes = [ "default", "detached" ];
+var emotesChannels = [];
+var themes = [ "default", "border", "detached" ];
 var themeColors = [ "default", "dark", "dark-opacity", "light", "light-opacity"];
 
 
@@ -376,9 +376,11 @@ function loadClient(config){
 					}
 					
 					const formScam = jQuery('form[name=spam-area]');
-					formScam.on("submit", function(e) {
+					console.log(formScam);
+					formScam.on("submit", function(e) {						
+					console.log(e);
+						e.stopPropagation();
 						e.preventDefault();
-						
 						client.say(jQuery(this).find('input[type=text]').attr('name'), jQuery(this).find('input[type=text]').val())
 
 						.then(data => {
@@ -400,7 +402,7 @@ function loadClient(config){
 			};
 			client = new tmi.client(option);
 			client.connect();
-			jQuery('.postmessage').prepend("<a class='authbtn' href='https://id.twitch.tv/oauth2/authorize?response_type=token&force_verify=true&client_id="+clientID+"&redirect_uri="+basePath+"&scope=chat%3Aread+chat%3Aedit&state=random'><h2 title='Active le chat sur les streams'>Login Twitch</h2></a>");
+			jQuery('.postmessage').prepend("<a class='authbtn' href='https://id.twitch.tv/oauth2/authorize?response_type=token&force_verify=true&client_id="+clientID+"&redirect_uri="+basePath+"&scope=chat%3Aread+chat%3Aedit&state=c3ab8aa609ea11e793ae92361f002671'><h2 title='Active le chat sur les streams'>Login Twitch</h2></a>");
 	   },
 	   complete: function(e){
 			//console.log(client);
@@ -421,7 +423,7 @@ function getMessage(message, tags) {
 	var newSubstr = "";
 	var substr = "";
 	
-	if(tags['emotes'] !== null){
+	if(tags['emotes'] !== null && tags['emotes'] !== undefined){
 		var size = Object.keys(tags['emotes']).length;
 		var arrEmotes = Object.keys(tags['emotes']);
 		var offset = 0;
@@ -449,48 +451,48 @@ function getMessage(message, tags) {
 	return msg;
 }
 
-/*
-function getEmotesByBroadcasterId(bId) {
-	jQuery.ajax(
-		{
-		   type: 'GET',
-		   url: 'https://api.twitch.tv/chat/emotes?broadcaster_id=' +bId ,
-		   dataType: 'jsonp',
-		   headers: {
-			 'Client-ID': clientID,
-			 'Authorization': 'Bearer ' + authToken, 
-		   },
-		   success: function(c){
-			  console.log("emotes");
-			  console.log(c);
-		   },
-		}
-	);
-			
-}
+function first(userLogin) {
 
-function loadEmotes(streams) {
-	
-	var url = "";
-	
-	streams.forEach(function(scam) {
-	   url = url + "user_login=" + scam.substr(1) + "&";
-	});
-
-	jQuery.ajax(
+	 return jQuery.ajax(
 	{
 	   type: 'GET',
-	   url: 'https://api.twitch.tv/helix/streams?' + url.slice(0, -1),
+	   url: 'https://api.twitch.tv/helix/streams?user_login=' + userLogin,
 	   headers: {
 		 'Client-ID': clientID,
 		 'Authorization': 'Bearer ' + authToken, 
 	   },
 	   success: function(c){
-	   console.log(c.data);
-		getEmotesByBroadcasterId(c.data[0]['id']);
-	   },
+		  //console.log(c);
+	   },	   
+	})
+}
+
+function second(data, textStatus, jqXHR) {
+   return jQuery.ajax(
+		{
+		   type: 'GET',
+		   url: 'https://api.twitch.tv/helix/chat/emotes?broadcaster_id='+data.data[0]['user_id'],
+		   headers: {
+			 'Client-ID': clientID,
+			 'Authorization': 'Bearer ' + authToken, 
+		   },
+		   success: function(c){
+			  emotesChannels[data.data[0]['user_name'].toLowerCase()] = c.data;
+		   },
+		}
+	);
+}
+
+function loadEmotes(streams) {
+	var url = "";
+	var id = null;
+	
+	streams.forEach(function(scam) {
+	   userLogin = scam.substr(1);
+	   first(userLogin).then(second);
 	});
-}*/
+	//console.log(emotesChannels);
+}
 
 function stopPropagation(id, event) {
     jQuery(id).on(event, function(e) {
@@ -499,6 +501,43 @@ function stopPropagation(id, event) {
     });
 }
 
+
+function importFollowers(login) {
+	
+	jQuery.ajax(
+	{
+	   type: 'GET',
+	   url: 'https://api.twitch.tv/helix/users?login=' + login,
+	   headers: {
+		 'Client-ID': clientID,
+		 'Authorization': 'Bearer ' + authToken, 
+	   },
+	   success: function(c){
+			var id = c.data[0].id;
+			jQuery.ajax(
+			{
+			   type: 'GET',
+			   url: 'https://api.twitch.tv/helix/users/follows?first=100&from_id=' + id,
+			   headers: {
+				 'Client-ID': clientID,
+				 'Authorization': 'Bearer ' + authToken, 
+			   },
+			   success: function(c){					  
+				  var followsJSON = [];
+				  for(var i=0; i<c.data.length; i++) {
+					 followsJSON[i]={'name':c.data[i].to_login, 'size': 12, 'color':'default', 'theme':'default'}
+				  }					  
+				  deleteCookie('JsonTwitchConfig');
+				  setCookie('JsonTwitchConfig', JSON.stringify(followsJSON), 6000);
+				  
+				  window.location.replace(basePath);
+			   },
+
+			});	
+	   },
+
+	});		
+}
 
 jQuery(document).ready(function(){	
 	var scamConf = loadScam();
@@ -528,44 +567,6 @@ jQuery(document).ready(function(){
 		});
 	}	
 	
-	
-	function importFollowers(login) {
-		
-		jQuery.ajax(
-		{
-		   type: 'GET',
-		   url: 'https://api.twitch.tv/helix/users?login=' + login,
-		   headers: {
-			 'Client-ID': clientID,
-			 'Authorization': 'Bearer ' + authToken, 
-		   },
-		   success: function(c){
-			    var id = c.data[0].id;
-				jQuery.ajax(
-				{
-				   type: 'GET',
-				   url: 'https://api.twitch.tv/helix/users/follows?first=100&from_id=' + id,
-				   headers: {
-					 'Client-ID': clientID,
-					 'Authorization': 'Bearer ' + authToken, 
-				   },
-				   success: function(c){					  
-					  var followsJSON = [];
-					  for(var i=0; i<c.data.length; i++) {
-						 followsJSON[i]={'name':c.data[i].to_login, 'size': 12, 'color':'default', 'theme':'default'}
-					  }					  
-					  deleteCookie('JsonTwitchConfig');
-					  setCookie('JsonTwitchConfig', JSON.stringify(followsJSON), 6000);
-					  
-					  window.location.replace(basePath);
-				   },
-
-				});	
-		   },
-
-		});		
-	}
-	
 	function myPeriodicMethod(scamConf, firstIteration) {
 		jQuery.ajax(
 		{
@@ -587,7 +588,6 @@ jQuery(document).ready(function(){
 	getUsersData();
 	
 	//loadEmotes(scamConf["scamers"]);
-	
 	StartThisShit(scamConf);	
 	
 	jQuery.ajax(
@@ -611,7 +611,7 @@ jQuery(document).ready(function(){
 			var input = document.getElementById("import");
 			input.addEventListener("keypress", function(event) {
 			  if (event.key === "Enter") {
-				event.preventDefault();
+				console.log(input.value);
 				// Trigger the button element with a click
 				importFollowers(input.value);
 			  }
@@ -629,10 +629,12 @@ jQuery(document).ready(function(){
     switch(e.which)
     {
         case 2:
-			if(jQuery('body[data-layout=studio]').length)
+			if(jQuery('body[data-layout=studio]').length) {
 				jQuery('.viewer').removeClass('mainViewer');
-			else
+				jQuery('.twitch-video').removeClass('hasMainViewer');
+			}else {
 				switchToGrid();
+			}
 			
 			break;		
         case 3:
@@ -664,10 +666,15 @@ jQuery(document).ready(function(){
 	jQuery(document).keydown(function(e) {
 		
 		var target = e.target.localName;
-		if(target == 'input'){
+		
+		if(e.which == 13 && target == 'input'){
+			jQuery(e.target).parent().submit();
 			return true;
 		}
 		
+		if(target == 'input'){
+			return true;
+		}
 		
 	    var value = e.which;	
 		switch (value) {
@@ -698,10 +705,11 @@ jQuery(document).ready(function(){
 						case ((value > 96) && (value <= 96+scamConf["scamers"].length)): 
 							
 							jQuery('.viewer').removeClass('mainViewer');
+							jQuery('.twitch-video').addClass('hasMainViewer');
 							jQuery('.viewer').eq((value-96)-1).addClass('mainViewer');
 							
 							break;
-					}
+					}	
 				}
 		}
 		
@@ -712,9 +720,8 @@ jQuery(document).ready(function(){
 		var fadeInBuffer = false;
 		jQuery(document).mousemove(function (e) {
 			
-			
 			var target = e.target.localName;
-			if(target == 'input'){
+			if(target == 'input' || target == 'nav' || jQuery("input[type=text]").is(":focus")){
 				return true;
 			}
 		
@@ -731,7 +738,7 @@ jQuery(document).ready(function(){
 				 jQuery('.viewer').css({
 					cursor: 'pointer'
 				});
-				jQuery('.player-options, .toggleShit, [name=spam-area], .switchers').css({
+				jQuery('.player-options, .toggleShit, .switchers').css({
 					opacity: 1
 				});
 				jQuery('.twitch-description').css('border-color', '#aaaaaadd');
@@ -746,7 +753,7 @@ jQuery(document).ready(function(){
 				 jQuery('.viewer').css({
 					cursor: 'none'
 				});		
-				jQuery('.toggleShit, .player-options, [name=spam-area], .switchers').css({
+				jQuery('.toggleShit, .player-options, .switchers').css({
 					opacity: 0
 				});
 				jQuery('.twitch-description').css('border-color', 'transparent');
@@ -769,14 +776,17 @@ jQuery(document).ready(function(){
 		if(jQuery('body').attr('data-layout') != 'grid') {
 			jQuery('body').removeClass('specialgrid');
 		}
+		
 		jQuery('body').attr('data-layout', 'grid');
 		$(".viewer").removeAttr("style");
 		var current = jQuery('.viewer.mainViewer').index();
 		if(current == -1){
 			jQuery('.viewer').eq(0).addClass('mainViewer');
+			jQuery('.twitch-video').addClass('hasMainViewer');
 		} else {
 			if(scamConf["scamers"].length != 1){
 				jQuery('.viewer').removeClass('mainViewer');
+				jQuery('.twitch-video').removeClass('hasMainViewer');
 				jQuery(".viewer").css("right", "0");
 			}
 		}
@@ -784,6 +794,7 @@ jQuery(document).ready(function(){
 		
 	function switchToStudio() {
 		if(jQuery('body').attr('data-layout') !== 'studio'){
+			jQuery('.twitch-video').removeClass('hasMainViewer');
 			jQuery('body').attr('data-layout', 'studio');
 			
 			var current = jQuery('.viewer.mainViewer').index();
@@ -812,7 +823,7 @@ jQuery(document).ready(function(){
 		if(current == -1) current = scamConf["scamers"].length;				
 		
 		var newId = ((current+1) % scamConf["scamers"].length-1);
-		
+		jQuery('.twitch-video').addClass('hasMainViewer');
 		jQuery('.viewer').removeClass('mainViewer');
 		jQuery('.viewer').eq(newId).addClass('mainViewer');		
 	}
@@ -824,6 +835,7 @@ jQuery(document).ready(function(){
 		
 		var newId = ((current-1) % scamConf["scamers"].length-1);
 		
+		jQuery('.twitch-video').addClass('hasMainViewer');
 		jQuery('.viewer').removeClass('mainViewer');
 		jQuery('.viewer').eq(newId).addClass('mainViewer');		
 	}
@@ -922,27 +934,30 @@ jQuery(document).ready(function(){
 		let broadcaster = "";
 		let vip = "";
 		let reply = "";
+		let turbo = "";
 		
 		
 		if(tags.badges !== null ) {
+			console.log(tags);
 			premium = tags.badges['premium'];
-			subscriber = tags.badges['subscriber'];	
+			subscriber = tags.badges['subscriber'];
 			subgifts = tags.badges['sub-gifter'];
 			noaudio = tags.badges['no_audio'];
 			novideo = tags.badges['no_video'];
 			partner = tags.badges['partner'];
 			broadcaster = tags.badges['broadcaster'];
+			turbo = tags.badges['turbo'];
 			vip = tags.badges['vip'];
 		}
-
+		
 		if(tags["reply-parent-msg-id"] !== undefined) {
-			//console.log(tags);
+			
 			reply = "<div class='embed-message'><i>" +
 						"<div class='sender-message reply-author-message'>" +
 							"@"+tags["reply-parent-display-name"] +
 						"</div>" +
-						"<span title='"+tags["reply-parent-msg-body"]+"' class='message author-message'>" +
-							tags["reply-parent-msg-body"] +
+						"<span title='"+getMessage(tags["reply-parent-msg-body"], [])+"' class='message author-message'>" +
+							getMessage(tags["reply-parent-msg-body"], []) +
 						"</span>" +
 					"</i></div>";
 			//console.log(reply);
@@ -954,7 +969,7 @@ jQuery(document).ready(function(){
 				"<span data-first-message='"+tags['first-msg']+"'>"+
 				reply +
 				"<div class='sender-message'>" +
-				  "<span title='Turbo' data-turbo-"+tags['turbo']+"></span>"+						
+				  "<span title='Turbo' data-turbo-"+turbo+"></span>"+
 				  "<span title='Regarde sans le son' data-no-audio-"+noaudio+"></span>"+
 				  "<span title='Regarde sans image' data-no-video-"+novideo+"></span>"+
 				  "<span title='Sub depuis "+subscriber+" Mois' data-subscriber='"+tags['subscriber']+"'></span>"+
@@ -987,15 +1002,16 @@ jQuery(document).ready(function(){
 
 
 
-
-Boutons >> grille - stud
-reply to hover
-pluie d'emotes + option
 badges 
 prédictions
-améliorer la home globalement (évenements esports/tendances ?)
-traduction ?
+pluie d'emotes + option
 
+
+améliorer la home globalement (évenements esports/tendances ?)
+Boutons >> grille - stud
+reply to hover
+
+popupqualité
 
 
 ??administration(/moderation) stuffs ?
