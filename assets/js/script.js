@@ -2,7 +2,6 @@ let authToken = "";
 let clientID = "";
 var basePath = "https://mytwitchplayer.fr/";
 
-
 var totalList = [];
 var totalListInfos = [];
 var configObject = [];
@@ -59,7 +58,7 @@ function loadScam() {
 					alreadyExist = true;
 				}
 			}
-			if(alreadyExist === false && newScamer[i].toLowerCase() != ""){
+			if(alreadyExist === false && newScamer[i].toLowerCase() !== ""){
 				jQuery.ajax(
 				{
 				   type: 'GET',
@@ -129,15 +128,29 @@ function StartThisShit(config) {
 		  
 		var player = new Twitch.Player("twitch-embed"+(i+1), options);
 		
-		player.addEventListener(Twitch.Embed.VIDEO_READY, function() {
-		  player.play();
-		  player.setMuted(false);
-		  player.setVolume(0.5);
+		player.addEventListener(Twitch.Player.VIDEO_READY, function() {
+			var embed = player.getPlayer();
+		    var qualities = player.getQualities();
+		    var channel = player.getChannel();			
+			embed.play();
+			embed.setVolume(0.3);
+			embed.setMuted(false);
+			embed.setQuality("chunked");
+
+		  console.log(qualities);
+		  console.log(channel);
+		  console.log(embed);
+		  console.log(this);
+		  jQuery(qualities).each(function(i, quality){
+			  jQuery('#player-'+channel+' [data-form-quality]').append("<option value='"+quality.group+"' >"+quality.group+"</span>");
+		  });
 		});
+
+		//player.addEventListener(Twitch.Player.READY, function() {
 		
 		players[config.scamers[i].substr(1)] = player;
 		  
-		jQuery('#player-'+config.scamers[i].substr(1)).append("<div class='player-options'><span data-down-font>-</span><span  data-up-font>+</span><select data-form-theme-color name='theme-color'></select><select data-form-theme name='theme'></select><div class='playPause' data-play='true'></div><div data-mute='false' class='muteBtn'><span></span></div><div class='volume'></div></div>");
+		jQuery('#player-'+config.scamers[i].substr(1)).append("<div class='player-options'><span data-down-font>-</span><span  data-up-font>+</span><select data-form-theme-color name='theme-color'></select><select data-form-theme name='theme'></select><select data-form-quality name='qualities'></select><div class='playPause' data-play='true'></div><div data-mute='false' class='muteBtn'><span></span></div><span data-down-volume>-</span><div class='volume'></div><span data-up-volume>+</span><div data-close-item>X</div></div>");
 		
 		jQuery(themeColors).each(function(v, color){
 			var selected = "";
@@ -409,7 +422,7 @@ function loadClient(config){
 			};
 			client = new tmi.client(option);
 			client.connect();
-			jQuery('.postmessage').prepend("<a class='authbtn' href='https://id.twitch.tv/oauth2/authorize?response_type=token&force_verify=true&client_id="+clientID+"&redirect_uri="+basePath+"&scope=chat%3Aread+chat%3Aedit&state=c3ab8aa609ea11e793ae92361f002671'><h2 title='Active le chat sur les streams'>Login Twitch</h2></a>");
+			jQuery('.postmessage').prepend("<a class='authbtn' href='https://id.twitch.tv/oauth2/authorize?response_type=token&force_verify=false&client_id="+clientID+"&redirect_uri="+basePath+"&scope=chat%3Aread+chat%3Aedit&state=c3ab8aa609ea11e793ae92361f002671'><h2 title='Active le chat sur les streams'>Login Twitch</h2></a>");
 	   },
 	   complete: function(e){
 			//console.log(client);
@@ -459,7 +472,7 @@ function getMessage(message, tags) {
 	return msg;
 }
 
-function first(userLogin) {
+function getBroadcasterId(userLogin) {
 
 	return jQuery.ajax(
 	{
@@ -475,7 +488,7 @@ function first(userLogin) {
 	})
 }
 
-function second(data, textStatus, jqXHR) {
+function getEmotesChannels(data, textStatus, jqXHR) {
 
    return jQuery.ajax(
 		{
@@ -491,7 +504,7 @@ function second(data, textStatus, jqXHR) {
 		}
 	);
 }
-function third(data, textStatus, jqXHR) {
+function getBadgesChannels(data, textStatus, jqXHR) {
 	
    return jQuery.ajax(
 		{
@@ -514,8 +527,8 @@ function loadEmotes(streams) {
 	
 	streams.forEach(function(scam) {
 	   userLogin = scam.substr(1);
-	   first(userLogin).then(second);
-	   first(userLogin).then(third);
+	   getBroadcasterId(userLogin).then(getEmotesChannels);
+	   getBroadcasterId(userLogin).then(getBadgesChannels);
 	});
 	console.log(emotesChannels);
 	console.log(badgesChannels);
@@ -593,6 +606,22 @@ jQuery(document).ready(function(){
 		   }
 		});
 	}	
+	
+/*	function refreshToken() {
+		jQuery.ajax(
+		{
+		   type: 'POST',
+		   url: 'https://api.twitch.tv/oauth2/token?' + urlUsers,
+		   headers: {
+			 'Client-ID': clientID,
+			 'Authorization': 'Bearer ' + authToken, 
+		   },
+		   success: function(c){
+			  totalListInfos = c.data;
+			  myPeriodicMethod(scamConf, true);
+		   }
+		});
+	}	*/
 	
 	function myPeriodicMethod(scamConf, firstIteration) {
 		jQuery.ajax(
@@ -907,6 +936,18 @@ jQuery(document).ready(function(){
 		updateJsonCookievalueByname("JsonTwitchConfig", id, 'size', fontSize);
 	});
 	
+	jQuery("[data-down-volume]").on('click', function() {
+		let viewer = jQuery(this).parent().parent().attr("data-streamer");
+		players[viewer].setVolume((players[viewer].getVolume() - 0.05));
+		jQuery(this).parent().find(".volume").css("border-bottom", ((players[viewer].getVolume()*100 - 5))+"px inset #9146FF");
+	});
+	
+	jQuery("[data-up-volume]").on('click', function() {
+		let viewer = jQuery(this).parent().parent().attr("data-streamer");
+		players[viewer].setVolume((players[viewer].getVolume() + 0.05));
+		jQuery(this).parent().find(".volume").css("border-bottom", ((players[viewer].getVolume()*100 + 5))+"px inset #9146FF");
+	});	
+	
 	jQuery("[data-form-theme-color]").on( "change", function(){
 		jQuery(this).parent().parent().eq(0).attr("data-theme-color", this.value);
 		var id = jQuery(this).parent().parent().find('.twitch-description').attr('id');
@@ -941,18 +982,31 @@ jQuery(document).ready(function(){
 		
 
 	});
+	
 	jQuery(".muteBtn").on('click',function(e){
 		let viewer = jQuery(this).parent().parent().attr("data-streamer");
 		let toggleState = !players[viewer].getMuted();
 		
 		players[viewer].setMuted(toggleState);
 		jQuery(this).attr("data-mute", toggleState);
+		jQuery(".volume").attr("data-mute", toggleState);
 	});
 	
+    jQuery("[data-close-item]").on('click',function(e){
+		jQuery(this).parent().parent().remove();
 
+		const prefix = "viewer";
+		const el = jQuery("body").attr("class");
+		const classes = el.split(" ").filter(c => !c.startsWith(prefix));
+		
+		jQuery("body").attr("class", classes.join(" ").trim());
+		
+		var length = jQuery(".viewer").length;
+		jQuery("body").addClass("viewer"+length+"video");
+	});
+	
 	jQuery(".playPause").on('click',function(e){
 		let viewer = jQuery(this).parent().parent().attr("data-streamer");
-		console.log(viewer);
 		let isPaused = players[viewer].isPaused();
 
 		if(isPaused) {
@@ -1092,6 +1146,12 @@ jQuery(document).ready(function(){
 
 /*
 
+parent parent find pour css cool
+
+replacer les icones du player
+
+pimper un peu les différents trucs
+
 pluie d'emotes + option
 
 webhooks >> stream.online, stream.offline, channel.ban, channel.raid	
@@ -1113,6 +1173,14 @@ popupqualité
 https://dev.to/codesphere/how-to-create-a-twitch-chat-game-with-javascript-deg
 ??qualité bloqué par background transparent??
 
+STEP 1 ??
+https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=vn9avm6d14fgwfyq0hc655klhwdcv8&redirect_uri=https://mytwitchplayer.fr/&scope=channel%3Amanage%3Apolls+channel%3Aread%3Apolls&state=c3ab8aa609ea11e793ae92361f002671
+
+STEP 2 récupérer tokenMultiTwitch (cookie)
+
+STEP 3 le remplacer dans script.js
+
+21/03/2023
 */
 
 
