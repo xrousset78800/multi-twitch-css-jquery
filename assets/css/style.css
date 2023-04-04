@@ -9,7 +9,7 @@ body,h1,h2,h3,h4,h5,h6,p,blockquote,pre,hr,dl,dd,ol,ul,figure {
 
 body {
     font: 400 18px/1.6 "Quicksand", Georgia, serif;
-    color: #454545;
+    color: #dfdfdf;
     background-color: #fcfcfc;
     -webkit-text-size-adjust: 100%;
     -webkit-font-feature-settings: 'kern' 1;
@@ -317,18 +317,25 @@ body {
 }
 .title {
     opacity: 0;
-    /*transition: opacity 0.8s;*/
+    transition: opacity 0.5s;
     position: absolute;
     border-radius: 5px;
-	right: 280px;
-    top: 110px;
     width: 0;
     background: #000000ee;
     color: white;
     padding: 0;
     font-size: 1rem;
     line-height: 1.3rem;
+	overflow: hidden;
+	transition: right 0.5s;
 }
+.status .title {
+	right: 55px;	
+}
+.status.hide .title{
+	right: 300px;	
+}
+
 .home.row {
     position: absolute;
 
@@ -344,17 +351,29 @@ body {
 	margin: 10px 0;
 	
 }
-.fixed-go input{
+.status .fixed-go input{
+	padding: 1px 5px;
+	font-size: 15px;
+	float: left;
+	margin: 0 5px;
+	background: none;
+	color: white;
+	border: 1px solid white;
+	cursor: pointer;
+}
+
+.status.hide .fixed-go input{
     border: 1px solid white;
     background: none;
     color: white;
+	float: none;
     font-size: 20px;
     vertical-align: bottom;
     padding: 1px 30px;
     cursor: pointer;
 	transition: border 1s, color 1s, background 1s; 
-	
 }
+
 .fixed-go input:hover{
     border: 1px solid transparent;
     background: white;
@@ -368,14 +387,25 @@ body {
   background: #000000cc;
   color: #eeeeee;
   z-index: 4;
-  width: 260px;
+  width: 300px;
     position: absolute;
-    top: 45px;
-    right: 10px;
+    top: 0;
+    right: -245px;
     text-align: center;
-	display: none;
 	transition: opacity 0.8s;
+	transition: right 0.5s;
 }
+
+.status.hide {
+	right: 0;
+	border-right: 0;
+}
+
+.status.hide .toggleShit{
+	float: right;
+}
+
+
 .status form {
 	overflow: hidden;
 }
@@ -442,34 +472,26 @@ small.game {
 }
 
 .toggleShit {
-    position: absolute;
-    right: 10px;
-    z-index: 4;
-    color: white;
-	font-size: 25px;
-    line-height: 30px;
-    cursor: pointer;
-    margin: 0;
-    height: 30px;
-    top: 15px;
-	transition: opacity 0.5s;
+
 	-webkit-user-select: none; /* Safari */
 	-ms-user-select: none; /* IE 10 and IE 11 */
 	user-select: none; /* Standard syntax */	
 }
+
 .fullscreen .toggleShit {
-	top: 80px;
+
 }
 .fullscreen .status {
 	top: 110px;
 }
 .toggleShit:before {    
 	content: 'x';
-    font-size: 0.8rem;
+	font-size: 1.8rem;
     line-height: 20px;
     position: relative;
-    left: -7px;
-    top: -4px;
+    left: -25px;
+    top: 6px;
+    cursor: pointer;
 }
 .toggleShit.hide:before {
    content:'<<';
@@ -617,6 +639,14 @@ height: 50%;
   -ms-user-select: none; /* IE 10 and IE 11 */
   user-select: none; /* Standard syntax */
 }
+.twitch-description .player-options {
+	top: -41px;
+	bottom: inherit;
+	min-width: 352px;
+	left: 0;
+	border-radius: 5px 5px 0 0;
+}
+
 .fullscreen .player-options {
 	width: 100%;
 	padding-right: 20px;
@@ -625,6 +655,7 @@ height: 50%;
   -webkit-user-select: none; /* Safari */
   -ms-user-select: none; /* IE 10 and IE 11 */
   user-select: none; /* Standard syntax */
+  
 }
 
 .viewer1video .switchers button {
@@ -641,10 +672,10 @@ height: 50%;
 	font-size: 18px;
     color: white;
     font-weight: bold;
-	margin: 0 4px;
+	margin: 0 7px;
 }
 [data-up-font], [data-down-font]{
-	font-size: 28px;
+	font-size: 30px;
 	line-height: 30px;
 }
 [data-up-volume], [data-down-volume]{
@@ -666,11 +697,15 @@ height: 50%;
     color: white;
     background: transparent;
     border: 0;	
+	margin: 0 4px;
+	font-size: 12px;
 }
 [data-form-theme] {
     color: white;
     background: transparent;
     border: 0;	
+	margin: 0 4px;
+	font-size: 12px;
 }
 [data-form-theme] option, [data-form-theme-color] option{
 	color: white;
@@ -688,14 +723,20 @@ height: 50%;
 }
 
 .twitch-description.hide{
-    width: 40px !important;
-    height: 40px !important;
+    width: 50px !important;
+    height: 50px !important;
     top: 40px !important;
     /*right: 20px !important;*/
     left: 20px !important;
 	transition: left 0.6s, top 0.6s;
+	background-image: url("../img/chat.png");
 }
-
+.twitch-description.hide .player-options {
+	display: none;
+}
+.twitch-description.hide .ui-icon {
+	display: none !important;
+}
 .twitch-description:hover{
 	border: 1px solid #ffffff44;
 }
@@ -795,9 +836,6 @@ height: 50%;
 [data-theme=border] .twitch-description{
 	height: 80%;
 }
-[data-theme=border] [data-modo=true], [data-theme=border] [data-subscriber=true], [data-theme=border] [data-turbo-1], [data-theme=border] [data-prime-1], [data-theme=border] [data-no-audio-1], [data-theme=border] [data-no-video-1], [data-theme=border] [data-partner-1], [data-theme=border] [data-vip-1], [data-theme=border] [data-brodcaster-1], [data-theme=border] [data-bits-icon] {
-    float: right;
-}
 
 [data-theme=detached] .twitch-description .message{
 	width: 100%;
@@ -815,11 +853,12 @@ height: 50%;
 [data-theme=detached] .twitch-description{
 	height: 80%;
 }
-[data-theme=detached] [data-modo=true], [data-theme=detached] [data-subscriber=true], [data-theme=detached] [data-prime-1], [data-theme=detached] [data-no-audio-1], [data-theme=detached] [data-no-video-1], [data-theme=detached] [data-partner-1], [data-theme=detached] [data-vip-1], [data-theme=detached] [data-brodcaster-1], [data-theme=detached] [data-bits-icon] {
-    float: right;
-}
 
 [data-theme-color=default] .twitch-description .embed-message{
+	background-color: transparent;	
+	color: #f1f1f1;
+}
+[data-theme-color=default] .twitch-description .player-options{
 	background-color: transparent;	
 	color: #f1f1f1;
 }
@@ -827,12 +866,14 @@ height: 50%;
     background: #ffffffcc;
 	color: #111111;
 }
-
 [data-theme-color=dark] .twitch-description .embed-message{
 	background-color: #000000;
 	color: #f1f1f1;
 }
-
+[data-theme-color=dark] .twitch-description .player-options{
+	background-color: #000000;
+	color: #f1f1f1;
+}
 [data-theme-color=dark] .twitch-description .embed-message:hover{
     background: #f1f1f1;
 	color: #111111;
@@ -846,6 +887,10 @@ height: 50%;
 	color: #efefef;
 }
 
+[data-theme-color=dark-opacity] .twitch-description .player-options{
+	background-color: #00000099;
+	color: #f1f1f1;
+}
 [data-theme-color=dark-opacity] .twitch-description .embed-message{
 	background-color: #00000099;
 	color: #f1f1f1;
@@ -862,7 +907,10 @@ height: 50%;
 [data-theme-color=dark-opacity] [name=spam-area] input[type=submit]{
 	color: #f1f1f1;
 }
-
+[data-theme-color=light] .twitch-description .player-options{
+	background-color: #f1f1f1;
+	color: #000000;	
+}
 [data-theme-color=light] .twitch-description .embed-message {
 	background-color: #f1f1f1;
 	color: #000000;	
@@ -884,7 +932,10 @@ height: 50%;
 [data-theme-color=light] [name=spam-area] input[type=submit]{
 	color: #000000;
 }
-
+[data-theme-color=light-opacity] .twitch-description .player-options{
+	background-color: #ffffff99;
+	color: #000000;	
+}
 [data-theme-color=light-opacity] .twitch-description .embed-message {
 	background-color: #ffffff99;
 	color: #000000;	
@@ -1197,9 +1248,11 @@ height: 50%;
 h4{
 	margin: 20px 0;
 }
-.viewer0video .instructions, .viewer0video .intro {
+.viewer0video .suggestion {
     display: inline-block;
-    width: 90%;
+    width: 98%;
+	height: 95%;
+	position: relative;
     margin: 0 auto;
     color: white;
 	text-align: left;
@@ -1248,6 +1301,8 @@ h4{
 .channels:hover{
 	background: #ffffffcc;
 }
+
+
 .channels.selected{
 	background: #ffffffee;
 	color: black;
@@ -1265,12 +1320,45 @@ h4{
 .channels.selected small{
 	color: black;
 }
+select[name=qualities]:focus-visible {
+	outline: none;
+}
+	
+select[name=qualities] {
+    display: inline-block;
+    width: 23px;
+    height: 23px;
+	border-radius: 25px;
+    background: url(../img/settings.png);
+    border: 0;
+    background-size: contain;
+	appearance: none;
+	color: transparent;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	cursor: pointer;
+}
+
+select[name=qualities]:hover {
+	animation: 1s rotate360 infinite ease-in-out;
+}
+
+@keyframes rotate360 {
+  to { transform: rotate(360deg); }
+}
+
+select[name=qualities] option{
+	color: white;
+	background: black;
+	padding: 2px 5px;
+}
+
 /*
 [data-flags=null] ,[data-subgifts-undefined],[data-bits=undefined], [data-no-video],[data-partner-undefined], [data-no-audio], [data-modo=false] , [data-turbo-undefined] , [data-subscriber=false], [data-prime-undefined], [data-prime-], [data-vip-undefined], [data-brodcaster-] {
 	display: none;
 }*/
 
-[data-modo=true], [data-subscriber=true], [data-prime-1], [data-no-audio-1], [data-no-video-1], [data-partner-1], [data-vip-1], [data-brodcaster-1], [data-turbo-1], [data-bits-icon] {
+[data-modo=true], [data-subscriber=true], [data-prime-1], [data-no-audio-1], [data-no-video-1], [data-partner-1], [data-vip-1], [data-brodcaster-1], [data-turbo-1], [data-bits=true] {
 	display: inline-block;
 	width: 20px;
 	height: 20px;
@@ -1280,9 +1368,7 @@ h4{
 	margin: 0 1px;
 	float: left;
 }
-[data-bits-icon] {
-	background-image: none;
-}
+
 [data-bits=undefined] {
 	width: 0;
 }
@@ -1590,11 +1676,15 @@ h4{
   right: 0;
   top: 0;
 }
-
+.ui-autocomplete {
+	z-index: 1;
+	position: relative;
+}
 #modal {
   opacity: 0;
   transition: opacity 0.25s ease-in-out;
   visibility: hidden;
+  color: #212121;
 }
 #modal:target {
   opacity: 1;
@@ -1628,19 +1718,98 @@ h4{
 .streams {
     display: inline-block;
     width: 20%;
-    vertical-align: top;
-    padding: 5px;
+	height: 20%;
+    position: relative;
+	vertical-align: top;
+    margin: 0;
+	padding: 3px;
     line-height: 12px;
+	cursor: pointer;
 }
+.paddbox:hover {
+	background-image: inherit !important;
+}
+.paddbox .suggest:hover {
+    background-color: transparent;
+}
+
+.streams .paddbox {
+	position: relative;
+	background-size: cover;
+	height: 100%;
+	width: 100%;
+	z-index: 1;
+}
+.offline-stream .channels {
+	height: 24px;
+	line-height: 24px;
+	padding-left: 20px;
+}
+
+.offline-stream .channels label{
+    padding-left: 32px;
+}
+
+.online-stream .channels img{
+	position: relative;
+    top: 6px;
+}
+.offline-stream .channels .title {
+	width: auto;
+}
+.offline-stream .channels .title > div{
+	text-align: center;
+    margin: 0 auto;
+}
+
+.offline-stream .channels .title img {
+	text-align: center;
+	margin: 0 auto;
+}
+.offline-stream .channels .title .gametitle {
+	z-index: 1;
+	text-align: center;
+	text-shadow: 0px 3px 0px #b2a98f,
+                 0px 14px 10px rgba(0,0,0,0.15),
+                 0px 24px 2px rgba(0,0,0,0.1),
+                 0px 34px 30px rgba(0,0,0,0.1);
+}
+.channel-icon {
+	
+}
+.streams .paddbox a{
+	position: relative;
+	background-size: cover;
+	padding: 5px 12px;
+	height: 100%;
+	width: 100%;
+	background-color: rgba(0,0,0,0.5);
+	z-index: 2;
+}
+.streams .paddbox iframe{
+    -webkit-user-select: none; /* Safari */
+	-ms-user-select: none; /* IE 10 and IE 11 */
+	user-select: none; /* Standard syntax */
+}
+
+
+.streams .tempVid {
+	position:absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+    left: 0;
+}
+
 
 .suggest {
 	color: white;
     word-break: break-word;
     display: inline-block;
     width: 100%;
+	height: 100%;
 }
 .viewer0video .hometext {
-    padding: 10px 40px;
     height: 100%;
 	display: block;
 }
@@ -1677,7 +1846,7 @@ a[name=help]:hover{
   box-shadow: -20px 20px 35px 1px rgba(10, 49, 86, 0.18);
   display: flex;
   flex-direction: column;
-  padding: 32px;
+  padding: 15px;
   margin: 40px;
   max-width: 400px;
   width: 100%;
