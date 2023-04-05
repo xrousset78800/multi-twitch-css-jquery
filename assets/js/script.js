@@ -8,7 +8,7 @@ var configObject = [];
 var players = [];
 
 var bufferMessageSize = 150;
-var tickRefreshMs = 600000;
+var tickRefreshMs = 60000;
 var emotesChannels = [];
 var badgesChannels = [];
 var themes = [ "default", "border", "detached" ];
@@ -23,7 +23,7 @@ function loadScam() {
 	var scamGet = urlParams.getAll('show');
 
 	if(getCookie("JsonTwitchConfig") === undefined) {
-		setCookie('pleaseLoad', false, 2);
+
 	} else {
 		configObject = getCookie("JsonTwitchConfig");
 	}
@@ -106,6 +106,7 @@ function sleep(milliseconds) {
 
 
 function StartThisShit(config) {
+	let muted = false;
 	if(config.scamers.length == 1) {
 		jQuery(document).prop('title', 'Simple twitch (' + config.scamers[0].substr(1)+")");
 		jQuery("body").addClass(config.scamers[0]);
@@ -114,6 +115,7 @@ function StartThisShit(config) {
 			jQuery(document).prop('title', "Multi twitch");
 		}else {
 			jQuery(document).prop('title', "Multi twitch ("+ config.scamers.join(', ')+")");
+			muted = true;
 		}
 	}
 
@@ -131,10 +133,13 @@ function StartThisShit(config) {
 			height: "100%",
 			channel: config.scamers[i].substr(1),
 			allowfullscreen: false,
+			muted: muted,
 			// only needed if your site is also embedded on embed.example.com and othersite.example.com
 			//parent: ["embed.example.com"]
 		};
-		  
+		if(muted === false){
+			muted = true;
+		};  
 		var player = new Twitch.Player("twitch-embed"+(i+1), options);		
 
 
@@ -380,7 +385,12 @@ function loadClient(config){
 	if (access_token) {
 		setCookie('tokenMultiTwitch', access_token, 2);
 		setCookie('pleaseLoad', true, 2);
-		window.location.replace(getCookie('urlRedirect'));
+		
+		if (getCookie('urlRedirect') !== undefined ) {
+			url = getCookie('urlRedirect');
+		}
+		
+		window.location.replace(url);
 
 	} else {
 		access_token = getCookie('tokenMultiTwitch');
@@ -397,34 +407,10 @@ function loadClient(config){
 		 'Authorization': 'Bearer '+ access_token, 
 	   },
 	   success: function(c){
-			var name = c["login"];	
-			
-			if(getCookie('pleaseLoad')){
-				jQuery.ajax(
-				{
-				   type: 'GET',
-				   url: 'https://api.twitch.tv/helix/channels/followed?first=100&user_id='+c["user_id"],
-				   headers: {
-					 'Client-ID': clientID,
-					 'Authorization': 'Bearer '+ access_token,
-				   },
-				   success: function(res){	
-
-					 console.log(res);				   
-					  var followsJSON = [];
-					  for(var i=0; i<res.data.length; i++) {
-						 followsJSON[i]={'name':res.data[i].broadcaster_login, 'size': 18, 'color':'default', 'theme':'default'}
-					  }
-					  deleteCookie('JsonTwitchConfig');
-					  setCookie('JsonTwitchConfig', JSON.stringify(followsJSON), 6000);
-					  setCookie('pleaseLoad', false, 2);
-					  window.location.replace(getCookie('urlRedirect'));
-				   },
-
-				});
-			}			
-			
-			
+		   console.log(c);
+			var name = c["login"];
+			var id = c["user_id"];
+					
 				const option = {
 				  identity: {
 					username: name,
@@ -450,7 +436,7 @@ function loadClient(config){
 						jQuery(this).find('input[type=text]').removeAttr('placeholder');
 					});
 					
-					formScam.on("submit", function(e) {						
+					formScam.on("submit", function(e) {
 						e.stopPropagation();
 						e.preventDefault();
 						client.say(jQuery(this).find('input[type=text]').attr('name'), jQuery(this).find('input[type=text]').val())
@@ -463,9 +449,32 @@ function loadClient(config){
 							console.log('[ERR]', err);
 						});
 					});
+					if(getCookie('pleaseLoad')){
+						jQuery.ajax(
+						{
+						   type: 'GET',
+						   url: 'https://api.twitch.tv/helix/channels/followed?first=100&user_id='+id,
+						   headers: {
+							 'Client-ID': clientID,
+							 'Authorization': 'Bearer '+ access_token,
+						   },
+						   success: function(res){	
+
+							 console.log(res);				   
+							  var followsJSON = [];
+							  for(var i=0; i<res.data.length; i++) {
+								 followsJSON[i]={'name':res.data[i].broadcaster_login, 'size': 18, 'color':'default', 'theme':'default'}
+							  }
+							  setCookie('JsonTwitchConfig', JSON.stringify(followsJSON), 6000);
+							  deleteCookie('pleaseLoad');
+							  window.location.replace(basePath);
+						   },
+
+						});	
+					}					
 				});
 				
-				jQuery('.postmessage').prepend("<a class='authbtn' onclick='removeToken();'><p>Logged as "+name+"</p><h2>Logout</h2></a>");					
+				jQuery('.postmessage').prepend("<a class='authbtn' onclick='removeToken();'><p>Logged as "+name+"</p><h2>Logout</h2></a> ");					
 	   },
 	   error: function(event){
 			name = null;
@@ -580,7 +589,7 @@ function loadEmotes(streams) {
 	
 	streams.forEach(function(scam) {
 	   userLogin = scam.substr(1);
-	   getBroadcasterId(userLogin).then(getEmotesChannels);
+	   //getBroadcasterId(userLogin).then(getEmotesChannels);
 	   getBroadcasterId(userLogin).then(getBadgesChannels);
 	});
 	console.log(emotesChannels);
@@ -607,7 +616,7 @@ jQuery(document).ready(function(){
 		  response( cache[ term ] );
 		  return;
 		}*/
-				
+	
 		jQuery.ajax(
 		{
 		   type: 'GET',
@@ -623,7 +632,7 @@ jQuery(document).ready(function(){
 				jQuery(".suggestion .streams").remove();
 				
 				jQuery(c.data).each(function(key, val){
-					jQuery(".suggestion").append('<div class="streams" data-channel="'+val.broadcaster_login+'"><div style="background-image: url('+val.thumbnail_url+');background-size: cover;" class="paddbox"><a title="'+val.title+'" class="suggest" href="https://mytwitchplayer.fr/?add='+val.broadcaster_login+'">'+val.display_name+'<small> (38241)</small><br><small>'+val.game_name+'</small></a></div></div>');
+					jQuery(".suggestion").append('<div class="streams" data-channel="'+val.broadcaster_login+'"><div style="background-image: url('+val.thumbnail_url+');background-size: cover;" class="paddbox"><a title="'+val.title+'" class="suggest" href="https://mytwitchplayer.fr/?add='+val.broadcaster_login+'">'+val.display_name+'<small> '+val.display_name+'</small><br><small>'+val.game_name+'</small></a></div></div>');
 				});
 				//response( c.data );
 				/*
@@ -632,6 +641,7 @@ jQuery(document).ready(function(){
 			}
 		   },
 		});
+		
 	  }
     });
 
@@ -1007,13 +1017,13 @@ jQuery(document).ready(function(){
 	});
 	
 	jQuery("[data-down-volume]").on('click', function() {
-		let viewer = jQuery(this).parent().parent().attr("data-streamer");
+		let viewer = jQuery(this).parents(".viewer").attr("data-streamer");
 		players[viewer].setVolume((players[viewer].getVolume() - 0.05));
 		jQuery(this).parent().find(".volume").css("border-bottom", ((players[viewer].getVolume()*100 - 5))+"px inset #9146FF");
 	});
 	
 	jQuery("[data-up-volume]").on('click', function() {
-		let viewer = jQuery(this).parent().parent().attr("data-streamer");
+		let viewer = jQuery(this).parents(".viewer").attr("data-streamer");
 		players[viewer].setVolume((players[viewer].getVolume() + 0.05));
 		jQuery(this).parent().find(".volume").css("border-bottom", ((players[viewer].getVolume()*100 + 5))+"px inset #9146FF");
 	});	
@@ -1058,23 +1068,23 @@ jQuery(document).ready(function(){
 	});
 	
 	jQuery(".muteBtn").on('click',function(e){
-		let viewer = jQuery(this).parent().parent().attr("data-streamer");
+		let viewer = jQuery(this).parents(".viewer").attr("data-streamer");
 		let toggleState = !players[viewer].getMuted();
 		
 		players[viewer].setMuted(toggleState);
 		jQuery(this).attr("data-mute", toggleState);
-		jQuery(".volume").attr("data-mute", toggleState);
+		jQuery(this).closest(".viewer").find(".volume").attr("data-mute", toggleState);
 	});
 	
 	jQuery("[name=qualities]").on('change', function(e) {
-		let viewer = jQuery(this).parent().parent().attr("data-streamer");
+		let viewer = jQuery(this).parents(".viewer").attr("data-streamer");
 		var opt = this.value;
 		players[viewer].setQuality(opt);
 		
 	});
 	
     jQuery("[data-close-item]").on('click',function(e){
-		jQuery(this).parent().parent().remove();
+		jQuery(this).parents(".viewer").remove();
 
 		const prefix = "viewer";
 		const el = jQuery("body").attr("class");
@@ -1087,7 +1097,7 @@ jQuery(document).ready(function(){
 	});
 	
 	jQuery(".playPause").on('click',function(e){
-		let viewer = jQuery(this).parent().parent().attr("data-streamer");
+		let viewer = jQuery(this).parents(".viewer").attr("data-streamer");
 		let isPaused = players[viewer].isPaused();
 
 		if(isPaused) {
@@ -1124,9 +1134,6 @@ jQuery(document).ready(function(){
 			
 	});
 */	
-	
-
-	
 	
 	jQuery(".viewer").on('click',function(e){
 		
@@ -1263,7 +1270,7 @@ jQuery(document).ready(function(){
 - icones
 - scroll 
 
-
+OMG le strem se lance mute bordel !
 
 404 kraken/chat/emoticon si loggué
 
