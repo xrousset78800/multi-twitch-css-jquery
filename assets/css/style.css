@@ -293,7 +293,7 @@ body {
 }
 .reset {
 	position: absolute;
-    bottom: 20px;
+    bottom: 0;
     left: 20px;
     font-size: 11px;
     cursor: pointer;
@@ -396,6 +396,19 @@ body {
 	transition: right 0.5s;
 }
 
+
+svg {
+	position: absolute;
+    right: 10px;
+    top: 3px;
+	fill: #999999;
+	transition: fill 0.5s;
+	cursor: pointer;
+}
+svg:hover {
+	fill: #ffffff;
+}
+
 .status.hide {
 	right: 0;
 	border-right: 0;
@@ -405,7 +418,26 @@ body {
 	float: right;
 }
 
-
+.scroll.chatIcons {
+	width: 100%;
+    overflow: auto;
+    display: block;
+    position: absolute;
+    right: 0;
+    height: 0;
+	transition: height: 0.3s;
+    top: 32px;
+}
+.chatIcons img {
+	cursor: pointer;
+	padding: 2px;
+}
+.chatIcons img:hover {
+	transform: scale(1.6);
+}
+.scroll.open.chatIcons {
+    height: 150px;
+}
 .status form {
 	overflow: hidden;
 }
@@ -415,7 +447,9 @@ font-style: italic;
     font-size: 0.8rem;
     color: grey;
 }
-
+h6 {
+	text-align: center;
+}
 .channels {
  padding: 0 10px;
  text-align: left;
@@ -570,9 +604,9 @@ small.game {
 	height: 100%;
 	transition: width 0.5s;
     width: 100%;
-  -webkit-user-select: none; /* Safari */
-  -ms-user-select: none; /* IE 10 and IE 11 */
-  user-select: none; /* Standard syntax */
+	-webkit-user-select: none; 
+  -ms-user-select: none;
+  user-select: none;
 }
 .twitch-embed iframe{
     display: block;
@@ -635,9 +669,6 @@ height: 50%;
 	position:absolute;
     left: 4px;
     bottom: 4px;
-	  -webkit-user-select: none; /* Safari */
-  -ms-user-select: none; /* IE 10 and IE 11 */
-  user-select: none; /* Standard syntax */
 }
 .twitch-description .player-options {
 	top: -41px;
@@ -651,10 +682,13 @@ height: 50%;
 	width: 100%;
 	padding-right: 20px;
 }
+
+/*  -webkit-user-select: none; 
+  -ms-user-select: none;
+  user-select: none;
+  */
 .switchers, .status {
-  -webkit-user-select: none; /* Safari */
-  -ms-user-select: none; /* IE 10 and IE 11 */
-  user-select: none; /* Standard syntax */
+
   
 }
 
@@ -853,7 +887,10 @@ height: 50%;
 [data-theme=detached] .twitch-description{
 	height: 80%;
 }
-
+[data-theme-color=default] .twitch-description .chatIcons {
+	background-color: transparent;	
+	color: #f1f1f1;
+}
 [data-theme-color=default] .twitch-description .embed-message{
 	background-color: transparent;	
 	color: #f1f1f1;
@@ -865,6 +902,10 @@ height: 50%;
 [data-theme-color=default].twitch-description .embed-message:hover{
     background: #ffffffcc;
 	color: #111111;
+}
+[data-theme-color=dark] .twitch-description .chatIcons {
+	background-color: #000000;
+	color: #f1f1f1;
 }
 [data-theme-color=dark] .twitch-description .embed-message{
 	background-color: #000000;
@@ -886,7 +927,10 @@ height: 50%;
 [data-theme-color=dark] [name=spam-area] input[type=submit]{
 	color: #efefef;
 }
-
+[data-theme-color=dark-opacity] .twitch-description .chatIcons {
+	background-color: #00000099;
+	color: #f1f1f1;
+}
 [data-theme-color=dark-opacity] .twitch-description .player-options{
 	background-color: #00000099;
 	color: #f1f1f1;
@@ -906,6 +950,10 @@ height: 50%;
 }
 [data-theme-color=dark-opacity] [name=spam-area] input[type=submit]{
 	color: #f1f1f1;
+}
+[data-theme-color=light] .twitch-description .chatIcons {
+	background-color: #f1f1f1;
+	color: #000000;	
 }
 [data-theme-color=light] .twitch-description .player-options{
 	background-color: #f1f1f1;
@@ -932,6 +980,10 @@ height: 50%;
 [data-theme-color=light] [name=spam-area] input[type=submit]{
 	color: #000000;
 }
+[data-theme-color=light-opacity] .twitch-description .chatIcons {
+	background-color: #ffffff99;
+	color: #000000;	
+}
 [data-theme-color=light-opacity] .twitch-description .player-options{
 	background-color: #ffffff99;
 	color: #000000;	
@@ -957,6 +1009,7 @@ height: 50%;
 [data-theme-color=light-opacity] [name=spam-area] input[type=submit]{
 	color: #000000;	
 }
+
 
 
 .twitch-description .message{
@@ -1244,7 +1297,16 @@ height: 50%;
 
 .shortkeys {
 	padding: 20px 0;
+	position: relative;
 }
+.modal-wrapper video {
+    margin: 0 auto;
+}
+.modal-wrapper h4 {
+    margin: 0;
+    text-align: center;
+}
+
 h4{
 	margin: 20px 0;
 }
@@ -1649,6 +1711,7 @@ select[name=qualities] option{
   align-items: baseline;
   display: flex;
   justify-content: space-between;
+  position: relative;
 }
 
 .close {
@@ -1697,7 +1760,6 @@ select[name=qualities] option{
 #modal .modal-body {
   max-width: 500px;
   opacity: 0;
-  transform: translateY(-100px);
   transition: opacity 0.25s ease-in-out;
   width: 100%;
   z-index: 1;

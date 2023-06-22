@@ -72,7 +72,7 @@ function loadScam() {
 						var newChannel = { 
 							'name': c.data[0].login,
 							'size': 22,
-							'color': 'default',
+							'color': 'dark-opacity',
 							'theme': 'default',
 						}
 						
@@ -428,11 +428,39 @@ function loadClient(config){
 							"<form action='' name='spam-area'>"+
 								"<input autocomplete='off' type='text' name='"+config["scamers"][i].substr(1)+"' id='spam-content' value='' placeholder='Envoyer un message' />"+
 								"<input name='send' type='submit' value='' />"+
+								'<svg width="30px" height="30px" version="1.1" viewBox="0 0 20 20" x="0px" y="0px" class="emoteschat ScIconSVG-sc-1q25cff-1 dSicFr"><g><path d="M7 11a1 1 0 100-2 1 1 0 000 2zM14 10a1 1 0 11-2 0 1 1 0 012 0zM10 14a2 2 0 002-2H8a2 2 0 002 2z"></path><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-2 0a6 6 0 11-12 0 6 6 0 0112 0z" clip-rule="evenodd"></path></g></svg><div class="chatIcons scroll"></div> ' +
 							"</form>");
 					}
 					
-					const formScam = jQuery('form[name=spam-area]');
-					formScam.on("click", function(e) {	
+					const formScam = jQuery('form[name=spam-area]');	
+					
+					jQuery(".chatIcons").append("<h6>Generic</h6>");
+					//if(emotesChannels["global"]){
+						for(var i=0; i<emotesChannels["global"].length; i++) {
+							jQuery(".chatIcons").append("<img title='"+emotesChannels["global"][i]["name"]+"' data-key='"+emotesChannels["global"][i]["name"]+"' width='20' height='20' src='"+emotesChannels["global"][i]["images"]["url_1x"]+"' />");
+						}
+					//}
+					for(var j=0; j<config["scamers"].length; j++) {
+						var name = config["scamers"][j].substr(1);
+						
+						if(emotesChannels[name]) {
+							jQuery(".chatIcons").append("<h6>"+name+"</h6>");
+							for(var i=0; i<emotesChannels[name].length; i++) {
+								jQuery(".chatIcons").append("<img title='"+emotesChannels[name][i]["name"]+"' data-key='"+emotesChannels[name][i]["name"]+"' width='20' height='20' src='"+emotesChannels[name][i]["images"]["url_1x"]+"' />");
+							}
+						}
+					}
+					
+					jQuery('.emoteschat').click(function(){
+						jQuery(this).next().toggleClass("open");
+					});
+					jQuery('.chatIcons img').click(function(elem){
+						let viewer = jQuery(this).parents(".viewer").attr("data-streamer");
+						let input = jQuery("input[name="+viewer+"]");
+						input.val(input.val()+jQuery(this).data('key'));
+					});
+						
+					formScam.click(function(e) {	
 						jQuery(this).find('input[type=text]').removeAttr('placeholder');
 					});
 					
@@ -473,7 +501,6 @@ function loadClient(config){
 						});	
 					}					
 				});
-				
 				jQuery('.postmessage').prepend("<a class='authbtn' onclick='removeToken();'><p>Logged as "+name+"</p><h2>Logout</h2></a> ");					
 	   },
 	   error: function(event){
@@ -487,8 +514,7 @@ function loadClient(config){
 			jQuery('.postmessage').prepend("<a class='authbtn' href='https://id.twitch.tv/oauth2/authorize?response_type=token&force_verify=false&client_id="+clientID+"&redirect_uri="+basePath+"&scope=user%3Aread%3Afollows+chat%3Aread+chat%3Aedit&state=c3ab8aa609ea11e793ae92361f002671'><h2 title='Active le chat sur les streams'>Login Twitch</h2></a>");
 	   },
 	   complete: function(e){
-			//console.log(client);
-				
+			//console.log(client);			
 		}
 	});
 }
@@ -550,6 +576,24 @@ function getBroadcasterId(userLogin) {
 	})
 }
 
+
+function getGlobalEmotes() {
+
+   return jQuery.ajax(
+		{
+		   type: 'GET',
+		   url: 'https://api.twitch.tv/helix/chat/emotes/global',
+		   headers: {
+			 'Client-ID': clientID,
+			 'Authorization': 'Bearer ' + authToken, 
+		   },
+		   success: function(c){
+			  emotesChannels["global"] = c.data;
+		   },
+		}
+	);
+}
+
 function getEmotesChannels(data, textStatus, jqXHR) {
 
    return jQuery.ajax(
@@ -589,11 +633,12 @@ function loadEmotes(streams) {
 	
 	streams.forEach(function(scam) {
 	   userLogin = scam.substr(1);
-	   //getBroadcasterId(userLogin).then(getEmotesChannels);
+	   getBroadcasterId(userLogin).then(getEmotesChannels);
 	   getBroadcasterId(userLogin).then(getBadgesChannels);
 	});
+	getGlobalEmotes();
 	console.log(emotesChannels);
-	console.log(badgesChannels);
+	//console.log(badgesChannels);
 }
 
 function stopPropagation(id, event) {
@@ -901,8 +946,22 @@ jQuery(document).ready(function(){
 		return false;
     });
 	
+	
+	function deleteAllCookies() {
+		const cookies = document.cookie.split(";");
+
+		for (let i = 0; i < cookies.length; i++) {
+			const cookie = cookies[i];
+			const eqPos = cookie.indexOf("=");
+			const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+			document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+		}
+	}
+	
+	
 	jQuery("[data-reset-app]").on('click', function(){
-		deleteCookie('JsonTwitchConfig');
+		//deleteCookie('JsonTwitchConfig');
+		deleteAllCookies();
 		window.location.replace(basePath);
 	});	
 	
@@ -1081,7 +1140,7 @@ jQuery(document).ready(function(){
 		var opt = this.value;
 		players[viewer].setQuality(opt);
 		
-	});
+	});	
 	
     jQuery("[data-close-item]").on('click',function(e){
 		jQuery(this).parents(".viewer").remove();
@@ -1109,20 +1168,8 @@ jQuery(document).ready(function(){
 		}
 		jQuery(this).attr("data-play", isPaused);
 	});
-	
-	
-	/*  innerHeight
-	jQuery(".menu-scroll").on('scroll',function(e){
-		var topScroll = jQuery(this).scrollTop();
-		if(jQuery(".menu-scroll").scrollTop() === 0)
-			jQuery(".title").css("top", "inherit");
-		else 
-			jQuery(".title").css("top", topScroll);
-			
-	});	*/
-
-/*
-	jQuery(".channels").on('hover',function(e){
+	/*
+	jQuery(".channels").hover(function(e){
 		var topElement = jQuery(this).offset().top+"px";
 		var topScroll = jQuery(".menu-scroll").scrollTop();
 		console.log(topElement);
@@ -1131,10 +1178,17 @@ jQuery(document).ready(function(){
 			jQuery(".title").css("top", "inherit");
 		else 
 			jQuery(".title").css("top", topElement+topScroll);
+	});		
+	 
+	jQuery(".menu-scroll").on('scroll',function(e){
+		var topScroll = jQuery(this).scrollTop();
+		if(jQuery(".menu-scroll").scrollTop() === 0)
+			jQuery(".title").css("top", "inherit");
+		else 
+			jQuery(".title").css("top", topScroll);
 			
-	});
-*/	
-	
+	});*/
+
 	jQuery(".viewer").on('click',function(e){
 		
 		if((jQuery("body").attr('data-layout') == 'grid') && (jQuery(".mainViewer").length == 0)) {
@@ -1266,9 +1320,8 @@ jQuery(document).ready(function(){
 - webhooks >> stream.online, stream.offline, channel.ban, channel.raid	
 
 - reply to 
-- bits de base / sub? / prime?
-- icones
-- scroll 
+- envoi icones
+- scroll fix 
 
 OMG le strem se lance mute bordel !
 
