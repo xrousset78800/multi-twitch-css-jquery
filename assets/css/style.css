@@ -519,7 +519,7 @@ small.game {
 	top: 110px;
 }
 .toggleShit:before {    
-	content: 'x';
+	content: '<<';
 	font-size: 1.8rem;
     line-height: 20px;
     position: relative;
@@ -528,7 +528,7 @@ small.game {
     cursor: pointer;
 }
 .toggleShit.hide:before {
-   content:'<<';
+   content:'>>';
 }
 .chat {
     line-height: 15px;
@@ -643,15 +643,15 @@ height: 50%;
 
 .twitch-description{
     position: absolute;
-    width: 25%;
-    height: 50%;
+    width: 20%;
+    height: 30%;
 	border-radius: 5px;
 	border-style: inset;
 	background: none;
     font-size: 0.8rem;
 	line-height: 1rem;
-	top: 40px;
-	left: 20px;
+    bottom: 80px;
+    right: 50px;
 	cursor: grab;
 	z-index: 2;
 	transition: border-color 0.5s;
@@ -676,6 +676,7 @@ height: 50%;
 	min-width: 352px;
 	left: 0;
 	border-radius: 5px 5px 0 0;
+	height: 40px;
 }
 
 .fullscreen .player-options {
@@ -1125,6 +1126,7 @@ height: 50%;
     left: 0 !important;
 	width: 20% !important;
 	float: right;
+	background-image: inherit;
 }
 
 .specialgrid .fullscreen .mainViewer .twitch-description {

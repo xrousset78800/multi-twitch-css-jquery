@@ -1,3 +1,4 @@
+
 let authToken = "";
 let clientID = "";
 var basePath = "https://mytwitchplayer.fr/";
@@ -271,7 +272,7 @@ function updateStatuses(response, scamersToShowList, firstIteration) {
 			jQuery('input'+scamersToShowList[i]).prop("checked", true);
 			jQuery('input'+scamersToShowList[i]).parent('.channels').addClass('selected');
 		}	
-		jQuery(".channel-form [data-counter]").val(jQuery(".channels.selected").length+" / 9");
+		jQuery(".channel-form [data-counter]").text(jQuery(".channels.selected").length+" / 9");
 
 	} else {	
 		for(var i = 0; i<old.length;i++) {
@@ -341,21 +342,23 @@ function updateScammerStatus(online, scamer, userInfos) {
 		);
 	}
 
-	jQuery('.channels').click(function(e){
+	jQuery('.channels').on('click', function(e) {
+		e.stopImmediatePropagation();
 		let channel = jQuery(this).find('input');
 		if(channel.is(':checked')) {
 			channel.prop("checked", false  );
-			channel.parent().removeClass("selected");
+			channel.parent(".channels").removeClass("selected");
 			
 		} else {
 			if(jQuery(".channels.selected").length == 9) {
 				return false;
 			}
+			
 			channel.prop("checked", true );
 			channel.parent().addClass("selected");
 		}
 		
-		jQuery(".channel-form [data-counter]").val(jQuery(".channels.selected").length+ " / 9");
+		jQuery(".channel-form [data-counter]").text(jQuery(".channels.selected").length+ " / 9");
 	});	
 	
 	
@@ -1154,7 +1157,12 @@ jQuery(document).ready(function(){
 		var length = jQuery(".viewer").length;
 		jQuery("body").addClass("viewer"+length+"video");
 	});
-	
+	/*
+	setTimeout(function() {
+		jQuery('[data-a-target="tw-core-button-label-text"]').trigger('click');
+		jQuery('[data-a-target="content-classification-gate-overlay-start-watching-button]"').trigger('click');
+	}, 5000);
+	*/
 	jQuery(".playPause").on('click',function(e){
 		let viewer = jQuery(this).parents(".viewer").attr("data-streamer");
 		let isPaused = players[viewer].isPaused();
@@ -1168,7 +1176,7 @@ jQuery(document).ready(function(){
 		}
 		jQuery(this).attr("data-play", isPaused);
 	});
-	/*
+	
 	jQuery(".channels").hover(function(e){
 		var topElement = jQuery(this).offset().top+"px";
 		var topScroll = jQuery(".menu-scroll").scrollTop();
@@ -1178,8 +1186,9 @@ jQuery(document).ready(function(){
 			jQuery(".title").css("top", "inherit");
 		else 
 			jQuery(".title").css("top", topElement+topScroll);
-	});		
-	 
+	});
+
+	 /*
 	jQuery(".menu-scroll").on('scroll',function(e){
 		var topScroll = jQuery(this).scrollTop();
 		if(jQuery(".menu-scroll").scrollTop() === 0)
@@ -1318,9 +1327,9 @@ jQuery(document).ready(function(){
 - pluie d'emotes + option
 
 - webhooks >> stream.online, stream.offline, channel.ban, channel.raid	
-
+- cookie "emotes pref"
 - reply to 
-- envoi icones
+- droits emotes
 - scroll fix 
 
 OMG le strem se lance mute bordel !
