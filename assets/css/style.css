@@ -1810,10 +1810,6 @@ select[name=qualities] option{
 	padding-left: 20px;
 }
 
-.offline-stream .channels label{
-    padding-left: 32px;
-}
-
 .online-stream .channels img{
 	position: relative;
     top: 6px;
