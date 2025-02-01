@@ -116,7 +116,6 @@ function StartThisShit(config) {
 			jQuery(document).prop('title', "Multi twitch");
 		}else {
 			jQuery(document).prop('title', "Multi twitch ("+ config.scamers.join(', ')+")");
-			muted = true;
 		}
 	}
 
@@ -138,9 +137,7 @@ function StartThisShit(config) {
 			// only needed if your site is also embedded on embed.example.com and othersite.example.com
 			//parent: ["embed.example.com"]
 		};
-		if(muted === false){
-			muted = true;
-		};  
+
 		var player = new Twitch.Player("twitch-embed"+(i+1), options);		
 
 
@@ -148,7 +145,7 @@ function StartThisShit(config) {
 			var embed = player.getPlayer();
 		
 			embed.play();
-			embed.setVolume(0.3);
+			embed.setVolume(0);
 			embed.setMuted(false);
 		});
 		
@@ -1080,14 +1077,14 @@ jQuery(document).ready(function(){
 	
 	jQuery("[data-down-volume]").on('click', function() {
 		let viewer = jQuery(this).parents(".viewer").attr("data-streamer");
-		players[viewer].setVolume((players[viewer].getVolume() - 0.05));
-		jQuery(this).parent().find(".volume").css("border-bottom", ((players[viewer].getVolume()*100 - 5))+"px inset #9146FF");
+		players[viewer].setVolume((players[viewer].getVolume() - 0.1));
+		jQuery(this).parent().find(".volume").css("border-bottom", ((players[viewer].getVolume()*100 - 10))+"px inset #9146FF");
 	});
 	
 	jQuery("[data-up-volume]").on('click', function() {
 		let viewer = jQuery(this).parents(".viewer").attr("data-streamer");
-		players[viewer].setVolume((players[viewer].getVolume() + 0.05));
-		jQuery(this).parent().find(".volume").css("border-bottom", ((players[viewer].getVolume()*100 + 5))+"px inset #9146FF");
+		players[viewer].setVolume((players[viewer].getVolume() + 0.1));
+		jQuery(this).parent().find(".volume").css("border-bottom", ((players[viewer].getVolume()*100 + 10))+"px inset #9146FF");
 	});	
 	
 	jQuery("[data-form-theme-color]").on( "change", function(){
@@ -1119,11 +1116,11 @@ jQuery(document).ready(function(){
 		let viewer = jQuery(this).attr("data-streamer");
 		
 		if(delta > 0) {
-			players[viewer].setVolume((players[viewer].getVolume() + 0.05));
-			jQuery(this).find(".volume").css("border-bottom", ((players[viewer].getVolume()*100 + 5))+"px inset #9146FF");
+			players[viewer].setVolume((players[viewer].getVolume() + 0.1));
+			jQuery(this).find(".volume").css("border-bottom", ((players[viewer].getVolume()*100 + 10))+"px inset #9146FF");
 		} else {
-			players[viewer].setVolume((players[viewer].getVolume() - 0.05));
-			jQuery(this).find(".volume").css("border-bottom", ((players[viewer].getVolume()*100 - 5))+"px inset #9146FF");
+			players[viewer].setVolume((players[viewer].getVolume() - 0.1));
+			jQuery(this).find(".volume").css("border-bottom", ((players[viewer].getVolume()*100 - 10))+"px inset #9146FF");
 		}
 		
 

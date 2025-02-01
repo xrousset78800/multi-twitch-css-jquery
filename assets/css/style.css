@@ -428,6 +428,13 @@ svg:hover {
 	transition: height: 0.3s;
     top: 32px;
 }
+
+body[data-layout=studio] .scroll.chatIcons {
+    top: inherit;
+    bottom: 32px;
+    background: black;
+}
+
 .chatIcons img {
 	cursor: pointer;
 	padding: 2px;
@@ -813,6 +820,11 @@ height: 50%;
     width: 100%;
 	opacity: 1;
 }
+
+body[data-layout=studio] [name=spam-area] {
+    bottom: 0;
+}
+
 .hide [name=spam-area] {
 	display: none;
 }
@@ -2094,7 +2106,7 @@ a[name=help]:hover{
     border-left: 3px inset #ffffff99;
 	border-right: 3px inset #ffffff99;
 	border-top: 5px inset #ffffff99;
-	border-bottom: 30px inset #9146FF;
+	border-bottom: 0 inset #9146FF;
   width: 18px;
    height: 110px;
   position: absolute;
