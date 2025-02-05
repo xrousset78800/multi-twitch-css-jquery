@@ -387,7 +387,11 @@ function updateScammerStatus(online, scamer, userInfos) {
 		jQuery(".channel-form [data-counter]").text(jQuery(".channels.selected").length+ " / 9");
 	});	
 	
-	
+	jQuery(".channels").hover(function(e){
+	    const rect = this.getBoundingClientRect();
+	    jQuery(".title").css("top", rect.top + "px");
+	});
+
 	jQuery('.channels .remove').on('click', function(e) {
 		e.preventDefault();
 		var scamer = jQuery(this).data("scamer");		
@@ -824,8 +828,7 @@ jQuery(document).ready(async function(){
 			}).mouseleave(function () {
 				$('.tempVid').remove();
 			})
-			
-			/*Ptit hover pour créer l'iframe */
+
 		  }
 	   },
 	});
@@ -1206,27 +1209,6 @@ jQuery(document).ready(async function(){
 		}
 		jQuery(this).attr("data-play", isPaused);
 	});
-	
-	jQuery(".channels").hover(function(e){
-		var topElement = jQuery(this).offset().top+"px";
-		var topScroll = jQuery(".menu-scroll").scrollTop();
-		console.log(topElement);
-		console.log(topScroll);
-		if( topScroll === 0)
-			jQuery(".title").css("top", "inherit");
-		else 
-			jQuery(".title").css("top", topElement+topScroll);
-	});
-
-	 /*
-	jQuery(".menu-scroll").on('scroll',function(e){
-		var topScroll = jQuery(this).scrollTop();
-		if(jQuery(".menu-scroll").scrollTop() === 0)
-			jQuery(".title").css("top", "inherit");
-		else 
-			jQuery(".title").css("top", topScroll);
-			
-	});*/
 
 	jQuery(".viewer").on('click',function(e){
 		
