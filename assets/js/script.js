@@ -1,6 +1,34 @@
 
-let authToken = "";
-let clientID = "";
+let authToken;
+let tokenLoaded = new Promise(async (resolve, reject) => {
+  try {
+    const response = await fetch('/load.php');
+    if (!response.ok) throw new Error(`Erreur HTTP : ${response.status}`);
+
+    const data = await response.json();
+    authToken = data.token;
+    //console.log("Token récupéré :", authToken);
+    resolve(authToken); // La promesse est résolue une fois le token chargé
+  } catch (error) {
+    console.error("Erreur lors du chargement du token :", error);
+    reject(error);
+  }
+});
+
+async function useToken() {
+  await tokenLoaded; // Attendre la récupération du token
+  console.log("Utilisation du token :", authToken);
+}
+
+async function getAuthToken() {
+    await tokenLoaded; // On attend que le token soit chargé depuis le .env
+    if (!authToken) {
+        throw new Error("Token non disponible");
+    }
+    return authToken;
+}
+
+let clientID = "vn9avm6d14fgwfyq0hc655klhwdcv8";
 var basePath = "https://mytwitchplayer.fr/";
 
 var totalList = [];
@@ -16,8 +44,9 @@ var themes = [ "default", "border", "detached" ];
 var themeColors = [ "default", "dark", "dark-opacity", "light", "light-opacity"];
 
 
-function loadScam() {
-
+//async function loadScam() {
+async function loadScam() {
+	const authToken = await getAuthToken();
 	var urlParams = new URLSearchParams(window.location.search);
 
 	var newScamer = urlParams.getAll('add');
@@ -371,7 +400,6 @@ function updateScammerStatus(online, scamer, userInfos) {
 }
 
 function loadClient(config){
-	
 	var url = window.location.href;
 	var size = url.indexOf('#')
 	var params = url.substring(size + 1);
@@ -382,7 +410,13 @@ function loadClient(config){
 	
 	var name = "";
 	
-	if (access_token) {
+	if (!access_token) {
+		access_token = getCookie('tokenMultiTwitch');
+		
+		setCookie('urlRedirect', url, 2);
+
+	} else {
+		
 		setCookie('tokenMultiTwitch', access_token, 2);
 		setCookie('pleaseLoad', true, 2);
 		
@@ -391,11 +425,6 @@ function loadClient(config){
 		}
 		
 		window.location.replace(url);
-
-	} else {
-		access_token = getCookie('tokenMultiTwitch');
-		
-		setCookie('urlRedirect', url, 2);
 	}
 
 	jQuery.ajax(
@@ -495,7 +524,7 @@ function loadClient(config){
 							  }
 							  setCookie('JsonTwitchConfig', JSON.stringify(followsJSON), 6000);
 							  deleteCookie('pleaseLoad');
-							  window.location.replace(basePath);
+							  //window.location.replace(basePath);
 						   },
 
 						});	
@@ -560,8 +589,8 @@ function getMessage(message, tags) {
 	return msg;
 }
 
-function getBroadcasterId(userLogin) {
-
+async function getBroadcasterId(userLogin) {
+  const authToken = await getAuthToken();
 	return jQuery.ajax(
 	{
 	   type: 'GET',
@@ -577,8 +606,8 @@ function getBroadcasterId(userLogin) {
 }
 
 
-function getGlobalEmotes() {
-
+async function getGlobalEmotes() {
+	 const authToken = await getAuthToken();
    return jQuery.ajax(
 		{
 		   type: 'GET',
@@ -594,8 +623,8 @@ function getGlobalEmotes() {
 	);
 }
 
-function getEmotesChannels(data, textStatus, jqXHR) {
-
+async function getEmotesChannels(data, textStatus, jqXHR) {
+	 const authToken = await getAuthToken();
    return jQuery.ajax(
 		{
 		   type: 'GET',
@@ -610,7 +639,8 @@ function getEmotesChannels(data, textStatus, jqXHR) {
 		}
 	);
 }
-function getBadgesChannels(data, textStatus, jqXHR) {
+async function getBadgesChannels(data, textStatus, jqXHR) {
+	 const authToken = await getAuthToken();
 	
    return jQuery.ajax(
 		{
@@ -648,9 +678,9 @@ function stopPropagation(id, event) {
     });
 }
 
-jQuery(document).ready(function(){	
-
+jQuery(document).ready(async function(){	
 	var cache = {};
+		const authToken = await getAuthToken();
     jQuery('#import').autocomplete({
 	  minLength: 2,
 	  source: function( request, response ) {
@@ -661,7 +691,8 @@ jQuery(document).ready(function(){
 		  response( cache[ term ] );
 		  return;
 		}*/
-	
+		//useToken();
+
 		jQuery.ajax(
 		{
 		   type: 'GET',
@@ -693,7 +724,7 @@ jQuery(document).ready(function(){
 
 
 
-	var scamConf = loadScam();
+	var scamConf = await loadScam();
 	loadClient(scamConf);
 	
 	var urlStreams = "";
@@ -704,7 +735,8 @@ jQuery(document).ready(function(){
 	   urlUsers = urlUsers + "login=" + scam.name + "&";
 	});	
 	
-	function getUsersData() {
+	async function getUsersData() {
+		const authToken = await getAuthToken();
 		jQuery.ajax(
 		{
 		   type: 'GET',
@@ -736,7 +768,8 @@ jQuery(document).ready(function(){
 		});
 	}	*/
 	
-	function myPeriodicMethod(scamConf, firstIteration) {
+	async function myPeriodicMethod(scamConf, firstIteration) {
+		const authToken = await getAuthToken();
 		jQuery.ajax(
 		{
 		   type: 'GET',
