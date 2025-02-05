@@ -44,19 +44,22 @@ var themes = [ "default", "border", "detached" ];
 var themeColors = [ "default", "dark", "dark-opacity", "light", "light-opacity"];
 
 
-//async function loadScam() {
 async function loadScam() {
-	const authToken = await getAuthToken();
-	var urlParams = new URLSearchParams(window.location.search);
+  const authToken = await getAuthToken();
+  var scamGet = [];
+  var urlParams = new URLSearchParams(window.location.search);
+  var newScamer = urlParams.getAll('add');
+  const path = window.location.pathname.substring(1);
+  const streamersInPath = path ? path.split('/').filter(s => s) : [];
 
-	var newScamer = urlParams.getAll('add');
-	var scamGet = urlParams.getAll('show');
+  if (streamersInPath.length > 0) {
+      newScamer = streamersInPath;
+      scamGet = streamersInPath;
+  }
 
-	if(getCookie("JsonTwitchConfig") === undefined) {
-
-	} else {
-		configObject = getCookie("JsonTwitchConfig");
-	}
+	if(getCookie("JsonTwitchConfig") !== undefined) {
+    configObject = getCookie("JsonTwitchConfig");
+  }
 
 	if(newScamer) {
 		var toObject = [];
@@ -806,22 +809,12 @@ jQuery(document).ready(async function(){
 	   },
 	   success: function(c){
 		  //data array is empty when queried channel is offline
-		if (c.data.length > 0) {			
+		if (c.data.length > 0) {
 			jQuery(c.data).each(function(i, val){
 				var thumbnail_resized = val.thumbnail_url.replace(/{width}|{height}/gi, 400);
-				
-
 				jQuery(".hometext .suggestion").append("<div class='streams' data-channel='"+val.user_login+"'><div style='background-image: url("+thumbnail_resized+");background-size: cover;' class='paddbox' ><a title='"+val.title+"' class='suggest' href='"+basePath+"?add="+val.user_login+"'>"+val.user_name+"<small> ("+val.viewer_count+")</small><br><small>"+val.game_name+"</small></a></div>");
-				
-				
-				/*
-				val.tags.each(function(j, v){
-					jQuery(".streams [data-channel='"+val.user_login+"']").prepend("<span class=='tags'>"+v+"</span>");
-				});
-				
-				*/
 			});
-			
+
 			jQuery(".streams").mouseenter(function () {
 				var channel = $(this).data('channel');
 				$(this).append("<iframe class='tempVid' src='https://player.twitch.tv/?channel="+channel+"&muted=true&parent=mytwitchplayer.fr'></iframe>");
@@ -1020,7 +1013,23 @@ jQuery(document).ready(async function(){
 			}
 		}
 	}
-		
+
+	jQuery('.channel-form input[type=submit]').on('click', function(e) {
+	    e.preventDefault();
+	    
+	    const selectedStreamers = [];
+	    jQuery('.channels input:checked').each(function() {
+	        selectedStreamers.push(jQuery(this).val());
+	    });
+
+	    if (selectedStreamers.length > 0) {
+	        const newUrl = `${basePath}${selectedStreamers.join('/')}`;
+	        window.location.href = newUrl;
+	    }
+	    
+	    return false;
+	});
+
 	function switchToStudio() {
 		if(jQuery('body').attr('data-layout') !== 'studio'){
 			jQuery('.twitch-video').removeClass('hasMainViewer');
