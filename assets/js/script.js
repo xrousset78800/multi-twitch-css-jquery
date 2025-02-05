@@ -7,8 +7,7 @@ let tokenLoaded = new Promise(async (resolve, reject) => {
 
     const data = await response.json();
     authToken = data.token;
-    //console.log("Token récupéré :", authToken);
-    resolve(authToken); // La promesse est résolue une fois le token chargé
+    resolve(authToken);
   } catch (error) {
     console.error("Erreur lors du chargement du token :", error);
     reject(error);
@@ -16,12 +15,12 @@ let tokenLoaded = new Promise(async (resolve, reject) => {
 });
 
 async function useToken() {
-  await tokenLoaded; // Attendre la récupération du token
+  await tokenLoaded;
   console.log("Utilisation du token :", authToken);
 }
 
 async function getAuthToken() {
-    await tokenLoaded; // On attend que le token soit chargé depuis le .env
+    await tokenLoaded;
     if (!authToken) {
         throw new Error("Token non disponible");
     }
@@ -57,16 +56,16 @@ async function loadScam() {
       scamGet = streamersInPath;
   }
 
-	if(getCookie("JsonTwitchConfig") !== undefined) {
-    configObject = getCookie("JsonTwitchConfig");
-  }
+	if(localStorage.getItem("JsonTwitchConfig") !== null) {
+	    configObject = JSON.parse(localStorage.getItem("JsonTwitchConfig"));
+	}
 
 	if(newScamer) {
 		var toObject = [];
 		var jsonString = [];
 
 		if(configObject.length != 0) {
-			var parse = JSON.parse(configObject);
+			var parse = configObject;
 			
 			for(l=0;l<parse.length;l++) {
 				var oldChannel = { 
@@ -111,7 +110,7 @@ async function loadScam() {
 						
 						totalList.push(newChannel);
 						toObject.push(newChannel);
-						setCookie('JsonTwitchConfig', JSON.stringify(toObject), 6000);
+						localStorage.setItem('JsonTwitchConfig', JSON.stringify(followsJSON));
 				   },
 				   error: function(c) {
 						//console.log("l'utilisateur n'existe pas sur twitch");
@@ -419,19 +418,19 @@ function loadClient(config){
 	
 	if (!access_token) {
 		access_token = getCookie('tokenMultiTwitch');
-		
 		setCookie('urlRedirect', url, 2);
 
 	} else {
 		
-		setCookie('tokenMultiTwitch', access_token, 2);
-		setCookie('pleaseLoad', true, 2);
-		
-		if (getCookie('urlRedirect') !== undefined ) {
-			url = getCookie('urlRedirect');
-		}
-		
-		window.location.replace(url);
+    setCookie('tokenMultiTwitch', access_token, 2);
+    setCookie('pleaseLoad', true, 2);
+    
+    if (getCookie('urlRedirect') !== undefined ) {
+        url = getCookie('urlRedirect');
+        deleteCookie('urlRedirect');
+    }
+    
+    window.location.replace(url);
 	}
 
 	jQuery.ajax(
@@ -524,13 +523,12 @@ function loadClient(config){
 						   },
 						   success: function(res){	
 
-							 console.log(res);				   
 							  var followsJSON = [];
 							  for(var i=0; i<res.data.length; i++) {
-								 followsJSON[i]={'name':res.data[i].broadcaster_login, 'size': 18, 'color':'default', 'theme':'default'}
+								 followsJSON[i]={'name':res.data[i].broadcaster_login, 'size': 18, 'color':'dark-opacity', 'theme':'default'}
 							  }
-							  setCookie('JsonTwitchConfig', JSON.stringify(followsJSON), 6000);
-							  deleteCookie('pleaseLoad');
+								localStorage.setItem('JsonTwitchConfig', JSON.stringify(followsJSON));
+							  deleteCookie('pleaseLoad')
 							  //window.location.replace(basePath);
 						   },
 
@@ -975,22 +973,9 @@ jQuery(document).ready(async function(){
 		return false;
     });
 	
-	
-	function deleteAllCookies() {
-		const cookies = document.cookie.split(";");
-
-		for (let i = 0; i < cookies.length; i++) {
-			const cookie = cookies[i];
-			const eqPos = cookie.indexOf("=");
-			const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-			document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
-		}
-	}
-	
-	
 	jQuery("[data-reset-app]").on('click', function(){
-		//deleteCookie('JsonTwitchConfig');
 		deleteAllCookies();
+		localStorage.removeItem('JsonTwitchConfig');
 		window.location.replace(basePath);
 	});	
 	
