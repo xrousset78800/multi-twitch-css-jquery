@@ -342,10 +342,14 @@ body {
 }
 .menu-scroll {
 	position: relative;
-    overflow-y: scroll;
     max-height: 500px;
 	margin-right: -17px;
 	padding: 10px 0;
+    overflow-y: scroll;
+}
+.online-stream, .offline-stream {
+    overflow: hidden;
+    padding: 7px 0;
 }
 .fixed-go {
 	margin: 10px 0;
