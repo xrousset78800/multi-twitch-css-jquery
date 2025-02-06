@@ -419,7 +419,6 @@ function loadClient(config){
 	var params = url.substring(size + 1);
 	var urlParams = new URLSearchParams(params);
 	var access_token = urlParams.get('access_token');
-	var loadChannels = false;
 	// checkstate >>> 	
 	
 	var name = "";
@@ -427,12 +426,9 @@ function loadClient(config){
 	if (!access_token) {
 		access_token = getCookie('tokenMultiTwitch');
 		setCookie('urlRedirect', url, 2);
-		deleteCookie('pleaseLoad');
 	} else {
 		
-    setCookie('tokenMultiTwitch', access_token, 2);
-    setCookie('pleaseLoad', true, 2);
-    
+    setCookie('tokenMultiTwitch', access_token, 2);    
     if (getCookie('urlRedirect') !== undefined ) {
         url = getCookie('urlRedirect');
         deleteCookie('urlRedirect');
@@ -520,7 +516,6 @@ function loadClient(config){
 							console.log('[ERR]', err);
 						});
 					});
-					if(getCookie('pleaseLoad')){
 						jQuery.ajax(
 						{
 						   type: 'GET',
@@ -559,7 +554,6 @@ function loadClient(config){
         			}
 
 						});	
-					}					
 				});
 				jQuery('.postmessage').prepend("<a class='authbtn' onclick='removeToken();'><p>Logged as "+name+"</p><h2>Logout</h2></a> ");					
 	   },
@@ -738,7 +732,36 @@ jQuery(document).ready(async function(){
 				jQuery(".suggestion .streams").remove();
 				
 				jQuery(c.data).each(function(key, val){
-					jQuery(".suggestion").append('<div class="streams" data-channel="'+val.broadcaster_login+'"><div style="background-image: url('+val.thumbnail_url+');background-size: cover;" class="paddbox"><a title="'+val.title+'" class="suggest" href="https://mytwitchplayer.fr/?add='+val.broadcaster_login+'">'+val.display_name+'<small> '+val.display_name+'</small><br><small>'+val.game_name+'</small></a></div></div>');
+					jQuery(".suggestion").append(
+						"<form class='add-stream-form streams' data-channel='"+val.broadcaster_login+"' method='post'> " +
+							"<div style='background-image: url("+val.thumbnail_url+");background-size: cover;' class='paddbox'> " +
+								"<input type='hidden' name='add_stream' value='"+val.broadcaster_login+"'>" +
+								"<button type='submit' class='suggest' title='"+val.title+"'>" +
+	                val.display_name +
+	            		"<small>"+val.game_name+"</small>" +
+		            "</button>" +
+							"</div> " +
+						"</form>");
+				});
+
+				jQuery(document).on('submit', '.add-stream-form', function(e) {
+				    //e.preventDefault();
+					e.stopImmediatePropagation();
+				    const streamName = jQuery(this).find('input[name="add_stream"]').val();
+			      // Ajouter le stream à la liste
+			      var newChannel = { 
+			          'name': streamName,
+			          'size': 22,
+			          'color': 'dark-opacity',
+			          'theme': 'default',
+			      };
+			      
+			      // Mettre à jour localStorage
+			      const currentConfig = JSON.parse(localStorage.getItem('JsonTwitchConfig') || '[]');
+			      currentConfig.push(newChannel);
+			      localStorage.setItem('JsonTwitchConfig', JSON.stringify(currentConfig));
+			   
+				    //return false;
 				});
 				//response( c.data );
 				/*
@@ -857,7 +880,7 @@ jQuery(document).ready(async function(){
 
 			jQuery(document).on('submit', '.add-stream-form', function(e) {
 			    //e.preventDefault();
-			    console.log("fdsfdfs")
+			    e.stopImmediatePropagation();
 			    const streamName = jQuery(this).find('input[name="add_stream"]').val();
 		      // Ajouter le stream à la liste
 		      var newChannel = { 
