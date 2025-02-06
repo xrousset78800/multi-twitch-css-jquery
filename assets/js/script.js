@@ -727,7 +727,7 @@ jQuery(document).ready(async function(){
 		   },
 		   success: function(c){
 			  //data array is empty when queried channel is offline
-			if (c.data.length > 0) {	
+			if (c.data.length > 0) {
 				console.log(c);
 				jQuery(".suggestion .streams").remove();
 				
@@ -735,6 +735,7 @@ jQuery(document).ready(async function(){
 					jQuery(".suggestion").append(
 						"<form class='add-stream-form streams' data-channel='"+val.broadcaster_login+"' method='post'> " +
 							"<div style='background-image: url("+val.thumbnail_url+");background-size: cover;' class='paddbox'> " +
+								"<div class='online-status live-is-"+val.is_live+"'></div>" +
 								"<input type='hidden' name='add_stream' value='"+val.broadcaster_login+"'>" +
 								"<button type='submit' class='suggest' title='"+val.title+"'>" +
 	                val.display_name +
@@ -763,6 +764,12 @@ jQuery(document).ready(async function(){
 			   
 				    //return false;
 				});
+				jQuery(".streams").mouseenter(function () {
+					var channel = $(this).data('channel');
+					$(this).append("<iframe class='tempVid' src='https://player.twitch.tv/?channel="+channel+"&muted=true&parent=mytwitchplayer.fr'></iframe>");
+				}).mouseleave(function () {
+					$('.tempVid').remove();
+				})
 				//response( c.data );
 				/*
 				cache[ term ] = c.data;
@@ -854,22 +861,24 @@ jQuery(document).ready(async function(){
 		 'Authorization': 'Bearer ' + authToken, 
 	   },
 	   success: function(c){
+	   	console.log(c);
 		  //data array is empty when queried channel is offline
-		if (c.data.length > 0) {
-		jQuery(c.data).each(function(i, val){
-		    var thumbnail_resized = val.thumbnail_url.replace(/{width}|{height}/gi, 400);
-		    jQuery(".hometext .suggestion").append(
-	          "<form class='add-stream-form streams' data-channel='"+val.user_login+"' method='post'>" +
-			            "<div style='background-image: url("+thumbnail_resized+");background-size: cover;' class='paddbox'>" +
-		                    "<input type='hidden' name='add_stream' value='"+val.user_login+"'>" +
-		                    "<button type='submit' class='suggest' title='"+val.title+"'>" +
-		                        val.user_name+"<small class='counter'>"+val.viewer_count+"</small>" +
-		                        "<small>"+val.game_name+"</small>" +
-		                    "</button>" +
-		            "</div>" +
-		      "</form>" 
-		    );
-		});
+			if (c.data.length > 0) {
+			jQuery(c.data).each(function(i, val){
+			    var thumbnail_resized = val.thumbnail_url.replace(/{width}|{height}/gi, 400);
+			    jQuery(".hometext .suggestion").append(
+		          "<form class='add-stream-form streams' data-channel='"+val.user_login+"' method='post'>" +
+				            "<div style='background-image: url("+thumbnail_resized+");background-size: cover;' class='paddbox'>" +
+				            	"<div class='online-status live-is-true'></div>" +
+	                    "<input type='hidden' name='add_stream' value='"+val.user_login+"'>" +
+	                    "<button type='submit' class='suggest' title='"+val.title+"'>" +
+	                        val.user_name+"<small class='counter'>"+val.viewer_count+"</small>" +
+	                        "<small>"+val.game_name+"</small>" +
+	                    "</button>" +
+			            "</div>" +
+			      "</form>" 
+			    );
+			});
 
 			jQuery(".streams").mouseenter(function () {
 				var channel = $(this).data('channel');
@@ -897,8 +906,6 @@ jQuery(document).ready(async function(){
 		   
 			    //return false;
 			});
-
-
 
 		  }
 	   },
