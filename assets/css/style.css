@@ -1880,6 +1880,8 @@ select[name=qualities] option{
     display: inline-block;
     width: 100%;
 	height: 100%;
+    background: transparent;
+    cursor: pointer;    
 }
 .viewer0video .hometext {
     height: 100%;
@@ -2226,3 +2228,66 @@ a[name=help]:hover{
   opacity: 0;
 }
 
+.streams .paddbox {
+    position: relative;
+    background-size: cover;
+    height: 100%;
+    width: 100%;
+    transition: all 0.3s ease;
+    /* Ajouter un overlay sombre pour mieux lire le texte */
+    background-color: rgba(0, 0, 0, 0.4);
+    background-blend-mode: darken;
+}
+
+.streams .paddbox a, 
+.streams .paddbox button.suggest {
+    position: relative;
+    padding: 10px 15px;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    color: white;
+    text-decoration: none;
+    /* Text shadow pour meilleure lisibilité */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    font-size: 1.1rem;
+    line-height: 1.2rem;
+}
+
+.streams .paddbox small.counter {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+
+.streams .paddbox small {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.85em;
+    opacity: 0.9;
+    /* Le text-shadow peut être légèrement différent pour le petit texte */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.9);
+}
+
+/* Effet hover */
+.streams .paddbox:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+/* Style pour le titre du stream */
+.streams .paddbox .game-title {
+    font-weight: bold;
+    font-size: 1.1em;
+    margin-bottom: 8px;
+}
+
+/* Style pour les infos viewer count */
+.streams .paddbox .viewer-count {
+    font-size: 0.9em;
+    color: #9146FF; /* Couleur Twitch */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 1);
+}

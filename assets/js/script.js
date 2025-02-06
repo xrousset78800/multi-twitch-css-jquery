@@ -52,8 +52,12 @@ async function loadScam() {
   const streamersInPath = path ? path.split('/').filter(s => s) : [];
 
   if (streamersInPath.length > 0) {
+  	if (newScamer.length === 0) {
       newScamer = streamersInPath;
-      scamGet = streamersInPath;
+    }
+    scamGet = streamersInPath;
+  } else {
+  	scamGet = urlParams.getAll('show');
   }
 
 	if(localStorage.getItem("JsonTwitchConfig") !== null) {
@@ -110,7 +114,11 @@ async function loadScam() {
 						
 						totalList.push(newChannel);
 						toObject.push(newChannel);
-						localStorage.setItem('JsonTwitchConfig', JSON.stringify(followsJSON));
+					  var allEntries = JSON.parse(localStorage.getItem("JsonTwitchConfig")) || [];
+						allEntries.push(newChannel);
+						console.log(allEntries)
+						localStorage.setItem('JsonTwitchConfig', allEntries);
+
 				   },
 				   error: function(c) {
 						//console.log("l'utilisateur n'existe pas sur twitch");
@@ -419,7 +427,7 @@ function loadClient(config){
 	if (!access_token) {
 		access_token = getCookie('tokenMultiTwitch');
 		setCookie('urlRedirect', url, 2);
-
+		deleteCookie('pleaseLoad');
 	} else {
 		
     setCookie('tokenMultiTwitch', access_token, 2);
@@ -527,7 +535,8 @@ function loadClient(config){
 							  for(var i=0; i<res.data.length; i++) {
 								 followsJSON[i]={'name':res.data[i].broadcaster_login, 'size': 18, 'color':'dark-opacity', 'theme':'default'}
 							  }
-								localStorage.setItem('JsonTwitchConfig', JSON.stringify(followsJSON));
+								
+								//localStorage.setItem('JsonTwitchConfig', JSON.stringify(followsJSON));
 							  deleteCookie('pleaseLoad')
 							  //window.location.replace(basePath);
 						   },
@@ -696,7 +705,6 @@ jQuery(document).ready(async function(){
 		  response( cache[ term ] );
 		  return;
 		}*/
-		//useToken();
 
 		jQuery.ajax(
 		{
@@ -808,10 +816,20 @@ jQuery(document).ready(async function(){
 	   success: function(c){
 		  //data array is empty when queried channel is offline
 		if (c.data.length > 0) {
-			jQuery(c.data).each(function(i, val){
-				var thumbnail_resized = val.thumbnail_url.replace(/{width}|{height}/gi, 400);
-				jQuery(".hometext .suggestion").append("<div class='streams' data-channel='"+val.user_login+"'><div style='background-image: url("+thumbnail_resized+");background-size: cover;' class='paddbox' ><a title='"+val.title+"' class='suggest' href='"+basePath+"?add="+val.user_login+"'>"+val.user_name+"<small> ("+val.viewer_count+")</small><br><small>"+val.game_name+"</small></a></div>");
-			});
+		jQuery(c.data).each(function(i, val){
+		    var thumbnail_resized = val.thumbnail_url.replace(/{width}|{height}/gi, 400);
+		    jQuery(".hometext .suggestion").append(
+	          "<form class='add-stream-form streams' data-channel='"+val.user_login+"' method='post'>" +
+			            "<div style='background-image: url("+thumbnail_resized+");background-size: cover;' class='paddbox'>" +
+		                    "<input type='hidden' name='add_stream' value='"+val.user_login+"'>" +
+		                    "<button type='submit' class='suggest' title='"+val.title+"'>" +
+		                        val.user_name+"<small class='counter'>"+val.viewer_count+"</small>" +
+		                        "<small>"+val.game_name+"</small>" +
+		                    "</button>" +
+		            "</div>" +
+		      "</form>" 
+		    );
+		});
 
 			jQuery(".streams").mouseenter(function () {
 				var channel = $(this).data('channel');
@@ -820,10 +838,35 @@ jQuery(document).ready(async function(){
 				$('.tempVid').remove();
 			})
 
+			jQuery(document).on('submit', '.add-stream-form', function(e) {
+			    //e.preventDefault();
+			    console.log("fdsfdfs")
+			    const streamName = jQuery(this).find('input[name="add_stream"]').val();
+		      // Ajouter le stream à la liste
+		      var newChannel = { 
+		          'name': streamName,
+		          'size': 22,
+		          'color': 'dark-opacity',
+		          'theme': 'default',
+		      };
+		      
+		      // Mettre à jour localStorage
+		      const currentConfig = JSON.parse(localStorage.getItem('JsonTwitchConfig') || '[]');
+		      currentConfig.push(newChannel);
+		      localStorage.setItem('JsonTwitchConfig', JSON.stringify(currentConfig));
+		   
+			    //return false;
+			});
+
+
+
 		  }
 	   },
 	});
 	
+
+
+
 	jQuery(".toggleShit").click(function(){
 		jQuery(this).toggleClass("hide");
 		jQuery(".status").toggleClass("hide");
