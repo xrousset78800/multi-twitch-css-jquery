@@ -117,8 +117,8 @@ async function loadScam() {
 					  var allEntries = JSON.parse(localStorage.getItem("JsonTwitchConfig")) || [];
 						allEntries.push(newChannel);
 						console.log(allEntries)
-						localStorage.setItem('JsonTwitchConfig', allEntries);
-
+						localStorage.setItem('JsonTwitchConfig', JSON.stringify(allEntries));
+						window.location.replace(window.location.pathname);
 				   },
 				   error: function(c) {
 						//console.log("l'utilisateur n'existe pas sur twitch");
@@ -516,6 +516,7 @@ function loadClient(config){
 							console.log('[ERR]', err);
 						});
 					});
+					if(!getCookie('pleaseLoad')) {
 						jQuery.ajax(
 						{
 						   type: 'GET',
@@ -525,7 +526,6 @@ function loadClient(config){
 							 'Authorization': 'Bearer '+ access_token,
 						   },
 						   success: function(res){    
-			            // Récupérer la config existante
 			            let existingConfig = [];
 			            const storedConfig = localStorage.getItem('JsonTwitchConfig');
 			            if (storedConfig) {
@@ -540,7 +540,6 @@ function loadClient(config){
 			                'theme': 'default'
 			            }));
 
-			            // Fusionner en évitant les doublons
 			            const mergedConfig = [...existingConfig];
 			            followsJSON.forEach(newItem => {
 			                if (!mergedConfig.some(existingItem => existingItem.name === newItem.name)) {
@@ -548,12 +547,13 @@ function loadClient(config){
 			                }
 			            });
 
-			            // Sauvegarder la config fusionnée
 			            localStorage.setItem('JsonTwitchConfig', JSON.stringify(mergedConfig));
-			            deleteCookie('pleaseLoad');
+			            setCookie('pleaseLoad', true, 2);
+			            window.location.replace(url);
         			}
 
-						});	
+						});
+					}
 				});
 				jQuery('.postmessage').prepend("<a class='authbtn' onclick='removeToken();'><p>Logged as "+name+"</p><h2>Logout</h2></a> ");					
 	   },
@@ -566,6 +566,7 @@ function loadClient(config){
 			client = new tmi.client(option);
 			client.connect();
 			jQuery('.postmessage').prepend("<a class='authbtn' href='https://id.twitch.tv/oauth2/authorize?response_type=token&force_verify=false&client_id="+clientID+"&redirect_uri="+basePath+"&scope=user%3Aread%3Afollows+chat%3Aread+chat%3Aedit&state=c3ab8aa609ea11e793ae92361f002671'><h2 title='Active le chat sur les streams'>Login Twitch</h2></a>");
+			deleteCookie('pleaseLoad');
 	   },
 	   complete: function(e){
 			//console.log(client);			
