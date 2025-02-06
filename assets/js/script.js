@@ -529,17 +529,34 @@ function loadClient(config){
 							 'Client-ID': clientID,
 							 'Authorization': 'Bearer '+ access_token,
 						   },
-						   success: function(res){	
+						   success: function(res){    
+			            // Récupérer la config existante
+			            let existingConfig = [];
+			            const storedConfig = localStorage.getItem('JsonTwitchConfig');
+			            if (storedConfig) {
+			                existingConfig = JSON.parse(storedConfig);
+			            }
 
-							  var followsJSON = [];
-							  for(var i=0; i<res.data.length; i++) {
-								 followsJSON[i]={'name':res.data[i].broadcaster_login, 'size': 18, 'color':'dark-opacity', 'theme':'default'}
-							  }
-								
-								//localStorage.setItem('JsonTwitchConfig', JSON.stringify(followsJSON));
-							  deleteCookie('pleaseLoad')
-							  //window.location.replace(basePath);
-						   },
+			            // Transformer les nouveaux follows en config
+			            const followsJSON = res.data.map(item => ({
+			                'name': item.broadcaster_login,
+			                'size': 18,
+			                'color': 'dark-opacity',
+			                'theme': 'default'
+			            }));
+
+			            // Fusionner en évitant les doublons
+			            const mergedConfig = [...existingConfig];
+			            followsJSON.forEach(newItem => {
+			                if (!mergedConfig.some(existingItem => existingItem.name === newItem.name)) {
+			                    mergedConfig.push(newItem);
+			                }
+			            });
+
+			            // Sauvegarder la config fusionnée
+			            localStorage.setItem('JsonTwitchConfig', JSON.stringify(mergedConfig));
+			            deleteCookie('pleaseLoad');
+        			}
 
 						});	
 					}					
