@@ -2339,3 +2339,22 @@ a[name=help]:hover{
         opacity: 0;
     }
 }
+
+.search-filters {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.search-filters select {
+    background: transparent;
+    color: white;
+    border: 1px solid white;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+.search-filters select option {
+    background: #18181b;
+    color: white;
+}
