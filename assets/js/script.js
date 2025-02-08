@@ -59,11 +59,36 @@ async function loadTopCategories() {
         },
         success: function(response) {
             const gameSelect = jQuery('#category-filter');
-            response.data.forEach(game => {
-                gameSelect.append(`<option value="${game.id}">${game.name}</option>`);
+            
+            // Transformer les données pour Select2
+            const formattedData = [
+                { id: '', text: 'Toutes les catégories' }, // Option par défaut
+                ...response.data.map(game => ({
+                    id: game.id,
+                    text: game.name,
+                    image: game.box_art_url.replace(/{width}|{height}/gi, 30)
+                }))
+            ];
+
+            // Initialiser Select2
+            gameSelect.select2({
+                data: formattedData,
+                templateResult: formatGame,
+                templateSelection: formatGame,
+                placeholder: 'Toutes les catégories'
             });
+
         }
     });
+}
+
+function formatGame(game) {
+    if (!game.id) return game.text; // Pour l'option "Toutes les catégories"
+    
+    return jQuery(`<span>
+        <img src="${game.image}" style="width: 30px; vertical-align: middle;"/>
+        <span style="margin-left: 5px">${game.text}</span>
+    </span>`);
 }
 
 async function loadScam() {
