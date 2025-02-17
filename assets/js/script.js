@@ -898,7 +898,7 @@ jQuery(document).ready(async function(){
 		                    "<div class='online-status live-is-true'></div>" +
 		                    "<input type='hidden' name='add_stream' value='" + val.user_login + "'>" +
 		                    "<button type='submit' class='suggest' title='" + val.title + "'>" +
-		                    val.user_name + "<small class='counter'>" + val.viewer_count.toLocaleString() + " viewers</small>" +
+		                    val.user_name + "<small class='counter'>" + val.viewer_count.toLocaleString() + "</small>" +
 		                    "<small>" + val.game_name + "</small>" +
 		                    (language ? "<small class='language'>" + val.language.toUpperCase() + "</small>" : "") +
 		                    "</button>" +

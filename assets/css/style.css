@@ -2259,12 +2259,13 @@ a[name=help]:hover{
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     font-size: 1.1rem;
     line-height: 1.2rem;
+    text-align: left;
 }
 
 .streams .paddbox small.counter {
     position: absolute;
-    right: 10px;
-    top: 10px;
+    right: 29px;
+    bottom: 8px;
 }
 
 .streams .paddbox small {
@@ -2374,4 +2375,7 @@ a[name=help]:hover{
 
 .select2-container--default .select2-selection--single .select2-selection__rendered {
     line-height: normal;
+}
+.select2-dropdown {
+    background-color: #000000bb;
 }
