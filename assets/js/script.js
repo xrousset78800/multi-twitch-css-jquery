@@ -764,7 +764,6 @@ jQuery(document).ready(async function(){
 	        const language = jQuery('#language-filter').val();
 	        const gameId = jQuery('#category-filter').val();
 
-	        // Construction de l'URL avec les filtres
 	        let url = 'https://api.twitch.tv/helix/search/channels?query=' + request.term;
 	        if (language) url += '&broadcaster_language=' + language;
 	        if (gameId) url += '&game_id=' + gameId;
@@ -778,13 +777,15 @@ jQuery(document).ready(async function(){
 	            },
 	            success: function(c) {
 	                if (c.data.length > 0) {
-	                    console.log(c);
 	                    jQuery(".suggestion .streams").remove();
 
 	                    jQuery(c.data).each(function(key, val) {
 	                        jQuery(".suggestion").append(
 	                            "<form class='add-stream-form streams' data-channel='" + val.broadcaster_login + "' method='post'> " +
 	                            "<div style='background-image: url(" + val.thumbnail_url + ");background-size: cover;' class='paddbox'> " +
+	                            "<div class='channel-logo'>" +
+	                            "<img src='" + val.profile_image_url + "' alt='" + val.display_name + " logo' />" +
+	                            "</div>" +
 	                            "<div class='online-status live-is-" + val.is_live + "'></div>" +
 	                            "<input type='hidden' name='add_stream' value='" + val.broadcaster_login + "'>" +
 	                            "<button type='submit' class='suggest' title='" + val.title + "'>" +
@@ -793,9 +794,11 @@ jQuery(document).ready(async function(){
 	                            (language ? "<small class='language'>" + val.broadcaster_language.toUpperCase() + "</small>" : "") +
 	                            "</button>" +
 	                            "</div> " +
-	                            "</form>");
+	                            "</form>"
+	                        );
 	                    });
 
+	                    // Mettre à jour également le code pour loadStreams()
 	                    jQuery(document).on('submit', '.add-stream-form', function(e) {
 	                        e.stopImmediatePropagation();
 	                        const streamName = jQuery(this).find('input[name="add_stream"]').val();
@@ -811,11 +814,12 @@ jQuery(document).ready(async function(){
 	                        localStorage.setItem('JsonTwitchConfig', JSON.stringify(currentConfig));
 	                    });
 
+	                    // Conserver le comportement hover pour la preview
 	                    jQuery(".streams").mouseenter(function() {
-	                        var channel = $(this).data('channel');
-	                        $(this).append("<iframe class='tempVid' src='https://player.twitch.tv/?channel=" + channel + "&muted=true&parent=mytwitchplayer.fr'></iframe>");
+	                        var channel = jQuery(this).data('channel');
+	                        jQuery(this).append("<iframe class='tempVid' src='https://player.twitch.tv/?channel=" + channel + "&muted=true&parent=mytwitchplayer.fr'></iframe>");
 	                    }).mouseleave(function() {
-	                        $('.tempVid').remove();
+	                        jQuery('.tempVid').remove();
 	                    });
 	                }
 	            },
@@ -869,69 +873,73 @@ jQuery(document).ready(async function(){
 		   }
 		});
 	}	*/
-	  async function loadStreams() {
-      const language = jQuery('#language-filter').val();
-      const gameId = jQuery('#category-filter').val();
+	async function loadStreams() {
+	    const language = jQuery('#language-filter').val();
+	    const gameId = jQuery('#category-filter').val();
 
-      let streamUrl = 'https://api.twitch.tv/helix/streams?first=20'; // Limite à 20 streams
-      if (language) streamUrl += '&language=' + language;
-      if (gameId) streamUrl += '&game_id=' + gameId;
+	    let streamUrl = 'https://api.twitch.tv/helix/streams?first=20';
+	    if (language) streamUrl += '&language=' + language;
+	    if (gameId) streamUrl += '&game_id=' + gameId;
 
-      const authToken = await getAuthToken();
-      jQuery(".hometext .suggestion").empty(); // Vider les résultats précédents
+	    const authToken = await getAuthToken();
+	    jQuery(".hometext .suggestion").empty();
 
-      jQuery.ajax({
-          type: 'GET',
-          url: streamUrl,
-          headers: {
-              'Client-ID': clientID,
-              'Authorization': 'Bearer ' + authToken,
-          },
-          success: function(c) {
-		        console.log(c);
-		        if (c.data.length > 0) {
-		            jQuery(c.data).each(function(i, val) {
-		                var thumbnail_resized = val.thumbnail_url.replace(/{width}|{height}/gi, 400);
-		                jQuery(".hometext .suggestion").append(
-		                    "<form class='add-stream-form streams' data-channel='" + val.user_login + "' method='post'>" +
-		                    "<div style='background-image: url(" + thumbnail_resized + ");background-size: cover;' class='paddbox'>" +
-		                    "<div class='online-status live-is-true'></div>" +
-		                    "<input type='hidden' name='add_stream' value='" + val.user_login + "'>" +
-		                    "<button type='submit' class='suggest' title='" + val.title + "'>" +
-		                    val.user_name + "<small class='counter'>" + val.viewer_count.toLocaleString() + "</small>" +
-		                    "<small>" + val.game_name + "</small>" +
-		                    (language ? "<small class='language'>" + val.language.toUpperCase() + "</small>" : "") +
-		                    "</button>" +
-		                    "</div>" +
-		                    "</form>"
-		                );
-		            });
+	    jQuery.ajax({
+	        type: 'GET',
+	        url: streamUrl,
+	        headers: {
+	            'Client-ID': clientID,
+	            'Authorization': 'Bearer ' + authToken,
+	        },
+	        success: async function(streamData) {
+	            if (streamData.data.length > 0) {
+	                // Obtenir les informations des utilisateurs pour avoir leurs avatars
+	                const userIds = streamData.data.map(stream => stream.user_id).join('&id=');
+	                const usersResponse = await jQuery.ajax({
+	                    type: 'GET',
+	                    url: 'https://api.twitch.tv/helix/users?id=' + userIds,
+	                    headers: {
+	                        'Client-ID': clientID,
+	                        'Authorization': 'Bearer ' + authToken,
+	                    }
+	                });
 
-		            jQuery(".streams").mouseenter(function() {
-		                var channel = $(this).data('channel');
-		                $(this).append("<iframe class='tempVid' src='https://player.twitch.tv/?channel=" + channel + "&muted=true&parent=mytwitchplayer.fr'></iframe>");
-		            }).mouseleave(function() {
-		                $('.tempVid').remove();
-		            });
+	                const userMap = {};
+	                usersResponse.data.forEach(user => {
+	                    userMap[user.id] = user.profile_image_url;
+	                });
 
-		            jQuery(document).on('submit', '.add-stream-form', function(e) {
-		                e.stopImmediatePropagation();
-		                const streamName = jQuery(this).find('input[name="add_stream"]').val();
-		                var newChannel = {
-		                    'name': streamName,
-		                    'size': 22,
-		                    'color': 'dark-opacity',
-		                    'theme': 'default',
-		                };
+	                jQuery(streamData.data).each(function(i, val) {
+	                    var thumbnail_resized = val.thumbnail_url.replace(/{width}|{height}/gi, 400);
+	                    jQuery(".hometext .suggestion").append(
+	                        "<form class='add-stream-form streams' data-channel='" + val.user_login + "' method='post'>" +
+	                        "<div style='background-image: url(" + thumbnail_resized + ");background-size: cover;' class='paddbox'>" +
+	                        "<div class='channel-logo'>" +
+	                        "<img src='" + userMap[val.user_id] + "' alt='" + val.user_name + " logo' />" +
+	                        "</div>" +
+	                        "<div class='online-status live-is-true'></div>" +
+	                        "<input type='hidden' name='add_stream' value='" + val.user_login + "'>" +
+	                        "<button type='submit' class='suggest' title='" + val.title + "'>" +
+	                        val.user_name + "<small class='counter'>" + val.viewer_count.toLocaleString() + "</small>" +
+	                        "<small>" + val.game_name + "</small>" +
+	                        (language ? "<small class='language'>" + val.language.toUpperCase() + "</small>" : "") +
+	                        "</button>" +
+	                        "</div>" +
+	                        "</form>"
+	                    );
+	                });
 
-		                const currentConfig = JSON.parse(localStorage.getItem('JsonTwitchConfig') || '[]');
-		                currentConfig.push(newChannel);
-		                localStorage.setItem('JsonTwitchConfig', JSON.stringify(currentConfig));
-		            });
-		        }
-          }
-      });
-  }
+	                // Conserver le comportement hover pour la preview
+	                jQuery(".streams").mouseenter(function() {
+	                    var channel = jQuery(this).data('channel');
+	                    jQuery(this).append("<iframe class='tempVid' src='https://player.twitch.tv/?channel=" + channel + "&muted=true&parent=mytwitchplayer.fr'></iframe>");
+	                }).mouseleave(function() {
+	                    jQuery('.tempVid').remove();
+	                });
+	            }
+	        }
+	    });
+	}
 	
   jQuery('#language-filter, #category-filter').on('change', function() {
       loadStreams(); // Recharger les streams avec les nouveaux filtres
