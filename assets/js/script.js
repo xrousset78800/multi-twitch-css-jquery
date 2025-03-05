@@ -928,6 +928,22 @@ jQuery(document).ready(async function(){
 	                        "</form>"
 	                    );
 	                });
+	                
+                    // Mettre à jour également le code pour loadStreams()
+                    jQuery(document).on('submit', '.add-stream-form', function(e) {
+                        e.stopImmediatePropagation();
+                        const streamName = jQuery(this).find('input[name="add_stream"]').val();
+                        var newChannel = {
+                            'name': streamName,
+                            'size': 22,
+                            'color': 'dark-opacity',
+                            'theme': 'default',
+                        };
+
+                        const currentConfig = JSON.parse(localStorage.getItem('JsonTwitchConfig') || '[]');
+                        currentConfig.push(newChannel);
+                        localStorage.setItem('JsonTwitchConfig', JSON.stringify(currentConfig));
+                    });
 
 	                // Conserver le comportement hover pour la preview
 	                jQuery(".streams").mouseenter(function() {
@@ -1494,19 +1510,14 @@ if (params.length > 0) streamUrl += '?' + params.join('&');
 
 /*
 
-- pluie d'emotes + option
-
 - webhooks >> stream.online, stream.offline, channel.ban, channel.raid	
 - cookie "emotes pref"
 - reply to 
 - droits emotes
-- scroll fix 
 
 OMG le strem se lance mute bordel !
 
 404 kraken/chat/emoticon si loggué
-
-https://dev.to/codesphere/how-to-create-a-twitch-chat-game-with-javascript-deg
 
 STEP 1 ??
 https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=vn9avm6d14fgwfyq0hc655klhwdcv8&redirect_uri=https://mytwitchplayer.fr/&scope=channel%3Amanage%3Apolls+channel%3Aread%3Apolls&state=c3ab8aa609ea11e793ae92361f002671
