@@ -357,6 +357,7 @@ function updateStatuses(response, scamersToShowList, firstIteration) {
 			jQuery('input'+scamersToShowList[i]).parent('.channels').addClass('selected');
 		}	
 		jQuery(".channel-form [data-counter]").text(jQuery(".channels.selected").length+" / 9");
+		jQuery(".channel-form .reset-channels").attr("data-items", jQuery(".channels.selected").length );
 
 	} else {	
 		for(var i = 0; i<old.length;i++) {
@@ -443,8 +444,18 @@ function updateScammerStatus(online, scamer, userInfos) {
 		}
 		
 		jQuery(".channel-form [data-counter]").text(jQuery(".channels.selected").length+ " / 9");
+		jQuery(".channel-form .reset-channels").attr("data-items", jQuery(".channels.selected").length );
 	});	
 	
+	jQuery(".channel-form [type=reset]").on('click', function(e) {
+		e.preventDefault();
+		jQuery(".channels.selected").each(function(){
+			jQuery(this).removeClass('selected');
+		});
+		jQuery(".channel-form [data-counter]").text("0 / 9");
+		jQuery(".channel-form .reset-channels").attr("data-items", 0 );
+	});
+
 	jQuery(".channels").hover(function(e){
 	    const rect = this.getBoundingClientRect();
 	    jQuery(".title").css("top", rect.top + "px");
@@ -778,20 +789,21 @@ jQuery(document).ready(async function(){
 	            success: function(c) {
 	                if (c.data.length > 0) {
 	                    jQuery(".suggestion .streams").remove();
-
+	                    console.log(c.data);
 	                    jQuery(c.data).each(function(key, val) {
+	                    	console.log(val.thumbnail_url);
 	                        jQuery(".suggestion").append(
 	                            "<form class='add-stream-form streams' data-channel='" + val.broadcaster_login + "' method='post'> " +
 	                            "<div style='background-image: url(" + val.thumbnail_url + ");background-size: cover;' class='paddbox'> " +
 	                            "<div class='channel-logo'>" +
-	                            "<img src='" + val.profile_image_url + "' alt='" + val.display_name + " logo' />" +
+	                            "<img src='" + val.thumbnail_url + "' alt='" + val.display_name + " logo' />" +
 	                            "</div>" +
 	                            "<div class='online-status live-is-" + val.is_live + "'></div>" +
 	                            "<input type='hidden' name='add_stream' value='" + val.broadcaster_login + "'>" +
 	                            "<button type='submit' class='suggest' title='" + val.title + "'>" +
 	                            val.display_name +
 	                            "<small>" + val.game_name + "</small>" +
-	                            (language ? "<small class='language'>" + val.broadcaster_language.toUpperCase() + "</small>" : "") +
+	                            (language ? "<small class='language fi fi-"+val.broadcaster_language+"'></small>" : "") +
 	                            "</button>" +
 	                            "</div> " +
 	                            "</form>"
@@ -922,7 +934,7 @@ jQuery(document).ready(async function(){
 	                        "<button type='submit' class='suggest' title='" + val.title + "'>" +
 	                        val.user_name + "<small class='counter'>" + val.viewer_count.toLocaleString() + "</small>" +
 	                        "<small>" + val.game_name + "</small>" +
-	                        (language ? "<small class='language'>" + val.language.toUpperCase() + "</small>" : "") +
+	                        (language ? "<small class='language fi fi-"+val.language+"'></small>" : "") +
 	                        "</button>" +
 	                        "</div>" +
 	                        "</form>"
