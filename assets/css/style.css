@@ -2262,6 +2262,12 @@ a[name=help]:hover{
     line-height: 1.2rem;
     text-align: left;
 }
+@media (max-width: 800px) {
+    .streams .paddbox button.suggest {
+        padding: 5px;
+        padding-top: 55px;
+    }
+}
 
 .streams .paddbox small.counter {
     position: absolute;
@@ -2438,5 +2444,5 @@ small.language:before {
 
 .select2 .select2-selection__placeholder {
     color: white;
-    
+
 }

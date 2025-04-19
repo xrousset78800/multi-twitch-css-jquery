@@ -835,7 +835,7 @@ jQuery(document).ready(async function(){
 	                            "<button type='submit' class='suggest' title='" + val.title + "'>" +
 	                            val.display_name +
 	                            "<small>" + val.game_name + "</small>" +
-	                            (language ? "<small class='language fi fi-"+langToFlag[val.broadcaster_language]+"'></small>" : "") +
+	                            "<small class='language fi fi-"+langToFlag[val.broadcaster_language]+"'></small>" +
 	                            "</button>" +
 	                            "</div> " +
 	                            "</form>"
@@ -966,7 +966,7 @@ jQuery(document).ready(async function(){
 	                        "<button type='submit' class='suggest' title='" + val.title + "'>" +
 	                        val.user_name + "<small class='counter'>" + val.viewer_count.toLocaleString() + "</small>" +
 	                        "<small>" + val.game_name + "</small>" +
-	                        (language ? "<small class='language fi fi-"+langToFlag[val.language]+"'></small>" : "") +
+	                        "<small class='language fi fi-"+langToFlag[val.language]+"'></small>" +
 	                        "</button>" +
 	                        "</div>" +
 	                        "</form>"
