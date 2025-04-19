@@ -31,7 +31,6 @@ const langToFlag = {
   uk: 'ua',
   vi: 'vn'
 };
-
 let authToken;
 let tokenLoaded = new Promise(async (resolve, reject) => {
   try {
@@ -61,7 +60,8 @@ async function getAuthToken() {
 }
 
 const getLangueNormalisee = () => {
-  return ['fr', 'en', 'de', 'es'].includes(navigator.language.slice(0, 2)) 
+  return [ "ar","bg","zh","cs","da","nl","en","fi","fr","de","el","he","hi","hu","id","it","ja","ko","ms","no","pl","pt","ro","ru","sk","es","sv","th","tr","uk","vi"
+].includes(navigator.language.slice(0, 2)) 
     ? navigator.language.slice(0, 2) 
     : 'fr';
 }
@@ -102,7 +102,7 @@ async function loadTopCategories() {
                     image: game.box_art_url.replace(/{width}|{height}/gi, 30)
                 }))
             ];
-            console.log(formattedData)
+
             // Initialiser Select2
             gameSelect.select2({
                 data: formattedData,
@@ -114,6 +114,72 @@ async function loadTopCategories() {
         }
     });
 }
+
+async function loadLanguages(lang) {
+    // Liste manuelle des langues compatibles Twitch + codes pays pour les drapeaux
+    const twitchLanguages = [
+        { id: '0', text: 'Toutes les langues' },
+        { id: 'ar', text: 'Arabe', image: `https://flagcdn.com/24x18/sa.png` },
+        { id: 'bg', text: 'Bulgare', image: `https://flagcdn.com/24x18/bg.png` },
+        { id: 'zh', text: 'Chinois', image: `https://flagcdn.com/24x18/cn.png` },
+        { id: 'cs', text: 'Tchèque', image: `https://flagcdn.com/24x18/cz.png` },
+        { id: 'da', text: 'Danois', image: `https://flagcdn.com/24x18/dk.png` },
+        { id: 'nl', text: 'Néerlandais', image: `https://flagcdn.com/24x18/nl.png` },
+        { id: 'en', text: 'Anglais', image: `https://flagcdn.com/24x18/gb.png` },
+        { id: 'fi', text: 'Finnois', image: `https://flagcdn.com/24x18/fi.png` },
+        { id: 'fr', text: 'Français', image: `https://flagcdn.com/24x18/fr.png` },
+        { id: 'de', text: 'Allemand', image: `https://flagcdn.com/24x18/de.png` },
+        { id: 'el', text: 'Grec', image: `https://flagcdn.com/24x18/gr.png` },
+        { id: 'he', text: 'Hébreu', image: `https://flagcdn.com/24x18/il.png` },
+        { id: 'hi', text: 'Hindi', image: `https://flagcdn.com/24x18/in.png` },
+        { id: 'hu', text: 'Hongrois', image: `https://flagcdn.com/24x18/hu.png` },
+        { id: 'id', text: 'Indonésien', image: `https://flagcdn.com/24x18/id.png` },
+        { id: 'it', text: 'Italien', image: `https://flagcdn.com/24x18/it.png` },
+        { id: 'ja', text: 'Japonais', image: `https://flagcdn.com/24x18/jp.png` },
+        { id: 'ko', text: 'Coréen', image: `https://flagcdn.com/24x18/kr.png` },
+        { id: 'ms', text: 'Malais', image: `https://flagcdn.com/24x18/my.png` },
+        { id: 'no', text: 'Norvégien', image: `https://flagcdn.com/24x18/no.png` },
+        { id: 'pl', text: 'Polonais', image: `https://flagcdn.com/24x18/pl.png` },
+        { id: 'pt', text: 'Portugais', image: `https://flagcdn.com/24x18/pt.png` },
+        { id: 'ro', text: 'Roumain', image: `https://flagcdn.com/24x18/ro.png` },
+        { id: 'ru', text: 'Russe', image: `https://flagcdn.com/24x18/ru.png` },
+        { id: 'sk', text: 'Slovaque', image: `https://flagcdn.com/24x18/sk.png` },
+        { id: 'es', text: 'Espagnol', image: `https://flagcdn.com/24x18/es.png` },
+        { id: 'sv', text: 'Suédois', image: `https://flagcdn.com/24x18/se.png` },
+        { id: 'th', text: 'Thaï', image: `https://flagcdn.com/24x18/th.png` },
+        { id: 'tr', text: 'Turc', image: `https://flagcdn.com/24x18/tr.png` },
+        { id: 'uk', text: 'Ukrainien', image: `https://flagcdn.com/24x18/ua.png` },
+        { id: 'vi', text: 'Vietnamien', image: `https://flagcdn.com/24x18/vn.png` },
+    ];
+
+    const languageSelect = jQuery('#language-filter');
+
+    // Initialiser Select2
+    languageSelect.select2({
+        data: twitchLanguages,
+        templateResult: formatLanguage,
+        templateSelection: formatLanguage
+    });
+
+    if (lang) {
+    	languageSelect.val(lang); 
+		languageSelect.trigger('change');
+    }
+
+    // Fonctions pour afficher texte + image
+    function formatLanguage(lang) {
+    	if (!lang.id) return lang.text
+
+        const $lang = $(`
+            <span>
+                ${lang.image ? `<img src="${lang.image}" class="flag-icon" style="width:18px; height:12px; margin-right:8px;"/>` : ''}
+                ${lang.text}
+            </span>
+        `);
+        return $lang;
+    }
+}
+
 
 function formatGame(game) {
     if (!game.id) return game.text; // Pour l'option "Toutes les catégories"
@@ -797,10 +863,11 @@ function stopPropagation(id, event) {
 }
 
 jQuery(document).ready(async function(){
-	jQuery('#language-filter').val(getLangueNormalisee());
 	var cache = {};
 	const authToken = await getAuthToken();
 	loadTopCategories();
+	loadLanguages(getLangueNormalisee());
+
 	jQuery('#import').autocomplete({
 	    minLength: 2,
 	    source: function(request, response) {
@@ -922,9 +989,8 @@ jQuery(document).ready(async function(){
 	    const gameId = jQuery('#category-filter').val();
 
 	    let streamUrl = 'https://api.twitch.tv/helix/streams?first=20';
-	    if (language) streamUrl += '&language=' + language;
+	    if (language !== "0" && language) streamUrl += '&language=' + language;
 	    if (gameId) streamUrl += '&game_id=' + gameId;
-
 	    const authToken = await getAuthToken();
 	    jQuery(".hometext .suggestion").empty();
 

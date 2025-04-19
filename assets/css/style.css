@@ -2442,7 +2442,7 @@ small.language:before {
     min-width: 20%;
 }
 
-.select2 .select2-selection__placeholder {
-    color: white;
+.select2 .select2-selection__placeholder, .select2-selection__rendered {
+    color: white !important;
 
 }
