@@ -1,3 +1,36 @@
+const langToFlag = {
+  ar: 'sa',      // Arabe → Arabie Saoudite
+  bg: 'bg',
+  zh: 'cn',      // Chinois → Chine
+  cs: 'cz',
+  da: 'dk',
+  nl: 'nl',
+  en: 'gb',      // ou 'us'
+  fi: 'fi',
+  fr: 'fr',
+  de: 'de',
+  el: 'gr',
+  he: 'il',
+  hi: 'in',
+  hu: 'hu',
+  id: 'id',
+  it: 'it',
+  ja: 'jp',
+  ko: 'kr',
+  ms: 'my',
+  no: 'no',
+  pl: 'pl',
+  pt: 'pt',
+  ro: 'ro',
+  ru: 'ru',
+  sk: 'sk',
+  es: 'es',
+  sv: 'se',
+  th: 'th',
+  tr: 'tr',
+  uk: 'ua',
+  vi: 'vn'
+};
 
 let authToken;
 let tokenLoaded = new Promise(async (resolve, reject) => {
@@ -62,14 +95,14 @@ async function loadTopCategories() {
             
             // Transformer les données pour Select2
             const formattedData = [
-                { id: '', text: 'Toutes les catégories' }, // Option par défaut
+                { id: '0', text: 'Toutes les catégories', image: '' }, // Option par défaut
                 ...response.data.map(game => ({
                     id: game.id,
                     text: game.name,
                     image: game.box_art_url.replace(/{width}|{height}/gi, 30)
                 }))
             ];
-
+            console.log(formattedData)
             // Initialiser Select2
             gameSelect.select2({
                 data: formattedData,
@@ -791,7 +824,6 @@ jQuery(document).ready(async function(){
 	                    jQuery(".suggestion .streams").remove();
 	                    console.log(c.data);
 	                    jQuery(c.data).each(function(key, val) {
-	                    	console.log(val.thumbnail_url);
 	                        jQuery(".suggestion").append(
 	                            "<form class='add-stream-form streams' data-channel='" + val.broadcaster_login + "' method='post'> " +
 	                            "<div style='background-image: url(" + val.thumbnail_url + ");background-size: cover;' class='paddbox'> " +
@@ -803,7 +835,7 @@ jQuery(document).ready(async function(){
 	                            "<button type='submit' class='suggest' title='" + val.title + "'>" +
 	                            val.display_name +
 	                            "<small>" + val.game_name + "</small>" +
-	                            (language ? "<small class='language fi fi-"+val.broadcaster_language+"'></small>" : "") +
+	                            (language ? "<small class='language fi fi-"+langToFlag[val.broadcaster_language]+"'></small>" : "") +
 	                            "</button>" +
 	                            "</div> " +
 	                            "</form>"
@@ -934,7 +966,7 @@ jQuery(document).ready(async function(){
 	                        "<button type='submit' class='suggest' title='" + val.title + "'>" +
 	                        val.user_name + "<small class='counter'>" + val.viewer_count.toLocaleString() + "</small>" +
 	                        "<small>" + val.game_name + "</small>" +
-	                        (language ? "<small class='language fi fi-"+val.language+"'></small>" : "") +
+	                        (language ? "<small class='language fi fi-"+langToFlag[val.language]+"'></small>" : "") +
 	                        "</button>" +
 	                        "</div>" +
 	                        "</form>"
@@ -1004,15 +1036,15 @@ jQuery(document).ready(async function(){
 	StartThisShit(scamConf);	
 	loadStreams();
 	// D'abord, vérifions les filtres actuels
-const language = jQuery('#language-filter').val();
-const gameId = jQuery('#category-filter').val();
+	const language = jQuery('#language-filter').val();
+	const gameId = jQuery('#category-filter').val();
 
-// Construction de l'URL avec les filtres
-let streamUrl = 'https://api.twitch.tv/helix/streams';
-let params = [];
-if (language) params.push('language=' + language);
-if (gameId) params.push('game_id=' + gameId);
-if (params.length > 0) streamUrl += '?' + params.join('&');
+	// Construction de l'URL avec les filtres
+	let streamUrl = 'https://api.twitch.tv/helix/streams';
+	let params = [];
+	if (language) params.push('language=' + language);
+	if (gameId) params.push('game_id=' + gameId);
+	if (params.length > 0) streamUrl += '?' + params.join('&');
 
 
 

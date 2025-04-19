@@ -2431,3 +2431,12 @@ small.language:before {
 .channel-form input[data-items="0"] {
     opacity: 0;
 }
+
+.select2 {
+    min-width: 20%;
+}
+
+.select2 .select2-selection__placeholder {
+    color: white;
+    
+}
