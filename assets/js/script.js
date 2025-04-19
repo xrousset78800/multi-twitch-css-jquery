@@ -876,6 +876,8 @@ jQuery(document).ready(async function(){
 	        const gameId = jQuery('#category-filter').val();
 
 	        let url = 'https://api.twitch.tv/helix/search/channels?query=' + request.term;
+	        url += '&first=20';
+
 	        if (language) url += '&broadcaster_language=' + language;
 	        if (gameId) url += '&game_id=' + gameId;
 
@@ -990,10 +992,10 @@ jQuery(document).ready(async function(){
 
 	    let streamUrl = 'https://api.twitch.tv/helix/streams?first=20';
 	    if (language !== "0" && language) streamUrl += '&language=' + language;
-	    if (gameId) streamUrl += '&game_id=' + gameId;
+	    if (gameId !== "0" && gameId) streamUrl += '&game_id=' + gameId;
 	    const authToken = await getAuthToken();
 	    jQuery(".hometext .suggestion").empty();
-
+	    console.log(streamUrl)
 	    jQuery.ajax({
 	        type: 'GET',
 	        url: streamUrl,
