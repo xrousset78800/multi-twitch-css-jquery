@@ -1501,19 +1501,10 @@ select[name=qualities] option{
 	margin-bottom: 10px;
     padding: 8px;
 	padding-left: 10px;
-	
+    min-width: 20%;
     color: white;
     border-bottom: 1px solid white;
 }
-
-
-
-
-
-
-
-
-
 
 .background {
   width: 100vw;
@@ -1803,7 +1794,7 @@ select[name=qualities] option{
     position: relative;
 	vertical-align: top;
     margin: 0;
-	padding: 3px;
+	padding: 1%;
     line-height: 12px;
 	cursor: pointer;
 }
@@ -2350,8 +2341,9 @@ a[name=help]:hover{
 
 .search-filters {
     display: flex;
-    gap: 10px;
-    margin-bottom: 15px;
+    gap: 25px;
+    margin: 30px auto;
+    justify-content: center;
 }
 
 .search-filters select, .search-filters .select2  {
@@ -2445,4 +2437,76 @@ small.language:before {
 .select2 .select2-selection__placeholder, .select2-selection__rendered {
     color: white !important;
 
+}
+
+/* Style des sondages */
+.twitch-poll {
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 4px;
+  margin: 10px 0;
+  padding: 10px;
+  color: #fff;
+    position: absolute;
+    top: 0;
+    z-index: 3;
+}
+
+.poll-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.poll-timer {
+  background: #9146FF;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.8em;
+}
+
+.poll-options {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.poll-option {
+  position: relative;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  padding: 5px 8px;
+  cursor: pointer;
+  overflow: hidden;
+  height: 28px;
+  line-height: 18px;
+}
+
+.poll-option:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.poll-option.selected {
+  border: 1px solid #9146FF;
+}
+
+.option-text {
+  position: relative;
+  z-index: 2;
+}
+
+.option-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: rgba(145, 70, 255, 0.5);
+  z-index: 1;
+}
+
+.option-percent {
+  position: absolute;
+  right: 8px;
+  top: 5px;
+  z-index: 2;
+  font-size: 0.8em;
 }
