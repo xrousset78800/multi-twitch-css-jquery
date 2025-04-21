@@ -619,6 +619,34 @@ function loadClient(config){
 				client = new tmi.client(option);		
 				client.connect();
 
+
+				getAuthToken().then(token => {
+				  // Pour chaque chaîne que vous regardez
+				  for(var i=0; i<config["scamers"].length; i++) {
+				    const channelName = config["scamers"][i].substr(1);
+				    
+				    // Obtenir l'ID de la chaîne
+				    jQuery.ajax({
+				      type: 'GET',
+				      url: `https://api.twitch.tv/helix/users?login=${channelName}`,
+				      headers: {
+				        'Client-ID': clientID,
+				        'Authorization': 'Bearer ' + token
+				      },
+				      success: function(response) {
+				        if (response.data && response.data.length > 0) {
+				          const channelId = response.data[0].id;
+				          // Connecter au PubSub pour cette chaîne
+				          connectTwitchPubSub(token, channelId);
+				        }
+				      }
+				    });
+				  }
+				});
+
+
+
+
 				client.on('poll', (channel, username, options, status) => {
 				  handleTwitchPoll(channel, username, options, status);
 				});
@@ -1687,9 +1715,6 @@ function handleTwitchPoll(channel, username, options, status) {
     
     timerElement.text(`${secondsLeft}s`);
   }, 1000);
-  
-  // Scroll vers le bas
-  scrollToBottom(channel);
 }
 
 function votePoll(channel, pollId, choiceId) {
@@ -1720,6 +1745,8 @@ function votePoll(channel, pollId, choiceId) {
     });
   });
 }
+
+/*
 
 function simulateTwitchPoll(channel) {
   if (!channel) channel = jQuery('.viewer').first().attr('data-streamer');
@@ -1761,8 +1788,67 @@ jQuery(document).ready(function() {
       simulateTwitchPoll();
     });
   }, 2000);
-});
+});*/
 
+
+function connectTwitchPubSub(authToken, channelId) {
+  const ws = new WebSocket('wss://pubsub-edge.twitch.tv');
+  
+  ws.onopen = function() {
+    // Authentification au PubSub
+    const message = {
+      type: 'LISTEN',
+      data: {
+        topics: [`polls.${channelId}`], 
+        auth_token: authToken
+      }
+    };
+    ws.send(JSON.stringify(message));
+    
+    // Envoyer un PING toutes les 4 minutes pour maintenir la connexion
+    setInterval(() => {
+      ws.send(JSON.stringify({ type: 'PING' }));
+    }, 240000);
+  };
+  
+  ws.onmessage = function(event) {
+    const message = JSON.parse(event.data);
+    
+    if (message.type === 'MESSAGE') {
+      if (message.data.topic.startsWith('polls.')) {
+        const pollData = JSON.parse(message.data.message);
+        handleRealTwitchPoll(pollData);
+      }
+    }
+  };
+  
+  return ws;
+}
+
+function handleRealTwitchPoll(pollData) {
+  // Les données de poll reçues du PubSub
+  const poll = pollData.data.poll;
+  const channel = '#' + pollData.data.broadcaster_user_login;
+  
+  // Formatage des données pour notre handler existant
+  const status = {
+    id: poll.id,
+    title: poll.title,
+    options: poll.choices.map(choice => ({
+      id: choice.id,
+      title: choice.title,
+      votes: choice.votes,
+      votes_percent: choice.votes_count_normalized
+    })),
+    status: poll.status,
+    started_at: poll.started_at,
+    ends_at: poll.ends_at,
+    total_votes: poll.votes.total
+  };
+  
+  // Utiliser notre fonction existante
+  handleTwitchPoll(channel, pollData.data.broadcaster_user_login, status.options, status);
+}
 /*
 
 - webhooks >> stream.online, stream.offline, channel.ban, channel.raid	
