@@ -747,17 +747,16 @@ function loadClient(config){
 						});
 					}
 				});
-				jQuery('.postmessage').prepend("<a class='authbtn' onclick='removeToken();'><p>>> "+name+"</p></a> ");					
+				jQuery('.postmessage').prepend("<a class='authbtn' onclick='removeToken();'><p>"+name+"</p></a> ");					
 	   },
 	   error: function(event){
 			name = null;
-			console.log("log nok");
 			const option = {
 			  channels: config["scamers"]
 			};
 			client = new tmi.client(option);
 			client.connect();
-			jQuery('.postmessage').prepend("<a class='authbtn' title='Active chat/Import follows' href='https://id.twitch.tv/oauth2/authorize?response_type=token&force_verify=false&client_id="+clientID+"&redirect_uri="+basePath+"&scope=user%3Aread%3Afollows+chat%3Aread+chat%3Aedit+channel%3Aread%3Apolls+channel%3Amanage%3Apolls&state=c3ab8aa609ea11e793ae92361f002671'><h2>Login</h2></a>");
+			jQuery('.postmessage').prepend("<a class='authbtn' title='Active chat/Import follows' href='https://id.twitch.tv/oauth2/authorize?response_type=token&force_verify=false&client_id="+clientID+"&redirect_uri="+basePath+"&scope=user%3Aread%3Afollows+chat%3Aread+chat%3Aedit+channel%3Aread%3Apolls+channel%3Amanage%3Apolls&state=c3ab8aa609ea11e793ae92361f002671'></a>");
 			deleteCookie('pleaseLoad');
 	   },
 	   complete: function(e){

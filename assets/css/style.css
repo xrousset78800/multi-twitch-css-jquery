@@ -333,7 +333,7 @@ body {
 	right: 55px;	
 }
 .status.hide .title{
-	right: 300px;	
+    right: 283px;	
 }
 
 .home.row {
@@ -817,17 +817,25 @@ height: 50%;
 }
 
 .authbtn {
-	padding-left: 21px;
-    font-size: 9px;
+    font-size: 17px;
     color: white;
     cursor: pointer;
     display: inline-block;
+    background: url("../img/login.svg");
+    width: 40px;
+    height: 40px;
+    display: inline-block;
+    background-size: contain;  
 }
 .authbtn:hover h2{
 	color: #bbbbbb;
 }
-.authbtn h2 {
-	display: initial;
+.authbtn p {
+    position: absolute;
+    width: 309px;
+    text-align: left;
+    padding-left: 40px;
+    top: 15px;
 }
 
 [name=spam-area] {
