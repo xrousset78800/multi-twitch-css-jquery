@@ -338,6 +338,12 @@ body {
 
 .home.row {
     position: absolute;
+    overflow: hidden;
+    left: 0;
+    right: 0;
+    text-align: center;
+    padding: 0;
+    margin: 0;    
 
 }
 .menu-scroll {
@@ -801,7 +807,10 @@ height: 50%;
 }
 
 .postmessage {
-	display: inline-block;
+    display: inline-block;
+    position: absolute;
+    left: 5px;
+    top: 10px;
 }
 
 .authbtn {
@@ -1077,7 +1086,7 @@ body[data-layout=studio] [name=spam-area] {
 	position: absolute;
 	left: 0;
 	right:0;
-	top: 0;
+	top: 100%;
 	margin: 0 auto;
 	width: fit-content;
     text-align: center;
@@ -1343,8 +1352,8 @@ h4{
     display: inline-block;
 }
 
-.viewer0video .switchers {
-    display: none;
+body:not(.viewer0video) .switchers {
+    top: 65px;
 }
 .fullscreen .switchers {
     top: initial;
@@ -1794,7 +1803,7 @@ select[name=qualities] option{
     position: relative;
 	vertical-align: top;
     margin: 0;
-	padding: 1%;
+	padding: 10px 15px;
     line-height: 12px;
 	cursor: pointer;
 }
@@ -1867,8 +1876,8 @@ select[name=qualities] option{
 	height: 100%;
 	top: 0;
     left: 0;
+    
 }
-
 
 .suggest {
 	color: white;
@@ -1901,6 +1910,10 @@ a[name=help]{
     margin-left: 10px;
     font-size: 12px;
 	transition: border-color 0.5s, color 0.5s, background 0.5s;
+    position: fixed;
+    bottom: 11px;
+    right: 20px;
+    z-index: 1;  
 }
 
 a[name=help]:hover{

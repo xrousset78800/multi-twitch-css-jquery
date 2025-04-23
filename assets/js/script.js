@@ -550,6 +550,8 @@ function updateScammerStatus(online, scamer, userInfos) {
 		e.preventDefault();
 		jQuery(".channels.selected").each(function(){
 			jQuery(this).removeClass('selected');
+			let channel = jQuery(this).find('input');
+			channel.prop("checked", false  );
 		});
 		jQuery(".channel-form [data-counter]").text("0 / 9");
 		jQuery(".channel-form .reset-channels").attr("data-items", 0 );
@@ -745,7 +747,7 @@ function loadClient(config){
 						});
 					}
 				});
-				jQuery('.postmessage').prepend("<a class='authbtn' onclick='removeToken();'><p>Logged as "+name+"</p><h2>Logout</h2></a> ");					
+				jQuery('.postmessage').prepend("<a class='authbtn' onclick='removeToken();'><p>>> "+name+"</p></a> ");					
 	   },
 	   error: function(event){
 			name = null;
@@ -755,7 +757,7 @@ function loadClient(config){
 			};
 			client = new tmi.client(option);
 			client.connect();
-			jQuery('.postmessage').prepend("<a class='authbtn' href='https://id.twitch.tv/oauth2/authorize?response_type=token&force_verify=false&client_id="+clientID+"&redirect_uri="+basePath+"&scope=user%3Aread%3Afollows+chat%3Aread+chat%3Aedit+channel%3Aread%3Apolls+channel%3Amanage%3Apolls&state=c3ab8aa609ea11e793ae92361f002671'><h2 title='Active le chat sur les streams'>Login Twitch</h2></a>");
+			jQuery('.postmessage').prepend("<a class='authbtn' title='Active chat/Import follows' href='https://id.twitch.tv/oauth2/authorize?response_type=token&force_verify=false&client_id="+clientID+"&redirect_uri="+basePath+"&scope=user%3Aread%3Afollows+chat%3Aread+chat%3Aedit+channel%3Aread%3Apolls+channel%3Amanage%3Apolls&state=c3ab8aa609ea11e793ae92361f002671'><h2>Login</h2></a>");
 			deleteCookie('pleaseLoad');
 	   },
 	   complete: function(e){
@@ -962,7 +964,7 @@ jQuery(document).ready(async function(){
 	                    // Conserver le comportement hover pour la preview
 	                    jQuery(".streams").mouseenter(function() {
 	                        var channel = jQuery(this).data('channel');
-	                        jQuery(this).append("<iframe class='tempVid' src='https://player.twitch.tv/?channel=" + channel + "&muted=true&parent=mytwitchplayer.fr'></iframe>");
+	                        jQuery(this).find(".paddbox").append("<iframe class='tempVid' src='https://player.twitch.tv/?channel=" + channel + "&muted=true&parent=mytwitchplayer.fr'></iframe>");
 	                    }).mouseleave(function() {
 	                        jQuery('.tempVid').remove();
 	                    });
@@ -1718,15 +1720,12 @@ function handleTwitchPoll(channel, username, options, status) {
 }
 
 function votePoll(channel, pollId, choiceId) {
-  // Cette fonction envoie le vote au serveur Twitch
-  // Notez que vous devrez ajouter la permission "channel:manage:polls" à vos scopes OAuth
-  
   getAuthToken().then(token => {
     const channelName = channel.substr(1); // Enlever le # du début
     
     jQuery.ajax({
       type: 'POST',
-      url: `https://api.twitch.tv/helix/polls/votes`,
+      url: `https://api.twitch.tv/helix/polls`,
       headers: {
         'Client-ID': clientID,
         'Authorization': 'Bearer ' + token,
@@ -1746,52 +1745,7 @@ function votePoll(channel, pollId, choiceId) {
   });
 }
 
-/*
-
-function simulateTwitchPoll(channel) {
-  if (!channel) channel = jQuery('.viewer').first().attr('data-streamer');
-  channel = '#' + channel;
-  
-  // Générer un ID unique pour le sondage
-  const pollId = 'poll_' + Math.random().toString(36).substr(2, 9);
-  
-  // Créer des options aléatoires
-  const options = [
-    { id: 'opt1', title: 'Option 1', votes_percent: Math.floor(Math.random() * 60) },
-    { id: 'opt2', title: 'Option 2', votes_percent: Math.floor(Math.random() * 40) },
-    { id: 'opt3', title: 'Option 3', votes_percent: Math.floor(Math.random() * 30) },
-    { id: 'opt4', title: 'Option 4', votes_percent: Math.floor(Math.random() * 20) }
-  ];
-  
-  // Créer un objet de statut de sondage
-  const status = {
-    id: pollId,
-    title: 'Poll (wip)',
-    options: options,
-    status: 'ACTIVE',
-    ends_at: new Date(Date.now() + 30000).toISOString() // Termine dans 30 secondes
-  };
-  
-  // Appeler notre gestionnaire de sondage
-  handleTwitchPoll(channel, 'TestUser', options, status);
-  
-  console.log('Sondage de test généré pour le canal:', channel);
-}
-
-// Ajouter un bouton de test dans l'interface
-jQuery(document).ready(function() {
-  // Ajouter après le chargement de la page
-  setTimeout(() => {
-    jQuery('.switchers').append('<span class="switcher button button--sacnite" id="test-poll">Poll (wip)</span>');
-    
-    jQuery('#test-poll').on('click', function() {
-      simulateTwitchPoll();
-    });
-  }, 2000);
-});*/
-
-
-function connectTwitchPubSub(authToken, channelId) {
+function connectTwitchPubSub(userToken, channelId) {
   const ws = new WebSocket('wss://pubsub-edge.twitch.tv');
   
   ws.onopen = function() {
@@ -1800,7 +1754,7 @@ function connectTwitchPubSub(authToken, channelId) {
       type: 'LISTEN',
       data: {
         topics: [`polls.${channelId}`], 
-        auth_token: authToken
+        auth_token: userToken
       }
     };
     ws.send(JSON.stringify(message));
@@ -1849,6 +1803,7 @@ function handleRealTwitchPoll(pollData) {
   // Utiliser notre fonction existante
   handleTwitchPoll(channel, pollData.data.broadcaster_user_login, status.options, status);
 }
+
 /*
 
 - webhooks >> stream.online, stream.offline, channel.ban, channel.raid	
