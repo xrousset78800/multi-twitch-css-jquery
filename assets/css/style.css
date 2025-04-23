@@ -349,7 +349,7 @@ body {
 .menu-scroll {
 	position: relative;
     width: 100%;
-    max-height: 500px;
+    height: 88%;
 	padding: 10px 0;
     overflow-y: scroll;
 }
@@ -404,6 +404,7 @@ body {
     text-align: center;
 	transition: opacity 0.8s;
 	transition: right 0.5s;
+    height: 92%;
 }
 
 
@@ -457,6 +458,8 @@ body[data-layout=studio] .scroll.chatIcons {
 }
 .status form {
 	overflow: hidden;
+    position: relative;
+    height: 100%;    
 }
 .infos, .date {
 font-style: italic;
