@@ -447,12 +447,43 @@ body[data-layout=studio] .scroll.chatIcons {
 }
 
 .chatIcons img {
-	cursor: pointer;
-	padding: 2px;
+    cursor: pointer;
+    padding: 3px;
+    width: 28px;
+    height: 28px;
+    transition: transform 0.2s;
 }
 .chatIcons img:hover {
-	transform: scale(1.6);
+    transform: scale(1.8);
+    z-index: 10;
 }
+
+.emote-filter {
+    margin: 5px 0;
+    width: 100%;
+    padding: 2px 5px;
+    border: 1px solid white;
+    border-radius: 55px;
+    width: 98%;
+    height: 30px;
+}
+
+.emote-filter input {
+    width: 90%;
+    padding: 4px;
+    border-radius: 4px;
+    border: 1px solid #444;
+    background: rgba(0,0,0,0.2);
+    color: white;
+}
+
+.emote-category {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 5px;
+}
+
+
 .scroll.open.chatIcons {
     height: 150px;
 }

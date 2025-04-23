@@ -665,12 +665,11 @@ function loadClient(config){
 					
 					const formScam = jQuery('form[name=spam-area]');	
 					
-					jQuery(".chatIcons").append("<h6>Generic</h6>");
-					//if(emotesChannels["global"]){
-						for(var i=0; i<emotesChannels["global"].length; i++) {
-							jQuery(".chatIcons").append("<img title='"+emotesChannels["global"][i]["name"]+"' data-key='"+emotesChannels["global"][i]["name"]+"' width='20' height='20' src='"+emotesChannels["global"][i]["images"]["url_1x"]+"' />");
-						}
-					//}
+					jQuery(".chatIcons").append("<div class='emote-filter'><input type='text' placeholder='Filtrer emotes...' /></div><h6>Generic</h6><div class='emote-category global'>");
+					for(var i=0; i<emotesChannels["global"].length; i++) {
+						jQuery(".chatIcons .emote-category.global").append("<img title='"+emotesChannels["global"][i]["name"]+"' data-key='"+emotesChannels["global"][i]["name"]+"' data-category='global' src='"+emotesChannels["global"][i]["images"]["url_1x"]+"' />");
+					}
+					jQuery(".chatIcons").append("</div>");
 					for(var j=0; j<config["scamers"].length; j++) {
 						var name = config["scamers"][j].substr(1);
 						
@@ -682,9 +681,16 @@ function loadClient(config){
 						}
 					}
 					
+
+
 					jQuery('.emoteschat').click(function(){
-						jQuery(this).next().toggleClass("open");
+					    const container = jQuery(this).next();
+					    container.toggleClass("open");
+					    // Réinitialiser le filtre quand on ouvre/ferme
+					    container.find('.emote-filter input').val('');
+					    container.find('img').show();
 					});
+					
 					jQuery('.chatIcons img').click(function(elem){
 						let viewer = jQuery(this).parents(".viewer").attr("data-streamer");
 						let input = jQuery("input[name="+viewer+"]");
@@ -694,7 +700,21 @@ function loadClient(config){
 					formScam.click(function(e) {	
 						jQuery(this).find('input[type=text]').removeAttr('placeholder');
 					});
-					
+
+
+					jQuery('.chatIcons .emote-filter input').on('input', function() {
+					    const filter = jQuery(this).val().toLowerCase();
+					    jQuery('.chatIcons img').each(function() {
+					        const emote = jQuery(this).attr('title').toLowerCase();
+					        if (emote.includes(filter)) {
+					            jQuery(this).show();
+					        } else {
+					            jQuery(this).hide();
+					        }
+					    });
+					});
+
+
 					formScam.on("submit", function(e) {
 						e.stopPropagation();
 						e.preventDefault();
