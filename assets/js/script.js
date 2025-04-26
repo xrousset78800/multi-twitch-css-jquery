@@ -690,7 +690,7 @@ function loadClient(config){
 					    container.find('.emote-filter input').val('');
 					    container.find('img').show();
 					});
-					
+
 					jQuery('.chatIcons img').click(function(elem){
 						let viewer = jQuery(this).parents(".viewer").attr("data-streamer");
 						let input = jQuery("input[name="+viewer+"]");
@@ -931,8 +931,8 @@ jQuery(document).ready(async function(){
 	        let url = 'https://api.twitch.tv/helix/search/channels?query=' + request.term;
 	        url += '&first=20';
 
-	        if (language) url += '&broadcaster_language=' + language;
-	        if (gameId) url += '&game_id=' + gameId;
+	        if (language !== "0" && language) url += '&broadcaster_language=' + language;
+	        if (gameId !== "0" && gameId) url += '&game_id=' + gameId;
 
 	        jQuery.ajax({
 	            type: 'GET',
@@ -1156,11 +1156,10 @@ jQuery(document).ready(async function(){
 	loadEmotes(scamConf["scamers"]);
 	StartThisShit(scamConf);	
 	loadStreams();
-	// D'abord, vérifions les filtres actuels
+
 	const language = jQuery('#language-filter').val();
 	const gameId = jQuery('#category-filter').val();
 
-	// Construction de l'URL avec les filtres
 	let streamUrl = 'https://api.twitch.tv/helix/streams';
 	let params = [];
 	if (language) params.push('language=' + language);
@@ -1825,14 +1824,13 @@ function handleRealTwitchPoll(pollData) {
 
 /*
 
-- webhooks >> stream.online, stream.offline, channel.ban, channel.raid	
-- cookie "emotes pref"
+- webhooks >> polls.new >> channel.ban (+ modération), channel.raid	(+ autoredirect ?)
+- améliorer les emotes
 - reply to 
-- droits emotes
-
-OMG le strem se lance mute bordel !
-
-404 kraken/chat/emoticon si loggué
+- virer toute la session pour se relog sur un autre compte twitch
+- mettre les autres stream au hover comme sur stud
+- CORS + 404 ?
+- désactiver évenement autoscroll quand on change d'onglet
 
 STEP 1 ??
 https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=vn9avm6d14fgwfyq0hc655klhwdcv8&redirect_uri=https://mytwitchplayer.fr/&scope=channel%3Amanage%3Apolls+channel%3Aread%3Apolls&state=c3ab8aa609ea11e793ae92361f002671

@@ -449,8 +449,8 @@ body[data-layout=studio] .scroll.chatIcons {
 .chatIcons img {
     cursor: pointer;
     padding: 3px;
-    width: 28px;
-    height: 28px;
+    width: 40px;
+    height: 40px;
     transition: transform 0.2s;
 }
 .chatIcons img:hover {
@@ -567,7 +567,7 @@ small.game {
 
 }
 .fullscreen .status {
-	top: 110px;
+	top: 10px;
 }
 .toggleShit:before {    
 	content: '<<';
@@ -1397,7 +1397,7 @@ h4{
 body:not(.viewer0video) .switchers {
     top: 65px;
 }
-.fullscreen .switchers {
+.switchers {
     top: initial;
 	bottom: 22%;
 	background: #000000de;
@@ -1431,7 +1431,7 @@ body:not(.viewer0video) .switchers {
 }
 
 .channels:hover{
-	background: #ffffffcc;
+	background: #ffffffaa;
 }
 
 
