@@ -323,21 +323,25 @@ function StartThisShit(config) {
 			height: "100%",
 			channel: config.scamers[i].substr(1),
 			allowfullscreen: false,
-		    autoplay: true,
+		    autoplay: false,
 		    parent: ["mytwitchplayer.fr"]
 		};
 
 		var player = new Twitch.Player("twitch-embed"+(i+1), options);		
 
 
+	    (function(channelName, playerInstance) {
+	        playerInstance.addEventListener(Twitch.Player.READY, function() {
+	            playerInstance.addEventListener(Twitch.Player.PLAY, function() {
+	                jQuery('#player-'+channelName).attr("data-player-active", "true");
+	            });
+	            
+	            playerInstance.addEventListener(Twitch.Player.PAUSE, function() {
+	                jQuery('#player-'+channelName).attr("data-player-active", "false");
+	            });
+	        });
+	    })(config.scamers[i].substr(1), player);
 
-		player.addEventListener(Twitch.Player.READY, function() {
-		    var embed = player.getPlayer();
-		    
-		    embed.setVolume(0);
-		    embed.setMuted(false);
-		    embed.play();
-		});
 	
 		players[config.scamers[i].substr(1)] = player;
 		   
@@ -1619,17 +1623,6 @@ jQuery(document).ready(async function(){
 		
 	},function(){
 		pauseScroll = false;
-	});
-
-
-	jQuery("#force-play").on('click', function() {
-	    // Ajouter une classe temporaire qui masque l'overlay
-	    jQuery("body").addClass("force-autoplay");
-	    
-	    // Supprimer la classe après 5 secondes
-	    setTimeout(() => {
-	        jQuery("body").removeClass("force-autoplay");
-	    }, 5000);
 	});
 
 	client.on('message', (channel, tags, message, self) => {
