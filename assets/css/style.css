@@ -500,6 +500,10 @@ font-style: italic;
 }
 h6 {
 	text-align: center;
+    font-size: 25px;
+    padding: 10px 0;
+    border-top: 1px solid grey;
+    border-bottom: 1px solid grey;    
 }
 .channels {
  padding: 0 10px;
@@ -664,6 +668,8 @@ small.game {
     display: block;
     position: relative;
     z-index: 1;
+    min-width: 400px !important;
+    min-height: 300px !important;
 }
 .twitch-embed:before{
 	content: '';
@@ -688,7 +694,9 @@ small.game {
 	width: 50%;
 height: 50%;
 }
-
+.force-autoplay .twitch-embed:before {
+    height: 0 !important;
+}
 .viewer3video .viewer:last-of-type{
 	width: 100%;
 }
@@ -2307,6 +2315,7 @@ a[name=help]:hover{
     font-size: 1.1rem;
     line-height: 1.2rem;
     text-align: left;
+    z-index: 1;
 }
 @media (max-width: 800px) {
     .streams .paddbox button.suggest {

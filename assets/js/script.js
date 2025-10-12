@@ -179,7 +179,11 @@ async function loadLanguages(lang) {
         return $lang;
     }
 }
-
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
 
 function formatGame(game) {
     if (!game.id) return game.text; // Pour l'option "Toutes les catégories"
@@ -319,22 +323,22 @@ function StartThisShit(config) {
 			height: "100%",
 			channel: config.scamers[i].substr(1),
 			allowfullscreen: false,
-			muted: muted,
-			// only needed if your site is also embedded on embed.example.com and othersite.example.com
-			//parent: ["embed.example.com"]
+		    autoplay: true,
+		    parent: ["mytwitchplayer.fr"]
 		};
 
 		var player = new Twitch.Player("twitch-embed"+(i+1), options);		
 
 
+
 		player.addEventListener(Twitch.Player.READY, function() {
-			var embed = player.getPlayer();
-		
-			embed.play();
-			embed.setVolume(0);
-			embed.setMuted(false);
+		    var embed = player.getPlayer();
+		    
+		    embed.setVolume(0);
+		    embed.setMuted(false);
+		    embed.play();
 		});
-		
+	
 		players[config.scamers[i].substr(1)] = player;
 		   
 		jQuery('#player-'+config.scamers[i].substr(1)).append("<div class='player-options'><select id='data-form-quality-"+config.scamers[i].substr(1)+"' name='qualities'></select><div class='playPause' data-play='true'></div><div data-mute='false' class='muteBtn'><span></span></div><span data-down-volume>-</span><div class='volume'></div><span data-up-volume>+</span><div data-close-item>X</div></div>");
@@ -621,12 +625,25 @@ function loadClient(config){
 				client = new tmi.client(option);		
 				client.connect();
 
-
 				getAuthToken().then(token => {
+
+				if (client._updateEmoteset) {
+				  // Override la fonction problématique
+				  const originalUpdate = client._updateEmoteset;
+				  client._updateEmoteset = function(sets) {
+				    if (sets) {
+				      client.emotes = sets;
+				      client.emit("emotesets", sets, {});
+				    }
+				    return Promise.resolve();
+				  };
+				}
+
 				  // Pour chaque chaîne que vous regardez
 				  for(var i=0; i<config["scamers"].length; i++) {
 				    const channelName = config["scamers"][i].substr(1);
 				    
+
 				    // Obtenir l'ID de la chaîne
 				    jQuery.ajax({
 				      type: 'GET',
@@ -663,17 +680,17 @@ function loadClient(config){
 							"</form>");
 					}
 					
-					const formScam = jQuery('form[name=spam-area]');	
+					const formScam = jQuery('form[name=spam-area]');
+
+					jQuery(".chatIcons").append("<div class='emote-filter'><input type='text' placeholder='Filtrer emotes...' /></div>");
 					
-					jQuery(".chatIcons").append("<div class='emote-filter'><input type='text' placeholder='Filtrer emotes...' /></div><h6>Generic</h6><div class='emote-category global'>");
-					for(var i=0; i<emotesChannels["global"].length; i++) {
-						jQuery(".chatIcons .emote-category.global").append("<img title='"+emotesChannels["global"][i]["name"]+"' data-key='"+emotesChannels["global"][i]["name"]+"' data-category='global' src='"+emotesChannels["global"][i]["images"]["url_1x"]+"' />");
-					}
-					jQuery(".chatIcons").append("</div>");
-					for(var j=0; j<config["scamers"].length; j++) {
-						var name = config["scamers"][j].substr(1);
-						
-						if(emotesChannels[name]) {
+					const arrayOfKeys = Object.keys(emotesChannels);
+					console.log(arrayOfKeys)
+					for(var j=0; j<totalList.length; j++) {
+						var name = totalList[j].name;
+						let correspondingKey = arrayOfKeys.find((key) => emotesChannels[key] === name);
+
+						if(correspondingKey) {
 							jQuery(".chatIcons").append("<h6>"+name+"</h6>");
 							for(var i=0; i<emotesChannels[name].length; i++) {
 								jQuery(".chatIcons").append("<img title='"+emotesChannels[name][i]["name"]+"' data-key='"+emotesChannels[name][i]["name"]+"' width='20' height='20' src='"+emotesChannels[name][i]["images"]["url_1x"]+"' />");
@@ -808,7 +825,7 @@ function getMessage(message, tags) {
 			var url = 'https://static-cdn.jtvnw.net/emoticons/v2/'+arrEmotes[i]+'/default/dark/1.0';
 			var length = extract[1] - extract[0] + 1;		
 			var substr = message.slice(extract[0],extract[1]+1).slice(0, length);
-			var newSubstr = "<img title='"+substr+"' src='"+url+"'>";
+			var newSubstr = "<img title='"+escapeHtml(substr)+"' src='"+url+"'>";
 			
 			msg = msg.replaceAll(substr, newSubstr);
 		}
@@ -862,6 +879,12 @@ async function getGlobalEmotes() {
 
 async function getEmotesChannels(data, textStatus, jqXHR) {
 	 const authToken = await getAuthToken();
+	  // Vérifier si data existe et contient les propriétés attendues
+	  if (!data || !data.data || !data.data[0] || !data.data[0]['user_id']) {
+	    //console.log("Données invalides pour récupérer les emotes");
+	    return Promise.resolve();
+	  }
+
    return jQuery.ajax(
 		{
 		   type: 'GET',
@@ -870,9 +893,19 @@ async function getEmotesChannels(data, textStatus, jqXHR) {
 			 'Client-ID': clientID,
 			 'Authorization': 'Bearer ' + authToken, 
 		   },
-		   success: function(c){
-			  emotesChannels[data.data[0]['user_name'].toLowerCase()] = c.data;
-		   },
+		    success: function(c){
+		      // S'assurer que emotesChannels est initialisé comme un objet
+		      //if (!emotesChannels) emotesChannels = {};
+		      
+		      // Stocker les emotes même si le tableau est vide
+		      emotesChannels[data.data[0]['user_name'].toLowerCase()] = c.data || [];
+		      console.log(`Emotes récupérées pour ${data.data[0]['user_name'].toLowerCase()}: ${c.data.length}`);
+		    },
+		    error: function(error) {
+		      console.error(`Erreur lors de la récupération des emotes pour ${data.data[0]['user_name'].toLowerCase()}:`, error);
+		      // Initialiser avec un tableau vide en cas d'erreur
+		      //emotesChannels[data.data[0]['user_name'].toLowerCase()] = [];
+		    }
 		}
 	);
 }
@@ -900,11 +933,21 @@ function loadEmotes(streams) {
 	
 	streams.forEach(function(scam) {
 	   userLogin = scam.substr(1);
-	   getBroadcasterId(userLogin).then(getEmotesChannels);
+	   //console.log(userLogin)
+	   //getBroadcasterId(userLogin).then(getEmotesChannels);
 	   getBroadcasterId(userLogin).then(getBadgesChannels);
 	});
+
 	getGlobalEmotes();
-	console.log(emotesChannels);
+
+	totalList.forEach(function(item) {
+		userLogin = item.name;
+		//console.log(userLogin)
+		getBroadcasterId(userLogin).then(getEmotesChannels);
+	});
+
+	
+	//console.log(emotesChannels);
 	//console.log(badgesChannels);
 }
 
@@ -1152,7 +1195,6 @@ jQuery(document).ready(async function(){
 	}	
 	
 	getUsersData();
-	
 	loadEmotes(scamConf["scamers"]);
 	StartThisShit(scamConf);	
 	loadStreams();
@@ -1578,7 +1620,18 @@ jQuery(document).ready(async function(){
 	},function(){
 		pauseScroll = false;
 	});
-	
+
+
+	jQuery("#force-play").on('click', function() {
+	    // Ajouter une classe temporaire qui masque l'overlay
+	    jQuery("body").addClass("force-autoplay");
+	    
+	    // Supprimer la classe après 5 secondes
+	    setTimeout(() => {
+	        jQuery("body").removeClass("force-autoplay");
+	    }, 5000);
+	});
+
 	client.on('message', (channel, tags, message, self) => {
 		let premium = "";
 		let subscriber = "";
@@ -1610,8 +1663,10 @@ jQuery(document).ready(async function(){
 			
 			if(subscriber !== undefined) {
 				let tabSubs = tab.find(o => o.set_id === 'subscriber');
-				let iconInfo = tabSubs["versions"].find(o => o.id === subscriber);
-				channelSubIcon = "style='background-image:url(\""+iconInfo["image_url_1x"]+"\");'";
+				if(tabSubs) {
+					let iconInfo = tabSubs["versions"].find(o => o.id === subscriber);
+					channelSubIcon = "style='background-image:url(\""+iconInfo["image_url_1x"]+"\");'";
+				}
 			}
 			
 			if(bits !== undefined) {
@@ -1629,8 +1684,8 @@ jQuery(document).ready(async function(){
 						"<div class='sender-message reply-author-message'>" +
 							"@"+tags["reply-parent-display-name"] +
 						"</div>" +
-						"<span title=\'"+tags["reply-parent-msg-body"]+"\' class='message author-message'>" +
-							getMessage(tags["reply-parent-msg-body"], []) +
+						"<span title=\'"+escapeHtml(tags["reply-parent-msg-body"])+"\' class='message author-message'>" +
+							getMessage(escapeHtml(tags["reply-parent-msg-body"]), []) +
 						"</span>" +
 					"</i></div>";
 			//console.log(reply);
@@ -1656,7 +1711,7 @@ jQuery(document).ready(async function(){
 				  
 				  "<span style='color:"+tags['color']+"' class='scamer'>"+tags['display-name']+"</span>"+
 				"</div>" +
-				  "<span class='message'>"+getMessage(message, tags)+"</span></span>"+
+				  "<span class='message'>"+getMessage(escapeHtml(message), tags)+"</span></span>"+
 			  "</div>"
 			);
 			
@@ -1824,7 +1879,7 @@ function handleRealTwitchPoll(pollData) {
 
 /*
 
-- webhooks >> polls.new >> channel.ban (+ modération), channel.raid	(+ autoredirect ?)
+- webhooks >> polls.new >> channel.ban (+ modération), channel.raid	+ autoredirect ?)
 - améliorer les emotes
 - reply to 
 - virer toute la session pour se relog sur un autre compte twitch
