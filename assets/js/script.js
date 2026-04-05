@@ -78,6 +78,24 @@ var bufferMessageSize = 150;
 var tickRefreshMs = 60000;
 var emotesChannels = [];
 var badgesChannels = [];
+
+function renderEmotes() {
+	jQuery(".chatIcons").find("h6, img").remove();
+	for(var j=0; j<totalList.length; j++) {
+		var name = totalList[j].name;
+		if(emotesChannels[name] && emotesChannels[name].length > 0) {
+			jQuery(".chatIcons").find(".emote-filter").after("<h6>"+name+"</h6>");
+			for(var i=0; i<emotesChannels[name].length; i++) {
+				jQuery(".chatIcons").append("<img title='"+emotesChannels[name][i]["name"]+"' data-key='"+emotesChannels[name][i]["name"]+"' width='20' height='20' src='"+emotesChannels[name][i]["images"]["url_1x"]+"' />");
+			}
+		}
+	}
+	jQuery('.chatIcons img').off('click').on('click', function(){
+		let viewer = jQuery(this).parents(".viewer").attr("data-streamer");
+		let input = jQuery("input[name="+viewer+"]");
+		input.val(input.val()+jQuery(this).data('key'));
+	});
+}
 var themes = [ "default", "border", "detached" ];
 var themeColors = [ "default", "dark", "dark-opacity", "light", "light-opacity"];
 
@@ -688,20 +706,8 @@ function loadClient(config){
 
 					jQuery(".chatIcons").append("<div class='emote-filter'><input type='text' placeholder='Filtrer emotes...' /></div>");
 					
-					const arrayOfKeys = Object.keys(emotesChannels);
-					console.log(arrayOfKeys)
-					for(var j=0; j<totalList.length; j++) {
-						var name = totalList[j].name;
-						let correspondingKey = arrayOfKeys.find((key) => emotesChannels[key] === name);
+					renderEmotes();
 
-						if(correspondingKey) {
-							jQuery(".chatIcons").append("<h6>"+name+"</h6>");
-							for(var i=0; i<emotesChannels[name].length; i++) {
-								jQuery(".chatIcons").append("<img title='"+emotesChannels[name][i]["name"]+"' data-key='"+emotesChannels[name][i]["name"]+"' width='20' height='20' src='"+emotesChannels[name][i]["images"]["url_1x"]+"' />");
-							}
-						}
-					}
-					
 
 
 					jQuery('.emoteschat').click(function(){
@@ -710,12 +716,6 @@ function loadClient(config){
 					    // Réinitialiser le filtre quand on ouvre/ferme
 					    container.find('.emote-filter input').val('');
 					    container.find('img').show();
-					});
-
-					jQuery('.chatIcons img').click(function(elem){
-						let viewer = jQuery(this).parents(".viewer").attr("data-streamer");
-						let input = jQuery("input[name="+viewer+"]");
-						input.val(input.val()+jQuery(this).data('key'));
 					});
 						
 					formScam.click(function(e) {	
@@ -898,12 +898,8 @@ async function getEmotesChannels(data, textStatus, jqXHR) {
 			 'Authorization': 'Bearer ' + authToken, 
 		   },
 		    success: function(c){
-		      // S'assurer que emotesChannels est initialisé comme un objet
-		      //if (!emotesChannels) emotesChannels = {};
-		      
-		      // Stocker les emotes même si le tableau est vide
 		      emotesChannels[data.data[0]['user_name'].toLowerCase()] = c.data || [];
-		      console.log(`Emotes récupérées pour ${data.data[0]['user_name'].toLowerCase()}: ${c.data.length}`);
+		      renderEmotes();
 		    },
 		    error: function(error) {
 		      console.error(`Erreur lors de la récupération des emotes pour ${data.data[0]['user_name'].toLowerCase()}:`, error);
