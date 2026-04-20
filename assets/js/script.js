@@ -814,10 +814,12 @@ function loadClient(config){
 						input.focus();
 					});
 
-					// Annuler la réponse
-					jQuery(document).on('click', '.reply-cancel', function(e) {
+					// Annuler la réponse — délégation sur formScam (en dessous de .viewer)
+					formScam.on('click', '.reply-cancel', function(e) {
 						e.stopPropagation();
-						jQuery(this).closest('.reply-banner').hide();
+						var form = jQuery(this).closest('form[name=spam-area]');
+						form.find('.reply-banner').hide();
+						form.find('input[type=text]').val('');
 					});
 
 					formScam.on("submit", function(e) {
