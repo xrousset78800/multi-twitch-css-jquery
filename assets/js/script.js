@@ -78,6 +78,12 @@ var bufferMessageSize = 150;
 var tickRefreshMs = 60000;
 var emotesChannels = [];
 var badgesChannels = [];
+var loggedInUser = null;
+
+function emoteImgUrl(emote) {
+	var format = (emote.format && emote.format.includes("animated")) ? "animated" : "static";
+	return 'https://static-cdn.jtvnw.net/emoticons/v2/' + emote.id + '/' + format + '/dark/1.0';
+}
 
 function renderEmotes() {
 	jQuery(".chatIcons").find("h6, img").remove();
@@ -86,8 +92,16 @@ function renderEmotes() {
 		if(emotesChannels[name] && emotesChannels[name].length > 0) {
 			jQuery(".chatIcons").find(".emote-filter").after("<h6>"+name+"</h6>");
 			for(var i=0; i<emotesChannels[name].length; i++) {
-				jQuery(".chatIcons").append("<img title='"+emotesChannels[name][i]["name"]+"' data-key='"+emotesChannels[name][i]["name"]+"' width='20' height='20' src='"+emotesChannels[name][i]["images"]["url_1x"]+"' />");
+				var emote = emotesChannels[name][i];
+				jQuery(".chatIcons").append("<img title='"+emote["name"]+"' data-key='"+emote["name"]+"' width='20' height='20' src='"+emoteImgUrl(emote)+"' />");
 			}
+		}
+	}
+	if(emotesChannels["global"] && emotesChannels["global"].length > 0) {
+		jQuery(".chatIcons").append("<h6>Global</h6>");
+		for(var i=0; i<emotesChannels["global"].length; i++) {
+			var emote = emotesChannels["global"][i];
+			jQuery(".chatIcons").append("<img title='"+emote["name"]+"' data-key='"+emote["name"]+"' width='20' height='20' src='"+emoteImgUrl(emote)+"' />");
 		}
 	}
 	jQuery('.chatIcons img').off('click').on('click', function(){
@@ -241,11 +255,12 @@ async function loadScam() {
 			var parse = configObject;
 			
 			for(l=0;l<parse.length;l++) {
-				var oldChannel = { 
+				var oldChannel = {
 					'name': parse[l].name,
 					'size': parse[l].size,
 					'color': parse[l].color,
 					'theme': parse[l].theme,
+					'volume': parse[l].volume !== undefined ? parse[l].volume : 0.5,
 				}
 				
 				totalList.push(oldChannel);
@@ -274,11 +289,12 @@ async function loadScam() {
 				   },
 				   success: function(c){
 					   console.log(c.data[0].login);
-						var newChannel = { 
+						var newChannel = {
 							'name': c.data[0].login,
 							'size': 22,
 							'color': 'dark-opacity',
 							'theme': 'default',
+							'volume': 0.5,
 						}
 						
 						totalList.push(newChannel);
@@ -348,17 +364,20 @@ function StartThisShit(config) {
 		var player = new Twitch.Player("twitch-embed"+(i+1), options);		
 
 
-	    (function(channelName, playerInstance) {
+	    (function(channelName, playerInstance, savedVolume) {
 	        playerInstance.addEventListener(Twitch.Player.READY, function() {
+	            if(savedVolume !== undefined) {
+	                playerInstance.setVolume(savedVolume);
+	                jQuery('#player-'+channelName+' .volume').css('border-bottom', (savedVolume * 100) + 'px inset #9146FF');
+	            }
 	            playerInstance.addEventListener(Twitch.Player.PLAY, function() {
 	                jQuery('#player-'+channelName).attr("data-player-active", "true");
 	            });
-	            
 	            playerInstance.addEventListener(Twitch.Player.PAUSE, function() {
 	                jQuery('#player-'+channelName).attr("data-player-active", "false");
 	            });
 	        });
-	    })(config.scamers[i].substr(1), player);
+	    })(config.scamers[i].substr(1), player, matchConf.volume);
 
 	
 		players[config.scamers[i].substr(1)] = player;
@@ -634,6 +653,7 @@ function loadClient(config){
 	   success: function(c){
 		   console.log(c);
 			var name = c["login"];
+			loggedInUser = name;
 			var id = c["user_id"];
 					
 				const option = {
@@ -688,14 +708,48 @@ function loadClient(config){
 
 
 
-				client.on('poll', (channel, username, options, status) => {
-				  handleTwitchPoll(channel, username, options, status);
+
+				client.on('raided', function(channel, username, viewers) {
+					showRaidNotification(channel, username, viewers);
+				});
+
+				// Modération — message supprimé
+				client.on('messagedeleted', function(channel, username, deletedMessage, tags) {
+					var msgId = tags['target-msg-id'];
+					jQuery('.' + msgId).addClass('msg-deleted');
+				});
+
+				// Modération — ban
+				client.on('ban', function(channel, username) {
+					var chan = channel.toLowerCase();
+					jQuery('.twitch-description' + chan + ' .embed-message').each(function() {
+						if(jQuery(this).data('author') && jQuery(this).data('author').toLowerCase() === username.toLowerCase()) {
+							jQuery(this).addClass('msg-banned');
+						}
+					});
+				});
+
+				// Modération — timeout
+				client.on('timeout', function(channel, username, reason, duration) {
+					var chan = channel.toLowerCase();
+					jQuery('.twitch-description' + chan + ' .embed-message').each(function() {
+						if(jQuery(this).data('author') && jQuery(this).data('author').toLowerCase() === username.toLowerCase()) {
+							jQuery(this).addClass('msg-banned').attr('title', 'Timeout ' + duration + 's' + (reason ? ' : ' + reason : ''));
+						}
+					});
+				});
+
+				// Modération — clearchat
+				client.on('clearchat', function(channel) {
+					var chan = channel.toLowerCase();
+					jQuery('.twitch-description' + chan + ' .chatscroll').empty();
 				});
 
 				client.on('connected', function(){
 					for(var i=0; i<config["scamers"].length; i++) {
 						jQuery('.twitch-description'+config['scamers'][i]).append(""+
 							"<form action='' name='spam-area'>"+
+								"<div class='reply-banner' style='display:none'><span class='reply-info'></span><span class='reply-cancel'>✕</span></div>"+
 								"<input autocomplete='off' type='text' name='"+config["scamers"][i].substr(1)+"' id='spam-content' value='' placeholder='Envoyer un message' />"+
 								"<input name='send' type='submit' value='' />"+
 								'<svg width="30px" height="30px" version="1.1" viewBox="0 0 20 20" x="0px" y="0px" class="emoteschat ScIconSVG-sc-1q25cff-1 dSicFr"><g><path d="M7 11a1 1 0 100-2 1 1 0 000 2zM14 10a1 1 0 11-2 0 1 1 0 012 0zM10 14a2 2 0 002-2H8a2 2 0 002 2z"></path><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-2 0a6 6 0 11-12 0 6 6 0 0112 0z" clip-rule="evenodd"></path></g></svg><div class="chatIcons scroll"></div> ' +
@@ -736,14 +790,49 @@ function loadClient(config){
 					});
 
 
+					// Clic sur le bouton reply → "@pseudo " dans l'input + bannière
+					// Délégation sur .chatscroll (en dessous de .viewer dans le DOM) pour éviter
+					// que le handler .viewer ne bloque la propagation avant d'atteindre document
+					jQuery('.chatscroll').on('click', '.reply-btn', function(e) {
+						e.stopPropagation();
+						var author = jQuery(this).closest('.embed-message').data('author');
+						var form = jQuery(this).closest('nav').siblings('form[name=spam-area]');
+						var input = form.find('input[type=text]');
+						input.val('@' + author + ' ' + input.val());
+						form.find('.reply-info').text('↩ ' + author);
+						form.find('.reply-banner').show();
+						input.focus();
+					});
+
+					// Clic sur le pseudo → "@pseudo " dans l'input (sans bannière)
+					jQuery('.chatscroll').on('click', '.scamer', function(e) {
+						e.stopPropagation();
+						var author = jQuery(this).text();
+						var form = jQuery(this).closest('nav').siblings('form[name=spam-area]');
+						var input = form.find('input[type=text]');
+						input.val('@' + author + ' ' + input.val());
+						input.focus();
+					});
+
+					// Annuler la réponse — délégation sur formScam (en dessous de .viewer)
+					formScam.on('click', '.reply-cancel', function(e) {
+						e.stopPropagation();
+						var form = jQuery(this).closest('form[name=spam-area]');
+						form.find('.reply-banner').hide();
+						form.find('input[type=text]').val('');
+					});
+
 					formScam.on("submit", function(e) {
 						e.stopPropagation();
 						e.preventDefault();
-						client.say(jQuery(this).find('input[type=text]').attr('name'), jQuery(this).find('input[type=text]').val())
-
+						var input = jQuery(this).find('input[type=text]');
+						var val = input.val().trim();
+						if (!val) return;
+						client.say(input.attr('name'), val)
 						.then(data => {
-							jQuery(this).find('input[type=text]').val('');
-							jQuery(this).find('input[type=text]').attr('placeholder', 'Envoyer un message');
+							input.val('');
+							input.attr('placeholder', 'Envoyer un message');
+							jQuery(this).find('.reply-banner').hide();
 						})
 						.catch(err => {
 							console.log('[ERR]', err);
@@ -824,13 +913,21 @@ function getMessage(message, tags) {
 		var arrEmotes = Object.keys(tags['emotes']);
 		var offset = 0;
 
-		for (let i = 0; i < size; ++i) {		
+		for (let i = 0; i < size; ++i) {
 			var extract = tags['emotes'][arrEmotes[i]][0].split('-');
-			var url = 'https://static-cdn.jtvnw.net/emoticons/v2/'+arrEmotes[i]+'/default/dark/1.0';
-			var length = extract[1] - extract[0] + 1;		
+			var emoteId = arrEmotes[i];
+			var emoteFormat = 'default';
+			// Chercher le format dans les emotes chargées (animated si dispo)
+			for (var key in emotesChannels) {
+				if (!Array.isArray(emotesChannels[key])) continue;
+				var found = emotesChannels[key].find(function(e) { return e.id === emoteId; });
+				if (found) { emoteFormat = found.format && found.format.includes('animated') ? 'animated' : 'static'; break; }
+			}
+			var url = 'https://static-cdn.jtvnw.net/emoticons/v2/'+emoteId+'/'+emoteFormat+'/dark/1.0';
+			var length = extract[1] - extract[0] + 1;
 			var substr = message.slice(extract[0],extract[1]+1).slice(0, length);
 			var newSubstr = "<img title='"+escapeHtml(substr)+"' src='"+url+"'>";
-			
+
 			msg = msg.replaceAll(substr, newSubstr);
 		}
 	}
@@ -909,6 +1006,33 @@ async function getEmotesChannels(data, textStatus, jqXHR) {
 		}
 	);
 }
+async function getGlobalBadges() {
+	const authToken = await getAuthToken();
+	return jQuery.ajax({
+		type: 'GET',
+		url: 'https://api.twitch.tv/helix/chat/badges/global',
+		headers: {
+			'Client-ID': clientID,
+			'Authorization': 'Bearer ' + authToken,
+		},
+		success: function(c) {
+			badgesChannels["global"] = c.data;
+		},
+	});
+}
+
+function getBadgeIcon(setId, version, channelName) {
+	var sources = [badgesChannels[channelName], badgesChannels["global"]];
+	for(var s = 0; s < sources.length; s++) {
+		if(!sources[s]) continue;
+		var set = sources[s].find(function(o) { return o.set_id === setId; });
+		if(!set) continue;
+		var v = set.versions.find(function(o) { return o.id === String(version); });
+		if(v) return "style='background-image:url(\"" + v.image_url_1x + "\");'";
+	}
+	return "";
+}
+
 async function getBadgesChannels(data, textStatus, jqXHR) {
 	 const authToken = await getAuthToken();
 	
@@ -939,6 +1063,7 @@ function loadEmotes(streams) {
 	});
 
 	getGlobalEmotes();
+	getGlobalBadges();
 
 	totalList.forEach(function(item) {
 		userLogin = item.name;
@@ -1491,17 +1616,30 @@ jQuery(document).ready(async function(){
 		updateJsonCookievalueByname("JsonTwitchConfig", id, 'size', fontSize);
 	});
 	
+	jQuery(".volume").on('click', function(e) {
+		let viewer = jQuery(this).parents(".viewer").attr("data-streamer");
+		var rect = this.getBoundingClientRect();
+		var fraction = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+		players[viewer].setVolume(fraction);
+		jQuery(this).css("border-bottom", (fraction * 100) + "px inset #9146FF");
+		updateJsonCookievalueByname("JsonTwitchConfig", viewer, 'volume', fraction);
+	});
+
 	jQuery("[data-down-volume]").on('click', function() {
 		let viewer = jQuery(this).parents(".viewer").attr("data-streamer");
 		players[viewer].setVolume((players[viewer].getVolume() - 0.1));
-		jQuery(this).parent().find(".volume").css("border-bottom", ((players[viewer].getVolume()*100 - 10))+"px inset #9146FF");
+		var vol = players[viewer].getVolume();
+		jQuery(this).parent().find(".volume").css("border-bottom", (vol * 100) + "px inset #9146FF");
+		updateJsonCookievalueByname("JsonTwitchConfig", viewer, 'volume', vol);
 	});
-	
+
 	jQuery("[data-up-volume]").on('click', function() {
 		let viewer = jQuery(this).parents(".viewer").attr("data-streamer");
 		players[viewer].setVolume((players[viewer].getVolume() + 0.1));
-		jQuery(this).parent().find(".volume").css("border-bottom", ((players[viewer].getVolume()*100 + 10))+"px inset #9146FF");
-	});	
+		var vol = players[viewer].getVolume();
+		jQuery(this).parent().find(".volume").css("border-bottom", (vol * 100) + "px inset #9146FF");
+		updateJsonCookievalueByname("JsonTwitchConfig", viewer, 'volume', vol);
+	});
 	
 	jQuery("[data-form-theme-color]").on( "change", function(){
 		var elem = jQuery(this).closest('.twitch-description');
@@ -1533,11 +1671,12 @@ jQuery(document).ready(async function(){
 		
 		if(delta > 0) {
 			players[viewer].setVolume((players[viewer].getVolume() + 0.1));
-			jQuery(this).find(".volume").css("border-bottom", ((players[viewer].getVolume()*100 + 10))+"px inset #9146FF");
 		} else {
 			players[viewer].setVolume((players[viewer].getVolume() - 0.1));
-			jQuery(this).find(".volume").css("border-bottom", ((players[viewer].getVolume()*100 - 10))+"px inset #9146FF");
 		}
+		var vol = players[viewer].getVolume();
+		jQuery(this).find(".volume").css("border-bottom", (vol * 100) + "px inset #9146FF");
+		updateJsonCookievalueByname("JsonTwitchConfig", viewer, 'volume', vol);
 		
 
 	});
@@ -1598,12 +1737,10 @@ jQuery(document).ready(async function(){
 			return false;
 		}
 		
-		var isChat = jQuery(e.target).hasClass('twitch-description');
+		var isInsideChat = jQuery(e.target).closest('.twitch-description').length > 0;
 		var isOptions = jQuery(e.target).parent().hasClass('player-options');
-		if(isOptions || isChat){
-			e.preventDefault();
-			e.stopPropagation();
-			return true;
+		if(isOptions || isInsideChat){
+			return; // laisser les clics du chat se propager normalement
 		}
 		
 		if(jQuery(this).hasClass("mainViewer")) {
@@ -1635,10 +1772,15 @@ jQuery(document).ready(async function(){
 		let turbo = "";
 		let channelSubIcon = "";
 		let channelBitsIcon = "";
-		let tab = badgesChannels[channel.substr(1).toLowerCase()];
-		
+		let channelModIcon = "";
+		let channelVipIcon = "";
+		let channelPartnerIcon = "";
+		let channelBroadcasterIcon = "";
+		let channelPrimeIcon = "";
+		let channelTurboIcon = "";
+		var channelName = channel.substr(1).toLowerCase();
+
 		if(tags.badges !== null ) {
-			
 			premium = tags.badges['premium'];
 			subscriber = tags.badges['subscriber'];
 			bits = tags.badges['bits'];
@@ -1649,23 +1791,15 @@ jQuery(document).ready(async function(){
 			broadcaster = tags.badges['broadcaster'];
 			turbo = tags.badges['turbo'];
 			vip = tags.badges['vip'];
-			
-			if(subscriber !== undefined) {
-				let tabSubs = tab.find(o => o.set_id === 'subscriber');
-				if(tabSubs) {
-					let iconInfo = tabSubs["versions"].find(o => o.id === subscriber);
-					channelSubIcon = "style='background-image:url(\""+iconInfo["image_url_1x"]+"\");'";
-				}
-			}
-			
-			if(bits !== undefined) {
-				let tabBits = tab.find(o => o.set_id === 'bits');
-				if(tabBits !== undefined) {
-					let iconBitsInfo = tabBits["versions"].find(o => o.id === bits);
-					channelBitsIcon =  "style='background-image:url(\""+iconBitsInfo["image_url_1x"]+"\");'";
-				}
-			}
-			
+
+			if(subscriber !== undefined) channelSubIcon = getBadgeIcon('subscriber', subscriber, channelName);
+			if(bits !== undefined)        channelBitsIcon = getBadgeIcon('bits', bits, channelName);
+			if(tags['mod'])               channelModIcon = getBadgeIcon('moderator', '1', channelName);
+			if(vip !== undefined)         channelVipIcon = getBadgeIcon('vip', '1', channelName);
+			if(partner !== undefined)     channelPartnerIcon = getBadgeIcon('partner', '1', channelName);
+			if(broadcaster !== undefined) channelBroadcasterIcon = getBadgeIcon('broadcaster', '1', channelName);
+			if(premium !== undefined)     channelPrimeIcon = getBadgeIcon('premium', '1', channelName);
+			if(turbo !== undefined)       channelTurboIcon = getBadgeIcon('turbo', '1', channelName);
 		}
 		
 		if(tags["reply-parent-msg-id"] !== undefined) {		
@@ -1680,23 +1814,26 @@ jQuery(document).ready(async function(){
 			//console.log(reply);
 		}
 
+		var mentionClass = (loggedInUser && message.toLowerCase().includes('@' + loggedInUser.toLowerCase())) ? ' highlight' : '';
+
 		jQuery('.twitch-description'+channel.toLowerCase()+' > .scroll > div')
 		  .append(""+
-			  "<div class='embed-message "+tags.id+"'>" +
+			  "<div class='embed-message "+tags.id+mentionClass+"' data-author='"+escapeHtml(tags['display-name'])+"'>" +
+				"<button class='reply-btn' title='Répondre'>↩</button>"+
 				"<span data-first-message='"+tags['first-msg']+"'>"+
 				reply +
 				"<div class='sender-message'>" +
-				  "<span title='Turbo' data-turbo-"+turbo+"></span>"+
+				  "<span title='Turbo' "+channelTurboIcon+" data-turbo-"+turbo+"></span>"+
 				  "<span title='Regarde sans le son' data-no-audio-"+noaudio+"></span>"+
 				  "<span title='Regarde sans image' data-no-video-"+novideo+"></span>"+
 				  "<span title='Sub ("+subscriber+")' "+channelSubIcon+" data-subscriber='"+tags['subscriber']+"'></span>"+
-				  "<span title='Prime' data-prime-"+premium+"></span>"+
-				  "<span title='Modo !' data-modo='"+tags['mod']+"'></span>"+
-				  "<span title='Partenaire' data-partner-"+partner+"></span>"+
-				  "<span title='VIP' data-vip-"+vip+"></span>"+
+				  "<span title='Prime' "+channelPrimeIcon+" data-prime-"+premium+"></span>"+
+				  "<span title='Modo !' "+channelModIcon+" data-modo='"+tags['mod']+"'></span>"+
+				  "<span title='Partenaire' "+channelPartnerIcon+" data-partner-"+partner+"></span>"+
+				  "<span title='VIP' "+channelVipIcon+" data-vip-"+vip+"></span>"+
 				  "<span title='"+subgifts+" Subgifts' data-subgifts-"+subgifts+"></span>"+
 				  "<span title='Bits' "+channelBitsIcon+" data-bits="+bits+"'></span>"+
-				  "<span title='Diffuseur' data-brodcaster-"+broadcaster+"></span>"+
+				  "<span title='Diffuseur' "+channelBroadcasterIcon+" data-brodcaster-"+broadcaster+"></span>"+
 				  
 				  "<span style='color:"+tags['color']+"' class='scamer'>"+tags['display-name']+"</span>"+
 				"</div>" +
@@ -1715,96 +1852,91 @@ jQuery(document).ready(async function(){
 	
 });
 
-function handleTwitchPoll(channel, username, options, status) {
+function handleTwitchPoll(channel, status) {
   const pollId = status.id;
   const pollTitle = status.title;
   const pollOptions = status.options;
-  const endsAt = new Date(status.ends_at);
   const isActive = status.status === 'ACTIVE';
-  
-  if (!isActive) return;
-  
-  // Créer l'élément de sondage
-  let pollHtml = `
-    <div class="twitch-poll" data-poll-id="${pollId}">
-      <div class="poll-header">
-        <strong>${pollTitle}</strong>
-        <div class="poll-timer" data-ends="${endsAt.getTime()}">
-          ${Math.floor((endsAt - new Date()) / 1000)}s
-        </div>
-      </div>
-      <div class="poll-options">`;
-  
-  pollOptions.forEach(option => {
-    pollHtml += `
-      <div class="poll-option" data-option-id="${option.id}">
-        <div class="option-text">${option.title}</div>
-        <div class="option-progress" style="width: ${option.votes_percent || 0}%"></div>
-        <div class="option-percent">${option.votes_percent || 0}%</div>
-      </div>`;
+  const isCompleted = status.status === 'COMPLETED' || status.status === 'TERMINATED';
+  const endsAt = new Date(status.ends_at);
+  const totalVotes = status.options.reduce(function(sum, o) { return sum + (o.votes || 0); }, 0);
+  const streamer = channel.substr(1);
+  const container = jQuery("[data-streamer=" + streamer + "] .twitch-embed");
+
+  // Mettre à jour le sondage existant ou en créer un nouveau
+  let pollElement = container.find('[data-poll-id="' + pollId + '"]');
+  const isNew = pollElement.length === 0;
+
+  if (!isActive && !isCompleted) return;
+
+  if (isNew) {
+    let pollHtml = '<div class="twitch-poll" data-poll-id="' + pollId + '">' +
+      '<div class="poll-header">' +
+        '<strong>' + pollTitle + '</strong>' +
+        '<div class="poll-timer" data-ends="' + endsAt.getTime() + '">' +
+          Math.max(0, Math.floor((endsAt - new Date()) / 1000)) + 's' +
+        '</div>' +
+      '</div>' +
+      '<div class="poll-options"></div>' +
+    '</div>';
+    container.append(pollHtml);
+    pollElement = container.find('[data-poll-id="' + pollId + '"]');
+  }
+
+  // Mettre à jour les options (votes)
+  const optionsContainer = pollElement.find('.poll-options');
+  optionsContainer.empty();
+  pollOptions.forEach(function(option) {
+    const pct = totalVotes > 0 ? Math.round(option.votes / totalVotes * 100) : 0;
+    optionsContainer.append(
+      '<div class="poll-option" data-option-id="' + option.id + '">' +
+        '<div class="option-text">' + option.title + '</div>' +
+        '<div class="option-progress" style="width:' + pct + '%"></div>' +
+        '<div class="option-percent">' + pct + '%</div>' +
+      '</div>'
+    );
   });
-  
-  pollHtml += `</div></div>`;
-  
-  // Ajouter le sondage à la chat box
-  jQuery("[data-streamer="+channel.substr(1)+"] .twitch-embed").append(pollHtml);
-  
-  // Rendre les options cliquables
-  jQuery('.poll-option').on('click', function() {
-    const optionId = jQuery(this).data('option-id');
-    votePoll(channel, pollId, optionId);
-    
-    // Visuellement marquer l'option comme sélectionnée
-    jQuery(this).addClass('selected');
-    jQuery(this).siblings().removeClass('selected');
-  });
-  
-  // Actualiser le timer
-  const pollTimer = setInterval(() => {
-    const pollElement = jQuery(`[data-poll-id="${pollId}"]`);
-    if (pollElement.length === 0) {
-      clearInterval(pollTimer);
-      return;
-    }
-    
-    const timerElement = pollElement.find('.poll-timer');
-    const endsAt = parseInt(timerElement.data('ends'), 10);
-    const secondsLeft = Math.floor((endsAt - new Date().getTime()) / 1000);
-    
-    if (secondsLeft <= 0) {
-      timerElement.text('Terminé');
-      clearInterval(pollTimer);
-      return;
-    }
-    
-    timerElement.text(`${secondsLeft}s`);
-  }, 1000);
+
+  if (isCompleted) {
+    pollElement.find('.poll-timer').text('Terminé');
+    pollElement.addClass('poll-completed');
+    setTimeout(function() { pollElement.fadeOut(600, function() { jQuery(this).remove(); }); }, 8000);
+    return;
+  }
+
+  // Timer (seulement pour un nouveau sondage)
+  if (isNew) {
+    var pollTimer = setInterval(function() {
+      var el = container.find('[data-poll-id="' + pollId + '"]');
+      if (el.length === 0) { clearInterval(pollTimer); return; }
+      var ends = parseInt(el.find('.poll-timer').data('ends'), 10);
+      var secondsLeft = Math.max(0, Math.floor((ends - Date.now()) / 1000));
+      el.find('.poll-timer').text(secondsLeft + 's');
+      if (secondsLeft <= 0) { clearInterval(pollTimer); }
+    }, 1000);
+  }
 }
 
-function votePoll(channel, pollId, choiceId) {
-  getAuthToken().then(token => {
-    const channelName = channel.substr(1); // Enlever le # du début
-    
-    jQuery.ajax({
-      type: 'POST',
-      url: `https://api.twitch.tv/helix/polls`,
-      headers: {
-        'Client-ID': clientID,
-        'Authorization': 'Bearer ' + token,
-      },
-      data: {
-        broadcaster_id: channelName,
-        poll_id: pollId,
-        choice_id: choiceId
-      },
-      success: function(response) {
-        console.log('Vote envoyé avec succès');
-      },
-      error: function(error) {
-        console.error('Erreur lors de l\'envoi du vote', error);
-      }
-    });
-  });
+function showRaidNotification(channel, raider, viewers) {
+  var streamer = channel.substr(1);
+  var container = jQuery("[data-streamer=" + streamer + "] .twitch-embed");
+  if (container.length === 0) return;
+
+  var existing = container.find('.twitch-raid');
+  if (existing.length > 0) existing.remove();
+
+  var html = '<div class="twitch-raid">' +
+    '<div class="raid-icon">⚔️</div>' +
+    '<div class="raid-body">' +
+      '<span class="raid-raider">' + raider + '</span> arrive en raid' +
+      '<span class="raid-viewers">' + viewers + ' viewers</span>' +
+    '</div>' +
+  '</div>';
+
+  container.append(html);
+  setTimeout(function() {
+    container.find('.twitch-raid').fadeOut(800, function() { jQuery(this).remove(); });
+  }, 10000);
 }
 
 function connectTwitchPubSub(userToken, channelId) {
@@ -1842,28 +1974,25 @@ function connectTwitchPubSub(userToken, channelId) {
 }
 
 function handleRealTwitchPoll(pollData) {
-  // Les données de poll reçues du PubSub
   const poll = pollData.data.poll;
-  const channel = '#' + pollData.data.broadcaster_user_login;
-  
-  // Formatage des données pour notre handler existant
+  const channel = '#' + poll.owned_by.toLowerCase();
+
   const status = {
-    id: poll.id,
+    id: poll.poll_id,
     title: poll.title,
-    options: poll.choices.map(choice => ({
-      id: choice.id,
-      title: choice.title,
-      votes: choice.votes,
-      votes_percent: choice.votes_count_normalized
-    })),
-    status: poll.status,
+    status: poll.status,                // 'ACTIVE', 'COMPLETED', 'TERMINATED'
     started_at: poll.started_at,
     ends_at: poll.ends_at,
-    total_votes: poll.votes.total
+    options: poll.choices.map(function(choice) {
+      return {
+        id: choice.choice_id,
+        title: choice.title,
+        votes: (choice.votes || 0) + (choice.channel_points_votes || 0)
+      };
+    })
   };
-  
-  // Utiliser notre fonction existante
-  handleTwitchPoll(channel, pollData.data.broadcaster_user_login, status.options, status);
+
+  handleTwitchPoll(channel, status);
 }
 
 /*
