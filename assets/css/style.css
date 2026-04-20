@@ -411,7 +411,7 @@ body {
 svg {
 	position: absolute;
     right: 10px;
-    top: 3px;
+    bottom: 2px;
 	fill: #999999;
 	transition: fill 0.5s;
 	cursor: pointer;
