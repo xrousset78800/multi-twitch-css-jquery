@@ -791,10 +791,12 @@ function loadClient(config){
 
 
 					// Clic sur le bouton reply → "@pseudo " dans l'input + bannière
-					jQuery(document).on('click', '.reply-btn', function(e) {
+					// Délégation sur .chatscroll (en dessous de .viewer dans le DOM) pour éviter
+					// que le handler .viewer ne bloque la propagation avant d'atteindre document
+					jQuery('.chatscroll').on('click', '.reply-btn', function(e) {
 						e.stopPropagation();
 						var author = jQuery(this).closest('.embed-message').data('author');
-						var form = jQuery(this).closest('.twitch-description').find('form[name=spam-area]');
+						var form = jQuery(this).closest('nav').siblings('form[name=spam-area]');
 						var input = form.find('input[type=text]');
 						input.val('@' + author + ' ' + input.val());
 						form.find('.reply-info').text('↩ ' + author);
@@ -803,10 +805,10 @@ function loadClient(config){
 					});
 
 					// Clic sur le pseudo → "@pseudo " dans l'input (sans bannière)
-					jQuery(document).on('click', '.scamer', function(e) {
+					jQuery('.chatscroll').on('click', '.scamer', function(e) {
 						e.stopPropagation();
 						var author = jQuery(this).text();
-						var form = jQuery(this).closest('.twitch-description').find('form[name=spam-area]');
+						var form = jQuery(this).closest('nav').siblings('form[name=spam-area]');
 						var input = form.find('input[type=text]');
 						input.val('@' + author + ' ' + input.val());
 						input.focus();
