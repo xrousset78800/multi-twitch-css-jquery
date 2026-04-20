@@ -862,6 +862,17 @@ height: 50%;
     top: 10px;
 }
 
+.theme-toggle {
+    position: absolute;
+    right: 50px;
+    top: 8px;
+    font-size: 18px;
+    line-height: 1;
+    padding: 4px 8px;
+    cursor: pointer;
+    z-index: 10;
+}
+
 .authbtn {
     font-size: 17px;
     color: white;
