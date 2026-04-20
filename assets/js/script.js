@@ -708,8 +708,9 @@ function loadClient(config){
 
 
 
-				client.on('poll', (channel, username, options, status) => {
-				  handleTwitchPoll(channel, username, options, status);
+
+				client.on('raided', function(channel, username, viewers) {
+					showRaidNotification(channel, username, viewers);
 				});
 
 				client.on('connected', function(){
@@ -1539,26 +1540,6 @@ jQuery(document).ready(async function(){
 		updateJsonCookievalueByname("JsonTwitchConfig", id, 'size', fontSize);
 	});
 	
-	var themeToggleCycle = ['dark-opacity', 'light', 'default'];
-	var globalThemeIndex = themeToggleCycle.indexOf(localStorage.getItem('globalTheme') || 'dark-opacity');
-	if(globalThemeIndex === -1) globalThemeIndex = 0;
-
-	function applyGlobalTheme(theme) {
-		jQuery('.viewer').each(function() {
-			jQuery(this).attr('data-theme-color', theme);
-			var id = jQuery(this).find('.twitch-description').attr('id');
-			updateJsonCookievalueByname("JsonTwitchConfig", id, 'color', theme);
-			jQuery(this).find('[data-form-theme-color]').val(theme);
-		});
-		jQuery('.theme-toggle').text(theme.startsWith('dark') || theme === 'default' ? '🌙' : '☀️');
-		localStorage.setItem('globalTheme', theme);
-	}
-
-	jQuery('.theme-toggle').on('click', function() {
-		globalThemeIndex = (globalThemeIndex + 1) % themeToggleCycle.length;
-		applyGlobalTheme(themeToggleCycle[globalThemeIndex]);
-	});
-
 	jQuery(".volume").on('click', function(e) {
 		let viewer = jQuery(this).parents(".viewer").attr("data-streamer");
 		var rect = this.getBoundingClientRect();
@@ -1796,96 +1777,91 @@ jQuery(document).ready(async function(){
 	
 });
 
-function handleTwitchPoll(channel, username, options, status) {
+function handleTwitchPoll(channel, status) {
   const pollId = status.id;
   const pollTitle = status.title;
   const pollOptions = status.options;
-  const endsAt = new Date(status.ends_at);
   const isActive = status.status === 'ACTIVE';
-  
-  if (!isActive) return;
-  
-  // Créer l'élément de sondage
-  let pollHtml = `
-    <div class="twitch-poll" data-poll-id="${pollId}">
-      <div class="poll-header">
-        <strong>${pollTitle}</strong>
-        <div class="poll-timer" data-ends="${endsAt.getTime()}">
-          ${Math.floor((endsAt - new Date()) / 1000)}s
-        </div>
-      </div>
-      <div class="poll-options">`;
-  
-  pollOptions.forEach(option => {
-    pollHtml += `
-      <div class="poll-option" data-option-id="${option.id}">
-        <div class="option-text">${option.title}</div>
-        <div class="option-progress" style="width: ${option.votes_percent || 0}%"></div>
-        <div class="option-percent">${option.votes_percent || 0}%</div>
-      </div>`;
+  const isCompleted = status.status === 'COMPLETED' || status.status === 'TERMINATED';
+  const endsAt = new Date(status.ends_at);
+  const totalVotes = status.options.reduce(function(sum, o) { return sum + (o.votes || 0); }, 0);
+  const streamer = channel.substr(1);
+  const container = jQuery("[data-streamer=" + streamer + "] .twitch-embed");
+
+  // Mettre à jour le sondage existant ou en créer un nouveau
+  let pollElement = container.find('[data-poll-id="' + pollId + '"]');
+  const isNew = pollElement.length === 0;
+
+  if (!isActive && !isCompleted) return;
+
+  if (isNew) {
+    let pollHtml = '<div class="twitch-poll" data-poll-id="' + pollId + '">' +
+      '<div class="poll-header">' +
+        '<strong>' + pollTitle + '</strong>' +
+        '<div class="poll-timer" data-ends="' + endsAt.getTime() + '">' +
+          Math.max(0, Math.floor((endsAt - new Date()) / 1000)) + 's' +
+        '</div>' +
+      '</div>' +
+      '<div class="poll-options"></div>' +
+    '</div>';
+    container.append(pollHtml);
+    pollElement = container.find('[data-poll-id="' + pollId + '"]');
+  }
+
+  // Mettre à jour les options (votes)
+  const optionsContainer = pollElement.find('.poll-options');
+  optionsContainer.empty();
+  pollOptions.forEach(function(option) {
+    const pct = totalVotes > 0 ? Math.round(option.votes / totalVotes * 100) : 0;
+    optionsContainer.append(
+      '<div class="poll-option" data-option-id="' + option.id + '">' +
+        '<div class="option-text">' + option.title + '</div>' +
+        '<div class="option-progress" style="width:' + pct + '%"></div>' +
+        '<div class="option-percent">' + pct + '%</div>' +
+      '</div>'
+    );
   });
-  
-  pollHtml += `</div></div>`;
-  
-  // Ajouter le sondage à la chat box
-  jQuery("[data-streamer="+channel.substr(1)+"] .twitch-embed").append(pollHtml);
-  
-  // Rendre les options cliquables
-  jQuery('.poll-option').on('click', function() {
-    const optionId = jQuery(this).data('option-id');
-    votePoll(channel, pollId, optionId);
-    
-    // Visuellement marquer l'option comme sélectionnée
-    jQuery(this).addClass('selected');
-    jQuery(this).siblings().removeClass('selected');
-  });
-  
-  // Actualiser le timer
-  const pollTimer = setInterval(() => {
-    const pollElement = jQuery(`[data-poll-id="${pollId}"]`);
-    if (pollElement.length === 0) {
-      clearInterval(pollTimer);
-      return;
-    }
-    
-    const timerElement = pollElement.find('.poll-timer');
-    const endsAt = parseInt(timerElement.data('ends'), 10);
-    const secondsLeft = Math.floor((endsAt - new Date().getTime()) / 1000);
-    
-    if (secondsLeft <= 0) {
-      timerElement.text('Terminé');
-      clearInterval(pollTimer);
-      return;
-    }
-    
-    timerElement.text(`${secondsLeft}s`);
-  }, 1000);
+
+  if (isCompleted) {
+    pollElement.find('.poll-timer').text('Terminé');
+    pollElement.addClass('poll-completed');
+    setTimeout(function() { pollElement.fadeOut(600, function() { jQuery(this).remove(); }); }, 8000);
+    return;
+  }
+
+  // Timer (seulement pour un nouveau sondage)
+  if (isNew) {
+    var pollTimer = setInterval(function() {
+      var el = container.find('[data-poll-id="' + pollId + '"]');
+      if (el.length === 0) { clearInterval(pollTimer); return; }
+      var ends = parseInt(el.find('.poll-timer').data('ends'), 10);
+      var secondsLeft = Math.max(0, Math.floor((ends - Date.now()) / 1000));
+      el.find('.poll-timer').text(secondsLeft + 's');
+      if (secondsLeft <= 0) { clearInterval(pollTimer); }
+    }, 1000);
+  }
 }
 
-function votePoll(channel, pollId, choiceId) {
-  getAuthToken().then(token => {
-    const channelName = channel.substr(1); // Enlever le # du début
-    
-    jQuery.ajax({
-      type: 'POST',
-      url: `https://api.twitch.tv/helix/polls`,
-      headers: {
-        'Client-ID': clientID,
-        'Authorization': 'Bearer ' + token,
-      },
-      data: {
-        broadcaster_id: channelName,
-        poll_id: pollId,
-        choice_id: choiceId
-      },
-      success: function(response) {
-        console.log('Vote envoyé avec succès');
-      },
-      error: function(error) {
-        console.error('Erreur lors de l\'envoi du vote', error);
-      }
-    });
-  });
+function showRaidNotification(channel, raider, viewers) {
+  var streamer = channel.substr(1);
+  var container = jQuery("[data-streamer=" + streamer + "] .twitch-embed");
+  if (container.length === 0) return;
+
+  var existing = container.find('.twitch-raid');
+  if (existing.length > 0) existing.remove();
+
+  var html = '<div class="twitch-raid">' +
+    '<div class="raid-icon">⚔️</div>' +
+    '<div class="raid-body">' +
+      '<span class="raid-raider">' + raider + '</span> arrive en raid' +
+      '<span class="raid-viewers">' + viewers + ' viewers</span>' +
+    '</div>' +
+  '</div>';
+
+  container.append(html);
+  setTimeout(function() {
+    container.find('.twitch-raid').fadeOut(800, function() { jQuery(this).remove(); });
+  }, 10000);
 }
 
 function connectTwitchPubSub(userToken, channelId) {
@@ -1923,28 +1899,25 @@ function connectTwitchPubSub(userToken, channelId) {
 }
 
 function handleRealTwitchPoll(pollData) {
-  // Les données de poll reçues du PubSub
   const poll = pollData.data.poll;
-  const channel = '#' + pollData.data.broadcaster_user_login;
-  
-  // Formatage des données pour notre handler existant
+  const channel = '#' + poll.owned_by.toLowerCase();
+
   const status = {
-    id: poll.id,
+    id: poll.poll_id,
     title: poll.title,
-    options: poll.choices.map(choice => ({
-      id: choice.id,
-      title: choice.title,
-      votes: choice.votes,
-      votes_percent: choice.votes_count_normalized
-    })),
-    status: poll.status,
+    status: poll.status,                // 'ACTIVE', 'COMPLETED', 'TERMINATED'
     started_at: poll.started_at,
     ends_at: poll.ends_at,
-    total_votes: poll.votes.total
+    options: poll.choices.map(function(choice) {
+      return {
+        id: choice.choice_id,
+        title: choice.title,
+        votes: (choice.votes || 0) + (choice.channel_points_votes || 0)
+      };
+    })
   };
-  
-  // Utiliser notre fonction existante
-  handleTwitchPoll(channel, pollData.data.broadcaster_user_login, status.options, status);
+
+  handleTwitchPoll(channel, status);
 }
 
 /*
