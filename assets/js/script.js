@@ -845,13 +845,21 @@ function getMessage(message, tags) {
 		var arrEmotes = Object.keys(tags['emotes']);
 		var offset = 0;
 
-		for (let i = 0; i < size; ++i) {		
+		for (let i = 0; i < size; ++i) {
 			var extract = tags['emotes'][arrEmotes[i]][0].split('-');
-			var url = 'https://static-cdn.jtvnw.net/emoticons/v2/'+arrEmotes[i]+'/animated/dark/1.0';
-			var length = extract[1] - extract[0] + 1;		
+			var emoteId = arrEmotes[i];
+			var emoteFormat = 'default';
+			// Chercher le format dans les emotes chargées (animated si dispo)
+			for (var key in emotesChannels) {
+				if (!Array.isArray(emotesChannels[key])) continue;
+				var found = emotesChannels[key].find(function(e) { return e.id === emoteId; });
+				if (found) { emoteFormat = found.format && found.format.includes('animated') ? 'animated' : 'static'; break; }
+			}
+			var url = 'https://static-cdn.jtvnw.net/emoticons/v2/'+emoteId+'/'+emoteFormat+'/dark/1.0';
+			var length = extract[1] - extract[0] + 1;
 			var substr = message.slice(extract[0],extract[1]+1).slice(0, length);
 			var newSubstr = "<img title='"+escapeHtml(substr)+"' src='"+url+"'>";
-			
+
 			msg = msg.replaceAll(substr, newSubstr);
 		}
 	}
