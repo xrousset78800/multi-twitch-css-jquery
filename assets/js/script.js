@@ -255,11 +255,12 @@ async function loadScam() {
 			var parse = configObject;
 			
 			for(l=0;l<parse.length;l++) {
-				var oldChannel = { 
+				var oldChannel = {
 					'name': parse[l].name,
 					'size': parse[l].size,
 					'color': parse[l].color,
 					'theme': parse[l].theme,
+					'volume': parse[l].volume !== undefined ? parse[l].volume : 0.5,
 				}
 				
 				totalList.push(oldChannel);
@@ -288,11 +289,12 @@ async function loadScam() {
 				   },
 				   success: function(c){
 					   console.log(c.data[0].login);
-						var newChannel = { 
+						var newChannel = {
 							'name': c.data[0].login,
 							'size': 22,
 							'color': 'dark-opacity',
 							'theme': 'default',
+							'volume': 0.5,
 						}
 						
 						totalList.push(newChannel);
@@ -362,17 +364,20 @@ function StartThisShit(config) {
 		var player = new Twitch.Player("twitch-embed"+(i+1), options);		
 
 
-	    (function(channelName, playerInstance) {
+	    (function(channelName, playerInstance, savedVolume) {
 	        playerInstance.addEventListener(Twitch.Player.READY, function() {
+	            if(savedVolume !== undefined) {
+	                playerInstance.setVolume(savedVolume);
+	                jQuery('#player-'+channelName+' .volume').css('border-bottom', (savedVolume * 100) + 'px inset #9146FF');
+	            }
 	            playerInstance.addEventListener(Twitch.Player.PLAY, function() {
 	                jQuery('#player-'+channelName).attr("data-player-active", "true");
 	            });
-	            
 	            playerInstance.addEventListener(Twitch.Player.PAUSE, function() {
 	                jQuery('#player-'+channelName).attr("data-player-active", "false");
 	            });
 	        });
-	    })(config.scamers[i].substr(1), player);
+	    })(config.scamers[i].substr(1), player, matchConf.volume);
 
 	
 		players[config.scamers[i].substr(1)] = player;
@@ -924,6 +929,33 @@ async function getEmotesChannels(data, textStatus, jqXHR) {
 		}
 	);
 }
+async function getGlobalBadges() {
+	const authToken = await getAuthToken();
+	return jQuery.ajax({
+		type: 'GET',
+		url: 'https://api.twitch.tv/helix/chat/badges/global',
+		headers: {
+			'Client-ID': clientID,
+			'Authorization': 'Bearer ' + authToken,
+		},
+		success: function(c) {
+			badgesChannels["global"] = c.data;
+		},
+	});
+}
+
+function getBadgeIcon(setId, version, channelName) {
+	var sources = [badgesChannels[channelName], badgesChannels["global"]];
+	for(var s = 0; s < sources.length; s++) {
+		if(!sources[s]) continue;
+		var set = sources[s].find(function(o) { return o.set_id === setId; });
+		if(!set) continue;
+		var v = set.versions.find(function(o) { return o.id === String(version); });
+		if(v) return "style='background-image:url(\"" + v.image_url_1x + "\");'";
+	}
+	return "";
+}
+
 async function getBadgesChannels(data, textStatus, jqXHR) {
 	 const authToken = await getAuthToken();
 	
@@ -954,6 +986,7 @@ function loadEmotes(streams) {
 	});
 
 	getGlobalEmotes();
+	getGlobalBadges();
 
 	totalList.forEach(function(item) {
 		userLogin = item.name;
@@ -1506,17 +1539,50 @@ jQuery(document).ready(async function(){
 		updateJsonCookievalueByname("JsonTwitchConfig", id, 'size', fontSize);
 	});
 	
+	var themeToggleCycle = ['dark-opacity', 'light', 'default'];
+	var globalThemeIndex = themeToggleCycle.indexOf(localStorage.getItem('globalTheme') || 'dark-opacity');
+	if(globalThemeIndex === -1) globalThemeIndex = 0;
+
+	function applyGlobalTheme(theme) {
+		jQuery('.viewer').each(function() {
+			jQuery(this).attr('data-theme-color', theme);
+			var id = jQuery(this).find('.twitch-description').attr('id');
+			updateJsonCookievalueByname("JsonTwitchConfig", id, 'color', theme);
+			jQuery(this).find('[data-form-theme-color]').val(theme);
+		});
+		jQuery('.theme-toggle').text(theme.startsWith('dark') || theme === 'default' ? '🌙' : '☀️');
+		localStorage.setItem('globalTheme', theme);
+	}
+
+	jQuery('.theme-toggle').on('click', function() {
+		globalThemeIndex = (globalThemeIndex + 1) % themeToggleCycle.length;
+		applyGlobalTheme(themeToggleCycle[globalThemeIndex]);
+	});
+
+	jQuery(".volume").on('click', function(e) {
+		let viewer = jQuery(this).parents(".viewer").attr("data-streamer");
+		var rect = this.getBoundingClientRect();
+		var fraction = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+		players[viewer].setVolume(fraction);
+		jQuery(this).css("border-bottom", (fraction * 100) + "px inset #9146FF");
+		updateJsonCookievalueByname("JsonTwitchConfig", viewer, 'volume', fraction);
+	});
+
 	jQuery("[data-down-volume]").on('click', function() {
 		let viewer = jQuery(this).parents(".viewer").attr("data-streamer");
 		players[viewer].setVolume((players[viewer].getVolume() - 0.1));
-		jQuery(this).parent().find(".volume").css("border-bottom", ((players[viewer].getVolume()*100 - 10))+"px inset #9146FF");
+		var vol = players[viewer].getVolume();
+		jQuery(this).parent().find(".volume").css("border-bottom", (vol * 100) + "px inset #9146FF");
+		updateJsonCookievalueByname("JsonTwitchConfig", viewer, 'volume', vol);
 	});
-	
+
 	jQuery("[data-up-volume]").on('click', function() {
 		let viewer = jQuery(this).parents(".viewer").attr("data-streamer");
 		players[viewer].setVolume((players[viewer].getVolume() + 0.1));
-		jQuery(this).parent().find(".volume").css("border-bottom", ((players[viewer].getVolume()*100 + 10))+"px inset #9146FF");
-	});	
+		var vol = players[viewer].getVolume();
+		jQuery(this).parent().find(".volume").css("border-bottom", (vol * 100) + "px inset #9146FF");
+		updateJsonCookievalueByname("JsonTwitchConfig", viewer, 'volume', vol);
+	});
 	
 	jQuery("[data-form-theme-color]").on( "change", function(){
 		var elem = jQuery(this).closest('.twitch-description');
@@ -1548,11 +1614,12 @@ jQuery(document).ready(async function(){
 		
 		if(delta > 0) {
 			players[viewer].setVolume((players[viewer].getVolume() + 0.1));
-			jQuery(this).find(".volume").css("border-bottom", ((players[viewer].getVolume()*100 + 10))+"px inset #9146FF");
 		} else {
 			players[viewer].setVolume((players[viewer].getVolume() - 0.1));
-			jQuery(this).find(".volume").css("border-bottom", ((players[viewer].getVolume()*100 - 10))+"px inset #9146FF");
 		}
+		var vol = players[viewer].getVolume();
+		jQuery(this).find(".volume").css("border-bottom", (vol * 100) + "px inset #9146FF");
+		updateJsonCookievalueByname("JsonTwitchConfig", viewer, 'volume', vol);
 		
 
 	});
@@ -1650,10 +1717,15 @@ jQuery(document).ready(async function(){
 		let turbo = "";
 		let channelSubIcon = "";
 		let channelBitsIcon = "";
-		let tab = badgesChannels[channel.substr(1).toLowerCase()];
-		
+		let channelModIcon = "";
+		let channelVipIcon = "";
+		let channelPartnerIcon = "";
+		let channelBroadcasterIcon = "";
+		let channelPrimeIcon = "";
+		let channelTurboIcon = "";
+		var channelName = channel.substr(1).toLowerCase();
+
 		if(tags.badges !== null ) {
-			
 			premium = tags.badges['premium'];
 			subscriber = tags.badges['subscriber'];
 			bits = tags.badges['bits'];
@@ -1664,23 +1736,15 @@ jQuery(document).ready(async function(){
 			broadcaster = tags.badges['broadcaster'];
 			turbo = tags.badges['turbo'];
 			vip = tags.badges['vip'];
-			
-			if(subscriber !== undefined) {
-				let tabSubs = tab.find(o => o.set_id === 'subscriber');
-				if(tabSubs) {
-					let iconInfo = tabSubs["versions"].find(o => o.id === subscriber);
-					channelSubIcon = "style='background-image:url(\""+iconInfo["image_url_1x"]+"\");'";
-				}
-			}
-			
-			if(bits !== undefined) {
-				let tabBits = tab.find(o => o.set_id === 'bits');
-				if(tabBits !== undefined) {
-					let iconBitsInfo = tabBits["versions"].find(o => o.id === bits);
-					channelBitsIcon =  "style='background-image:url(\""+iconBitsInfo["image_url_1x"]+"\");'";
-				}
-			}
-			
+
+			if(subscriber !== undefined) channelSubIcon = getBadgeIcon('subscriber', subscriber, channelName);
+			if(bits !== undefined)        channelBitsIcon = getBadgeIcon('bits', bits, channelName);
+			if(tags['mod'])               channelModIcon = getBadgeIcon('moderator', '1', channelName);
+			if(vip !== undefined)         channelVipIcon = getBadgeIcon('vip', '1', channelName);
+			if(partner !== undefined)     channelPartnerIcon = getBadgeIcon('partner', '1', channelName);
+			if(broadcaster !== undefined) channelBroadcasterIcon = getBadgeIcon('broadcaster', '1', channelName);
+			if(premium !== undefined)     channelPrimeIcon = getBadgeIcon('premium', '1', channelName);
+			if(turbo !== undefined)       channelTurboIcon = getBadgeIcon('turbo', '1', channelName);
 		}
 		
 		if(tags["reply-parent-msg-id"] !== undefined) {		
@@ -1703,17 +1767,17 @@ jQuery(document).ready(async function(){
 				"<span data-first-message='"+tags['first-msg']+"'>"+
 				reply +
 				"<div class='sender-message'>" +
-				  "<span title='Turbo' data-turbo-"+turbo+"></span>"+
+				  "<span title='Turbo' "+channelTurboIcon+" data-turbo-"+turbo+"></span>"+
 				  "<span title='Regarde sans le son' data-no-audio-"+noaudio+"></span>"+
 				  "<span title='Regarde sans image' data-no-video-"+novideo+"></span>"+
 				  "<span title='Sub ("+subscriber+")' "+channelSubIcon+" data-subscriber='"+tags['subscriber']+"'></span>"+
-				  "<span title='Prime' data-prime-"+premium+"></span>"+
-				  "<span title='Modo !' data-modo='"+tags['mod']+"'></span>"+
-				  "<span title='Partenaire' data-partner-"+partner+"></span>"+
-				  "<span title='VIP' data-vip-"+vip+"></span>"+
+				  "<span title='Prime' "+channelPrimeIcon+" data-prime-"+premium+"></span>"+
+				  "<span title='Modo !' "+channelModIcon+" data-modo='"+tags['mod']+"'></span>"+
+				  "<span title='Partenaire' "+channelPartnerIcon+" data-partner-"+partner+"></span>"+
+				  "<span title='VIP' "+channelVipIcon+" data-vip-"+vip+"></span>"+
 				  "<span title='"+subgifts+" Subgifts' data-subgifts-"+subgifts+"></span>"+
 				  "<span title='Bits' "+channelBitsIcon+" data-bits="+bits+"'></span>"+
-				  "<span title='Diffuseur' data-brodcaster-"+broadcaster+"></span>"+
+				  "<span title='Diffuseur' "+channelBroadcasterIcon+" data-brodcaster-"+broadcaster+"></span>"+
 				  
 				  "<span style='color:"+tags['color']+"' class='scamer'>"+tags['display-name']+"</span>"+
 				"</div>" +
