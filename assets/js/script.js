@@ -717,6 +717,7 @@ function loadClient(config){
 					for(var i=0; i<config["scamers"].length; i++) {
 						jQuery('.twitch-description'+config['scamers'][i]).append(""+
 							"<form action='' name='spam-area'>"+
+								"<div class='reply-banner' style='display:none'><span class='reply-info'></span><span class='reply-cancel'>✕</span></div>"+
 								"<input autocomplete='off' type='text' name='"+config["scamers"][i].substr(1)+"' id='spam-content' value='' placeholder='Envoyer un message' />"+
 								"<input name='send' type='submit' value='' />"+
 								'<svg width="30px" height="30px" version="1.1" viewBox="0 0 20 20" x="0px" y="0px" class="emoteschat ScIconSVG-sc-1q25cff-1 dSicFr"><g><path d="M7 11a1 1 0 100-2 1 1 0 000 2zM14 10a1 1 0 11-2 0 1 1 0 012 0zM10 14a2 2 0 002-2H8a2 2 0 002 2z"></path><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-2 0a6 6 0 11-12 0 6 6 0 0112 0z" clip-rule="evenodd"></path></g></svg><div class="chatIcons scroll"></div> ' +
@@ -757,14 +758,45 @@ function loadClient(config){
 					});
 
 
+					// Clic sur le bouton reply → "@pseudo " dans l'input + bannière
+					jQuery(document).on('click', '.reply-btn', function(e) {
+						e.stopPropagation();
+						var author = jQuery(this).closest('.embed-message').data('author');
+						var form = jQuery(this).closest('.twitch-description').find('form[name=spam-area]');
+						var input = form.find('input[type=text]');
+						input.val('@' + author + ' ' + input.val());
+						form.find('.reply-info').text('↩ ' + author);
+						form.find('.reply-banner').show();
+						input.focus();
+					});
+
+					// Clic sur le pseudo → "@pseudo " dans l'input (sans bannière)
+					jQuery(document).on('click', '.scamer', function(e) {
+						e.stopPropagation();
+						var author = jQuery(this).text();
+						var form = jQuery(this).closest('.twitch-description').find('form[name=spam-area]');
+						var input = form.find('input[type=text]');
+						input.val('@' + author + ' ' + input.val());
+						input.focus();
+					});
+
+					// Annuler la réponse
+					jQuery(document).on('click', '.reply-cancel', function(e) {
+						e.stopPropagation();
+						jQuery(this).closest('.reply-banner').hide();
+					});
+
 					formScam.on("submit", function(e) {
 						e.stopPropagation();
 						e.preventDefault();
-						client.say(jQuery(this).find('input[type=text]').attr('name'), jQuery(this).find('input[type=text]').val())
-
+						var input = jQuery(this).find('input[type=text]');
+						var val = input.val().trim();
+						if (!val) return;
+						client.say(input.attr('name'), val)
 						.then(data => {
-							jQuery(this).find('input[type=text]').val('');
-							jQuery(this).find('input[type=text]').attr('placeholder', 'Envoyer un message');
+							input.val('');
+							input.attr('placeholder', 'Envoyer un message');
+							jQuery(this).find('.reply-banner').hide();
 						})
 						.catch(err => {
 							console.log('[ERR]', err);
@@ -1752,7 +1784,8 @@ jQuery(document).ready(async function(){
 
 		jQuery('.twitch-description'+channel.toLowerCase()+' > .scroll > div')
 		  .append(""+
-			  "<div class='embed-message "+tags.id+mentionClass+"'>" +
+			  "<div class='embed-message "+tags.id+mentionClass+"' data-author='"+escapeHtml(tags['display-name'])+"'>" +
+				"<button class='reply-btn' title='Répondre'>↩</button>"+
 				"<span data-first-message='"+tags['first-msg']+"'>"+
 				reply +
 				"<div class='sender-message'>" +
