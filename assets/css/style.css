@@ -2197,6 +2197,7 @@ a[name=help]:hover{
     top: -35px;
     z-index: 2;
     transform: rotate(90deg);
+    cursor: pointer;
 }
 
 .volume[data-mute=true] {

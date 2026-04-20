@@ -1559,6 +1559,15 @@ jQuery(document).ready(async function(){
 		applyGlobalTheme(themeToggleCycle[globalThemeIndex]);
 	});
 
+	jQuery(".volume").on('click', function(e) {
+		let viewer = jQuery(this).parents(".viewer").attr("data-streamer");
+		var rect = this.getBoundingClientRect();
+		var fraction = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+		players[viewer].setVolume(fraction);
+		jQuery(this).css("border-bottom", (fraction * 100) + "px inset #9146FF");
+		updateJsonCookievalueByname("JsonTwitchConfig", viewer, 'volume', fraction);
+	});
+
 	jQuery("[data-down-volume]").on('click', function() {
 		let viewer = jQuery(this).parents(".viewer").attr("data-streamer");
 		players[viewer].setVolume((players[viewer].getVolume() - 0.1));
