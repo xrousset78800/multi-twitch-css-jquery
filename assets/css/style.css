@@ -948,6 +948,20 @@ body[data-layout=studio] [name=spam-area] {
 .scamer { cursor: pointer; }
 .scamer:hover { text-decoration: underline; }
 
+.msg-deleted {
+	opacity: 0.4;
+	background: rgba(255, 50, 50, 0.15) !important;
+	text-decoration: line-through;
+}
+.msg-deleted .message { color: #ff6666; }
+
+.msg-banned {
+	opacity: 0.35;
+	background: rgba(255, 0, 0, 0.2) !important;
+	text-decoration: line-through;
+}
+.msg-banned .scamer { color: #ff4444; }
+
 .reply-banner {
 	display: flex;
 	align-items: center;

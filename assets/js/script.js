@@ -713,6 +713,38 @@ function loadClient(config){
 					showRaidNotification(channel, username, viewers);
 				});
 
+				// Modération — message supprimé
+				client.on('messagedeleted', function(channel, username, deletedMessage, tags) {
+					var msgId = tags['target-msg-id'];
+					jQuery('.' + msgId).addClass('msg-deleted');
+				});
+
+				// Modération — ban
+				client.on('ban', function(channel, username) {
+					var chan = channel.toLowerCase();
+					jQuery('.twitch-description' + chan + ' .embed-message').each(function() {
+						if(jQuery(this).data('author') && jQuery(this).data('author').toLowerCase() === username.toLowerCase()) {
+							jQuery(this).addClass('msg-banned');
+						}
+					});
+				});
+
+				// Modération — timeout
+				client.on('timeout', function(channel, username, reason, duration) {
+					var chan = channel.toLowerCase();
+					jQuery('.twitch-description' + chan + ' .embed-message').each(function() {
+						if(jQuery(this).data('author') && jQuery(this).data('author').toLowerCase() === username.toLowerCase()) {
+							jQuery(this).addClass('msg-banned').attr('title', 'Timeout ' + duration + 's' + (reason ? ' : ' + reason : ''));
+						}
+					});
+				});
+
+				// Modération — clearchat
+				client.on('clearchat', function(channel) {
+					var chan = channel.toLowerCase();
+					jQuery('.twitch-description' + chan + ' .chatscroll').empty();
+				});
+
 				client.on('connected', function(){
 					for(var i=0; i<config["scamers"].length; i++) {
 						jQuery('.twitch-description'+config['scamers'][i]).append(""+
@@ -1701,12 +1733,10 @@ jQuery(document).ready(async function(){
 			return false;
 		}
 		
-		var isChat = jQuery(e.target).hasClass('twitch-description');
+		var isInsideChat = jQuery(e.target).closest('.twitch-description').length > 0;
 		var isOptions = jQuery(e.target).parent().hasClass('player-options');
-		if(isOptions || isChat){
-			e.preventDefault();
-			e.stopPropagation();
-			return true;
+		if(isOptions || isInsideChat){
+			return; // laisser les clics du chat se propager normalement
 		}
 		
 		if(jQuery(this).hasClass("mainViewer")) {
