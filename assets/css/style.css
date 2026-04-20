@@ -726,6 +726,7 @@ height: 50%;
 
 .player-options {
     opacity: 0;
+    pointer-events: none;
     transition: opacity 0.8s;
     background: #000000f5;
     display: inline-block;
@@ -845,6 +846,7 @@ height: 50%;
 
 .viewer:hover .player-options {
 	opacity: 1;
+	pointer-events: auto;
 }
 
 
@@ -1244,6 +1246,12 @@ body[data-layout=studio] [name=spam-area] {
 .specialgrid .viewer.mainViewer .player-options {
 	display: block;
 	width: 79.6%;
+}
+
+/* En studio, déplacer le bouton reply à gauche pour éviter le chevauchement avec player-options */
+.specialgrid .mainViewer .reply-btn {
+	left: 3px;
+	right: auto;
 }
 
 [data-layout=grid] [data-grid-switch] {
