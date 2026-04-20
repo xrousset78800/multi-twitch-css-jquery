@@ -78,6 +78,12 @@ var bufferMessageSize = 150;
 var tickRefreshMs = 60000;
 var emotesChannels = [];
 var badgesChannels = [];
+var loggedInUser = null;
+
+function emoteImgUrl(emote) {
+	var format = (emote.format && emote.format.includes("animated")) ? "animated" : "static";
+	return 'https://static-cdn.jtvnw.net/emoticons/v2/' + emote.id + '/' + format + '/dark/1.0';
+}
 
 function renderEmotes() {
 	jQuery(".chatIcons").find("h6, img").remove();
@@ -86,8 +92,16 @@ function renderEmotes() {
 		if(emotesChannels[name] && emotesChannels[name].length > 0) {
 			jQuery(".chatIcons").find(".emote-filter").after("<h6>"+name+"</h6>");
 			for(var i=0; i<emotesChannels[name].length; i++) {
-				jQuery(".chatIcons").append("<img title='"+emotesChannels[name][i]["name"]+"' data-key='"+emotesChannels[name][i]["name"]+"' width='20' height='20' src='"+emotesChannels[name][i]["images"]["url_1x"]+"' />");
+				var emote = emotesChannels[name][i];
+				jQuery(".chatIcons").append("<img title='"+emote["name"]+"' data-key='"+emote["name"]+"' width='20' height='20' src='"+emoteImgUrl(emote)+"' />");
 			}
+		}
+	}
+	if(emotesChannels["global"] && emotesChannels["global"].length > 0) {
+		jQuery(".chatIcons").append("<h6>Global</h6>");
+		for(var i=0; i<emotesChannels["global"].length; i++) {
+			var emote = emotesChannels["global"][i];
+			jQuery(".chatIcons").append("<img title='"+emote["name"]+"' data-key='"+emote["name"]+"' width='20' height='20' src='"+emoteImgUrl(emote)+"' />");
 		}
 	}
 	jQuery('.chatIcons img').off('click').on('click', function(){
@@ -634,6 +648,7 @@ function loadClient(config){
 	   success: function(c){
 		   console.log(c);
 			var name = c["login"];
+			loggedInUser = name;
 			var id = c["user_id"];
 					
 				const option = {
@@ -826,7 +841,7 @@ function getMessage(message, tags) {
 
 		for (let i = 0; i < size; ++i) {		
 			var extract = tags['emotes'][arrEmotes[i]][0].split('-');
-			var url = 'https://static-cdn.jtvnw.net/emoticons/v2/'+arrEmotes[i]+'/default/dark/1.0';
+			var url = 'https://static-cdn.jtvnw.net/emoticons/v2/'+arrEmotes[i]+'/animated/dark/1.0';
 			var length = extract[1] - extract[0] + 1;		
 			var substr = message.slice(extract[0],extract[1]+1).slice(0, length);
 			var newSubstr = "<img title='"+escapeHtml(substr)+"' src='"+url+"'>";
@@ -1680,9 +1695,11 @@ jQuery(document).ready(async function(){
 			//console.log(reply);
 		}
 
+		var mentionClass = (loggedInUser && message.toLowerCase().includes('@' + loggedInUser.toLowerCase())) ? ' highlight' : '';
+
 		jQuery('.twitch-description'+channel.toLowerCase()+' > .scroll > div')
 		  .append(""+
-			  "<div class='embed-message "+tags.id+"'>" +
+			  "<div class='embed-message "+tags.id+mentionClass+"'>" +
 				"<span data-first-message='"+tags['first-msg']+"'>"+
 				reply +
 				"<div class='sender-message'>" +

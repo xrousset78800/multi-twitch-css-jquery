@@ -1423,7 +1423,10 @@ body:not(.viewer0video) .switchers {
 }
 
 .highlight {
-	border: 4px dotted red;
+	background: rgba(255, 200, 0, 0.15);
+	border-left: 3px solid #ffc800;
+	padding-left: 6px;
+	border-radius: 3px;
 }
 .channels .remove {
 	position: absolute; 
