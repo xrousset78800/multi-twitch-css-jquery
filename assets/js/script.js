@@ -77,6 +77,7 @@ var players = [];
 var bufferMessageSize = 150;
 var tickRefreshMs = 60000;
 var emotesChannels = [];
+var emoteMap = {};
 var badgesChannels = [];
 var loggedInUser = null;
 
@@ -85,12 +86,22 @@ function emoteImgUrl(emote) {
 	return 'https://static-cdn.jtvnw.net/emoticons/v2/' + emote.id + '/' + format + '/dark/1.0';
 }
 
+function buildEmoteMap() {
+	emoteMap = {};
+	for (var key in emotesChannels) {
+		if (!Array.isArray(emotesChannels[key])) continue;
+		for (var i = 0; i < emotesChannels[key].length; i++) {
+			emoteMap[emotesChannels[key][i].name] = emotesChannels[key][i];
+		}
+	}
+}
+
 function renderEmotes() {
 	jQuery(".chatIcons").find("h6, img").remove();
 	for(var j=0; j<totalList.length; j++) {
 		var name = totalList[j].name;
 		if(emotesChannels[name] && emotesChannels[name].length > 0) {
-			jQuery(".chatIcons").find(".emote-filter").after("<h6>"+name+"</h6>");
+			jQuery(".chatIcons").append("<h6>"+name+"</h6>");
 			for(var i=0; i<emotesChannels[name].length; i++) {
 				var emote = emotesChannels[name][i];
 				jQuery(".chatIcons").append("<img title='"+emote["name"]+"' data-key='"+emote["name"]+"' width='20' height='20' src='"+emoteImgUrl(emote)+"' />");
@@ -104,6 +115,7 @@ function renderEmotes() {
 			jQuery(".chatIcons").append("<img title='"+emote["name"]+"' data-key='"+emote["name"]+"' width='20' height='20' src='"+emoteImgUrl(emote)+"' />");
 		}
 	}
+	buildEmoteMap();
 	jQuery('.chatIcons img').off('click').on('click', function(){
 		let viewer = jQuery(this).parents(".viewer").attr("data-streamer");
 		let input = jQuery("input[name="+viewer+"]");
@@ -931,16 +943,24 @@ function getMessage(message, tags) {
 			msg = msg.replaceAll(substr, newSubstr);
 		}
 	}
+	if(!tags['emotes'] || Object.keys(tags['emotes']).length === 0) {
+		msg = msg.split(' ').map(function(word) {
+			return emoteMap[word]
+				? "<img title='" + word + "' src='" + emoteImgUrl(emoteMap[word]) + "'>"
+				: word;
+		}).join(' ');
+	}
+
 	if(tags['flags'] !== null && tags['flags'] !== undefined){
 		var flag = tags['flags'].split(':');
 		var extract = flag[0].split('-');
 		var length = extract[1] - extract[0] + 1;
 		var substr = message.slice(extract[0],extract[1]+1).slice(0, length);
 		var newSubstr = "<u title='"+flag[1]+"'>"+substr+"</u>";
-		
+
 		msg = msg.replaceAll(substr, newSubstr);
 	}
-	
+
 	return msg;
 }
 
